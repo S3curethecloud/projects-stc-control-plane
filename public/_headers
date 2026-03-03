@@ -1,0 +1,14 @@
+/*
+  Content-Security-Policy:
+    default-src 'self';
+    script-src 'self';
+    style-src 'self';
+    img-src 'self' data:;
+    connect-src https://ztr-runtime.fly.dev https://stc-intelligence-core.fly.dev;
+    frame-ancestors 'none';
+    base-uri 'self';
+    object-src 'none';
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
