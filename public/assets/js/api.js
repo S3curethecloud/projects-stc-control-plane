@@ -55,6 +55,7 @@ const STC_API = (() => {
   return {
     getHealth: () => request("/health"),
     verifyAudit: () => request("/v1/audit/verify"),
+    getActiveSessions: () => request("/v1/sessions/active"),
     revokeSession: (sessionId) =>
       request("/v1/sessions/revoke", {
         method: "POST",

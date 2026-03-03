@@ -29,6 +29,30 @@
     <button id="refresh-audit" class="btn">Verify Chain</button>
   </section>
 
+  <!-- Active Sessions -->
+  <section class="card">
+    <h2>Active Sessions</h2>
+    <div class="table-container">
+      <table id="sessions-table">
+        <thead>
+          <tr>
+            <th>Session ID</th>
+            <th>Principal</th>
+            <th>Intent</th>
+            <th>TTL Remaining</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="sessions-body">
+          <tr>
+            <td colspan="5" class="muted">Loading...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <button id="refresh-sessions" class="btn">Refresh Sessions</button>
+  </section>
+
   <!-- Session Revocation -->
   <section class="card">
     <h2>Revoke Session</h2>
