@@ -1,8 +1,13 @@
+// FILE: public/assets/js/console.js
+
 document.addEventListener("DOMContentLoaded", () => {
 
   const healthEl = document.getElementById("health-status");
   const auditEl = document.getElementById("audit-status");
   const revokeEl = document.getElementById("revoke-result");
+
+  const introspectResultEl = document.getElementById("introspect-result");
+  const introspectTokenEl = document.getElementById("introspect-token");
 
   async function loadHealth() {
     try {
@@ -35,6 +40,30 @@ document.addEventListener("DOMContentLoaded", () => {
       revokeEl.textContent = `Deleted: ${data.deleted}`;
     } catch (e) {
       revokeEl.textContent = `Error: ${e.message}`;
+    }
+  }
+
+  async function introspectToken() {
+    const token = introspectTokenEl.value.trim();
+    if (!token) {
+      introspectResultEl.textContent = "Token required.";
+      return;
+    }
+
+    introspectResultEl.textContent = "Checking...";
+
+    try {
+      const data = await STC_API.introspectToken(token);
+
+      const scopes = Array.isArray(data.scopes) ? data.scopes.join(", ") : "";
+      const exp = data.expires_at ? new Date(data.expires_at * 1000).toISOString() : "n/a";
+      const rev = data.policy_revision ?? "n/a";
+
+      introspectResultEl.textContent =
+        `Status: ${data.status} • Principal: ${data.principal} • Intent: ${data.intent} • Expires: ${exp} • Policy: ${rev}` +
+        (scopes ? ` • Scopes: ${scopes}` : "");
+    } catch (e) {
+      introspectResultEl.textContent = `Error: ${e.message}`;
     }
   }
 
@@ -79,6 +108,8 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("refresh-health").addEventListener("click", loadHealth);
   document.getElementById("refresh-audit").addEventListener("click", loadAudit);
   document.getElementById("revoke-btn").addEventListener("click", revokeSession);
+
+  document.getElementById("introspect-btn").addEventListener("click", introspectToken);
 
   document.getElementById("refresh-sessions")
     .addEventListener("click", loadSessions);

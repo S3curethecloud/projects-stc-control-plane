@@ -1,3 +1,5 @@
+// FILE: public/assets/js/api.js
+
 const STC_API = (() => {
 
   const CONFIG = {
@@ -56,6 +58,11 @@ const STC_API = (() => {
     getHealth: () => request("/health"),
     verifyAudit: () => request("/v1/audit/verify"),
     getActiveSessions: () => request("/v1/sessions/active"),
+    introspectToken: (token) =>
+      request("/v1/introspect", {
+        method: "POST",
+        body: JSON.stringify({ token }),
+      }),
     revokeSession: (sessionId) =>
       request("/v1/sessions/revoke", {
         method: "POST",
