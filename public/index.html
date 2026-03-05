@@ -3,32 +3,112 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SecureTheCloud Control Plane</title>
+<title>SecureTheCloud — Zero-Trust Runtime</title>
 <link rel="stylesheet" href="/assets/css/stc-control.css"/>
 </head>
 
 <body>
-<div class="container">
-  <header>
-    <h1>SecureTheCloud — Control Plane</h1>
-  </header>
 
-  <div class="panel">
-    <p>Enter authorized control-plane token.</p>
-    <input id="token" type="password" placeholder="Bearer token"/>
-    <br/><br/>
-    <button class="btn btn-primary" id="enter">Enter</button>
+<nav class="stc-nav">
+  <div class="stc-logo">SecureTheCloud</div>
+
+  <div class="stc-nav-links">
+    <a href="/index.html">Home</a>
+    <a href="/console.html">Console</a>
+    <a href="/shield.html">Shield</a>
+    <a href="/copilot.html">Copilot</a>
   </div>
-</div>
+</nav>
+
+
+<section class="hero">
+
+  <h1>SecureTheCloud</h1>
+
+  <p>
+  Multi-Tenant Zero-Trust Runtime for AI Agents
+  </p>
+
+  <a class="btn btn-primary" href="/console.html">
+    Open Control Plane
+  </a>
+
+</section>
+
+
+
+<section class="capabilities">
+
+  <div class="cap-card">
+    <h3>Zero-Trust Runtime</h3>
+    <p>
+    Deterministic token enforcement with real-time introspection and revocation.
+    </p>
+  </div>
+
+  <div class="cap-card">
+    <h3>Shield</h3>
+    <p>
+    Risk scoring and anomaly detection protecting every runtime authorization.
+    </p>
+  </div>
+
+  <div class="cap-card">
+    <h3>Copilot</h3>
+    <p>
+    Explainable reasoning behind every authorization decision and policy action.
+    </p>
+  </div>
+
+</section>
+
+
+
+<section class="access-panel">
+
+  <div class="container">
+
+    <header>
+      <h2>Access Control Plane</h2>
+    </header>
+
+    <div class="panel">
+      <p>Enter authorized control-plane token.</p>
+
+      <input
+        id="token"
+        type="password"
+        placeholder="Bearer token"
+      />
+
+      <br/><br/>
+
+      <button class="btn btn-primary" id="enter">
+        Enter Control Plane
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
 
 <script>
+
 document.getElementById("enter").onclick = () => {
+
   const token = document.getElementById("token").value.trim();
+
   if(token){
     window.__STC_TOKEN = token;
     window.location.href="/shield";
   }
+
 };
+
 </script>
+
 </body>
 </html>
