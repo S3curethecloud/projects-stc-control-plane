@@ -156,6 +156,65 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  async function loadDecisions(){
+
+    try {
+
+      const data = await STC_API.getDecisions();
+
+      if(!data.events || data.events.length === 0){
+        return;
+      }
+
+      const body = document.getElementById("decision-body");
+
+      body.innerHTML = data.events.map(e => `
+        <tr class="decision-row"
+            data-id="${e.id}">
+          <td>${e.time}</td>
+          <td>${e.principal}</td>
+          <td>${e.intent}</td>
+          <td>${e.decision.toUpperCase()}</td>
+          <td>${e.risk}</td>
+        </tr>
+      `).join("");
+
+    } catch(e){
+      console.error("Decision stream error", e);
+    }
+
+  }
+
+  async function loadDecisionExplain(id){
+
+    try {
+
+      const data = await STC_API.getDecisionExplain(id);
+
+      const el = document.getElementById("decision-explain");
+
+      el.innerHTML = `
+        <h3>${data.decision.toUpperCase()}</h3>
+
+        <p><strong>Principal:</strong> ${data.principal}</p>
+        <p><strong>Intent:</strong> ${data.intent}</p>
+        <p><strong>Risk Score:</strong> ${data.risk_score}</p>
+
+        <p><strong>Policy Rule:</strong> ${data.policy_rule}</p>
+
+        <h4>Reasons</h4>
+
+        <ul>
+          ${data.reasons.map(r => `<li>${r}</li>`).join("")}
+        </ul>
+      `;
+
+    } catch(e){
+      console.error(e);
+    }
+
+  }
+
   function tickTTL(){
 
     const cells = document.querySelectorAll(".ttl");
@@ -171,6 +230,29 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
     });
+
+  }
+
+  async function updateRuntimeMetrics(){
+
+    try {
+
+      const health = await STC_API.getHealth();
+      document.getElementById("metric-runtime").textContent = health.status;
+      document.getElementById("metric-policy").textContent = health.policy_rev ?? "—";
+
+    } catch(e){
+      document.getElementById("metric-runtime").textContent = "DOWN";
+    }
+
+    try {
+
+      const sessions = await STC_API.getActiveSessions();
+      document.getElementById("metric-sessions").textContent = sessions.count ?? 0;
+
+    } catch(e){
+      document.getElementById("metric-sessions").textContent = "—";
+    }
 
   }
 
@@ -198,6 +280,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 
+  document
+    .getElementById("decision-body")
+    .addEventListener("click", (e) => {
+
+      const row = e.target.closest(".decision-row");
+
+      if(!row) return;
+
+      const id = row.dataset.id;
+
+      loadDecisionExplain(id);
+
+  });
+
   loadHealth();
   loadAudit();
   loadSessions();
@@ -211,5 +307,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 5000);
 
   setInterval(tickTTL,1000);
+
+  setInterval(updateRuntimeMetrics, 5000);
+  updateRuntimeMetrics();
+
+  setInterval(loadDecisions, 3000);
+  loadDecisions();
 
 });

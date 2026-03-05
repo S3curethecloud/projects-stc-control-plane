@@ -81,6 +81,48 @@
     <button id="refresh-sessions" class="btn">Refresh Sessions</button>
   </section>
 
+  <!-- Runtime Decision Stream -->
+  <section class="card">
+    <h2>Runtime Decision Stream</h2>
+
+    <div class="table-container">
+      <table id="decision-table">
+
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Principal</th>
+            <th>Intent</th>
+            <th>Decision</th>
+            <th>Risk</th>
+          </tr>
+        </thead>
+
+        <tbody id="decision-body">
+          <tr>
+            <td colspan="5" class="muted">Waiting for runtime events...</td>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+  </section>
+
+  <!-- Decision Explanation -->
+  <section class="card">
+    <h2>Decision Explanation</h2>
+
+    <div id="decision-explain" class="panel">
+
+      <p class="muted">
+        Select a decision from the stream to view explanation.
+      </p>
+
+    </div>
+
+  </section>
+
   <!-- Token Introspection -->
   <section class="card">
     <h2>Token Introspection</h2>
