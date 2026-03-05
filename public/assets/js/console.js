@@ -215,6 +215,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
+  function startDecisionStream(){
+
+    const stream = new EventSource("/v1/decisions/stream");
+
+    stream.onmessage = function(event){
+
+      try {
+
+        const e = JSON.parse(event.data);
+
+        const body = document.getElementById("decision-body");
+
+        if(!body) return;
+
+        const row = document.createElement("tr");
+
+        const time = new Date(e.time).toLocaleTimeString();
+
+        row.classList.add("decision-row");
+        row.dataset.id = e.id;
+
+        row.innerHTML = `
+          <td>${time}</td>
+          <td>${e.principal ?? "-"}</td>
+          <td>${e.intent ?? "-"}</td>
+          <td>${e.result ?? "-"}</td>
+          <td>${e.policy_revision ?? "-"}</td>
+        `;
+
+        body.prepend(row);
+
+        while(body.children.length > 50){
+          body.removeChild(body.lastChild);
+        }
+
+      } catch(err){
+        console.error("SSE parse error", err);
+      }
+
+    };
+
+    stream.onerror = function(){
+      console.warn("Decision stream disconnected");
+    };
+
+  }
+
   function tickTTL(){
 
     const cells = document.querySelectorAll(".ttl");
@@ -313,5 +360,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setInterval(loadDecisions, 3000);
   loadDecisions();
+
+  startDecisionStream();
 
 });
