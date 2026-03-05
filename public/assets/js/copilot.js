@@ -1,46 +1,16 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>STC Control Plane — Console</title>
-  <link rel="stylesheet" href="/assets/css/stc-control.css" />
-</head>
-<body class="stc-dark">
+const askBtn = document.getElementById("ask-copilot")
 
-<header class="console-header">
-  <h1>SecureTheCloud Control Plane</h1>
-  <span class="env-badge">Runtime Authority</span>
-</header>
+askBtn.addEventListener("click", async () => {
 
-<main class="console-grid">
+  const query = document.getElementById("copilot-query").value
 
-  <!-- Runtime Health -->
-  <section class="card">
-    <h2>Runtime Health</h2>
-    <div id="health-status" class="status">Checking…</div>
-    <button id="refresh-health" class="btn">Refresh</button>
-  </section>
+  const response = await fetch("/api/copilot", {
+    method: "POST",
+    body: JSON.stringify({query})
+  })
 
-  <!-- Audit Chain -->
-  <section class="card">
-    <h2>Audit Chain</h2>
-    <div id="audit-status" class="status">Loading…</div>
-    <button id="refresh-audit" class="btn">Verify Chain</button>
-  </section>
+  const data = await response.json()
 
-  <!-- Session Revocation -->
-  <section class="card">
-    <h2>Revoke Session</h2>
-    <input id="session-id" placeholder="Enter Session ID (SID-...)" />
-    <button id="revoke-btn" class="btn btn-danger">Revoke</button>
-    <div id="revoke-result" class="status"></div>
-  </section>
-
-</main>
-
-<script src="/assets/js/api.js"></script>
-<script src="/assets/js/console.js"></script>
-
-</body>
-</html>
+  document.getElementById("copilot-response").textContent =
+    JSON.stringify(data, null, 2)
+})
