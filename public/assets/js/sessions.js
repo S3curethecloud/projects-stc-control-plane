@@ -4,6 +4,8 @@ if (!localStorage.getItem("STC_ADMIN_SECRET")) {
 
 // FILE: public/assets/js/sessions.js
 
+const REFRESH_INTERVAL = 5000;
+
 function formatTime(ts) {
   if (!ts) return "";
   return new Date(ts * 1000).toISOString();
@@ -82,15 +84,17 @@ function copy(value) {
 
 }
 
-function refreshSessions() {
-  loadSessions();
+async function refreshSessionsLoop() {
+  await loadSessions();
 }
 
 async function init() {
 
   try {
 
-    await loadSessions();
+    await refreshSessionsLoop();
+
+    setInterval(refreshSessionsLoop, REFRESH_INTERVAL);
 
   } catch (err) {
 

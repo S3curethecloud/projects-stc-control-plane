@@ -4,6 +4,8 @@ if (!localStorage.getItem("STC_ADMIN_SECRET")) {
 
 // FILE: public/assets/js/tenant-detail.js
 
+const REFRESH_INTERVAL = 10000;
+
 function getTenantId() {
   const params = new URLSearchParams(window.location.search);
   return params.get("tenant");
@@ -107,6 +109,17 @@ async function revoke(sessionId) {
 
 }
 
+async function refreshTenant() {
+
+  const tenantId = getTenantId();
+
+  await loadSummary(tenantId);
+  await loadUsage(tenantId);
+  await loadBilling(tenantId);
+  await loadSessions(tenantId);
+
+}
+
 async function init() {
 
   const tenantId = getTenantId();
@@ -121,10 +134,9 @@ async function init() {
 
   try {
 
-    await loadSummary(tenantId);
-    await loadUsage(tenantId);
-    await loadBilling(tenantId);
-     await loadSessions(tenantId);
+    await refreshTenant();
+
+    setInterval(refreshTenant, REFRESH_INTERVAL);
 
   } catch (err) {
 

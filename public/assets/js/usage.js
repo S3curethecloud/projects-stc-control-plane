@@ -4,6 +4,8 @@ if (!localStorage.getItem("STC_ADMIN_SECRET")) {
 
 // FILE: public/assets/js/usage.js
 
+const REFRESH_INTERVAL = 20000;
+
 async function loadPlatformMetrics() {
 
   const metrics = await STC_API.getAdminMetrics();
@@ -79,12 +81,20 @@ async function loadTenantUsage() {
 
 }
 
+async function refreshUsage() {
+
+  await loadPlatformMetrics();
+
+}
+
 async function init() {
 
   try {
 
-    await loadPlatformMetrics();
     await populateTenantSelector();
+    await refreshUsage();
+
+    setInterval(refreshUsage, REFRESH_INTERVAL);
 
   } catch (err) {
 

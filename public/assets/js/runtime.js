@@ -4,6 +4,8 @@ if (!localStorage.getItem("STC_ADMIN_SECRET")) {
 
 // FILE: public/assets/js/runtime.js
 
+const REFRESH_INTERVAL = 15000;
+
 async function loadRuntimeDiagnostics() {
 
   const runtime = await STC_API.getAdminRuntime();
@@ -16,11 +18,17 @@ async function loadRuntimeDiagnostics() {
   document.getElementById("runtime_period").textContent = runtime.period;
 }
 
+async function refreshRuntime() {
+  await loadRuntimeDiagnostics();
+}
+
 async function init() {
 
   try {
 
-    await loadRuntimeDiagnostics();
+    await refreshRuntime();
+
+    setInterval(refreshRuntime, REFRESH_INTERVAL);
 
   } catch (err) {
 
@@ -28,6 +36,7 @@ async function init() {
     alert("Failed to load runtime diagnostics");
 
   }
+
 }
 
 init();
