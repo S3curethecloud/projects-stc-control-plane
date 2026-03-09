@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Runtime Observability</title>
+<link rel="stylesheet" href="assets/css/stc-control.css">
+</head>
+
+<body>
+
+<nav class="stc-nav">
+  <a href="console.html">Overview</a>
+  <a href="runtime.html">Runtime</a>
+  <a href="tenants.html">Tenants</a>
+  <a href="sessions.html">Sessions</a>
+  <a href="usage.html">Usage</a>
+  <a href="activity.html">Activity</a>
+  <a href="observability.html">Observability</a>
+</nav>
+
+<main class="container">
+
+<h1>Runtime Observability</h1>
+
+<section class="card-grid">
+
+<div class="card">
+<h3>Tokens Issued</h3>
+<div id="tokens"></div>
+</div>
+
+<div class="card">
+<h3>Policy Allowed</h3>
+<div id="allowed"></div>
+</div>
+
+<div class="card">
+<h3>Policy Denied</h3>
+<div id="denied"></div>
+</div>
+
+<div class="card">
+<h3>Sessions Revoked</h3>
+<div id="revoked"></div>
+</div>
+
+</section>
+
+<h2>Latency Metrics</h2>
+
+<section class="card-grid">
+
+<div class="card">
+<h3>Decision Latency (ms)</h3>
+<div id="decision_latency"></div>
+</div>
+
+<div class="card">
+<h3>OPA Latency (ms)</h3>
+<div id="opa_latency"></div>
+</div>
+
+<div class="card">
+<h3>Redis Latency (ms)</h3>
+<div id="redis_latency"></div>
+</div>
+
+</section>
+
+</main>
+
+<script src="assets/js/api.js"></script>
+<script src="assets/js/observability.js"></script>
+
+</body>
+</html>

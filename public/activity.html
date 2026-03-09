@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SecureTheCloud Tenants</title>
+<title>Runtime Activity Stream</title>
 <link rel="stylesheet" href="assets/css/stc-control.css">
 </head>
 
@@ -19,39 +19,36 @@
     <a href="observability.html">Observability</a>
     <a href="activity.html">Activity</a>
     <a href="docs.html">Help</a>
- </div>
+  </div>
 </nav>
 
 <main class="container">
 
-<h1>Tenant Inventory</h1>
+<h1>Live Decision Stream</h1>
 
 <div class="toolbar">
-  <button onclick="refreshTenants()">Refresh</button>
-  <a class="button" href="provision.html">Provision Tenant</a>
+<button onclick="clearStream()">Clear</button>
 </div>
 
 <table class="data-table">
 
 <thead>
 <tr>
-<th>Tenant ID</th>
-<th>Label</th>
-<th>Status</th>
-<th>Policy Version</th>
-<th>Created</th>
-<th>Actions</th>
+<th>Time</th>
+<th>Principal</th>
+<th>Intent</th>
+<th>Result</th>
+<th>Policy</th>
 </tr>
 </thead>
 
-<tbody id="tenant_table"></tbody>
+<tbody id="activity_table"></tbody>
 
 </table>
 
 </main>
 
-<script src="assets/js/api.js"></script>
-<script src="assets/js/tenants.js"></script>
+<script src="assets/js/activity.js"></script>
 
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SecureTheCloud Provision Tenant</title>
+<title>Runtime Integrity</title>
 <link rel="stylesheet" href="assets/css/stc-control.css">
 </head>
 
@@ -17,42 +17,49 @@
     <a href="sessions.html">Sessions</a>
     <a href="usage.html">Usage & Billing</a>
     <a href="observability.html">Observability</a>
-    <a href="activity.html">Activity</a>  
+    <a href="activity.html">Activity</a>
+    <a href="integrity.html">Integrity</a>
     <a href="docs.html">Help</a>
   </div>
 </nav>
 
 <main class="container">
 
-<h1>Provision Tenant</h1>
+<h1>Runtime Integrity Verification</h1>
 
-<section class="card">
+<section class="card-grid">
 
-<label>Tenant ID</label>
-<input id="tenant_id" type="text" placeholder="tenant-123"/>
+<div class="card">
+<h3>Runtime Revision</h3>
+<div id="runtime_revision"></div>
+</div>
 
-<label>Label</label>
-<input id="label" type="text" placeholder="Example tenant"/>
+<div class="card">
+<h3>Policy Revision</h3>
+<div id="policy_revision"></div>
+</div>
 
-<label>Key Label</label>
-<input id="key_label" type="text" placeholder="initial key"/>
+<div class="card">
+<h3>Ledger Anchor</h3>
+<div id="ledger_anchor"></div>
+</div>
 
-<button onclick="provisionTenant()">Provision Tenant</button>
+<div class="card">
+<h3>Redis Health</h3>
+<div id="redis_status"></div>
+</div>
 
 </section>
 
-<h2>Provision Result</h2>
-
 <section class="card">
-
-<pre id="provision_result"></pre>
-
+<h3>Last Updated</h3>
+<div id="timestamp"></div>
 </section>
 
 </main>
 
 <script src="assets/js/api.js"></script>
-<script src="assets/js/provision.js"></script>
+<script src="assets/js/integrity.js"></script>
 
 </body>
 </html>

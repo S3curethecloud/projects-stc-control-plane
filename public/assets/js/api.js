@@ -161,6 +161,37 @@ const STC_API = (() => {
   }
 
   /* ---------------------------------------------------
+     PHASE 9 OBSERVABILITY
+  --------------------------------------------------- */
+
+  function getRuntimeActivity() {
+    return request("/v1/runtime/activity", {
+      method: "GET",
+      headers: {
+        "X-Stc-Admin-Secret": getAdminSecret(),
+      }
+    });
+  }
+
+  function getRuntimeIntegrity() {
+    return request("/v1/runtime/integrity", {
+      method: "GET",
+      headers: {
+        "X-Stc-Admin-Secret": getAdminSecret(),
+      }
+    });
+  }
+
+  function getRuntimeMetrics() {
+    return request("/v1/metrics", {
+      method: "GET",
+      headers: {
+        "X-Stc-Admin-Secret": getAdminSecret(),
+      }
+    });
+  }
+
+  /* ---------------------------------------------------
      Public API Surface
   --------------------------------------------------- */
 
@@ -180,6 +211,11 @@ const STC_API = (() => {
     issueToken,
     getActiveSessions,
     revokeSession,
+
+    /* observability */
+    getRuntimeActivity,
+    getRuntimeIntegrity,
+    getRuntimeMetrics
 
   };
 
