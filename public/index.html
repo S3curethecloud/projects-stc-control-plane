@@ -1,114 +1,49 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SecureTheCloud — Zero-Trust Runtime</title>
-<link rel="stylesheet" href="/assets/css/stc-control.css"/>
+<meta charset="UTF-8">
+<title>SecureTheCloud Console Login</title>
+<link rel="stylesheet" href="assets/css/stc-control.css">
 </head>
 
 <body>
 
-<nav class="stc-nav">
-  <div class="stc-logo">SecureTheCloud</div>
+<main class="container">
 
-  <div class="stc-nav-links">
-    <a href="/index.html">Home</a>
-    <a href="/console.html">Console</a>
-    <a href="/shield.html">Shield</a>
-    <a href="/copilot.html">Copilot</a>
-  </div>
-</nav>
+<h1>SecureTheCloud Console</h1>
 
+<section class="card">
 
-<section class="hero">
+<h2>Control Plane Access</h2>
 
-  <h1>SecureTheCloud</h1>
+<label>Admin Secret</label>
+<input id="admin_secret" type="password" placeholder="X-Stc-Admin-Secret"/>
 
-  <p>
-  Multi-Tenant Zero-Trust Runtime for AI Agents
-  </p>
+<label>Tenant API Key (optional)</label>
+<input id="api_key" type="text" placeholder="X-Stc-Api-Key"/>
 
-  <a class="btn btn-primary" href="/console.html">
-    Open Control Plane
-  </a>
+<div class="toolbar">
+
+<button onclick="saveCredentials()">Enter Console</button>
+<button onclick="clearCredentials()">Clear Stored Keys</button>
+
+</div>
 
 </section>
 
+<section class="card">
 
-
-<section class="capabilities">
-
-  <div class="cap-card">
-    <h3>Zero-Trust Runtime</h3>
-    <p>
-    Deterministic token enforcement with real-time introspection and revocation.
-    </p>
-  </div>
-
-  <div class="cap-card">
-    <h3>Shield</h3>
-    <p>
-    Risk scoring and anomaly detection protecting every runtime authorization.
-    </p>
-  </div>
-
-  <div class="cap-card">
-    <h3>Copilot</h3>
-    <p>
-    Explainable reasoning behind every authorization decision and policy action.
-    </p>
-  </div>
+<p>
+The Admin Secret is required for the control plane.
+The Tenant API Key enables runtime operations such as session inspection.
+</p>
 
 </section>
 
+</main>
 
-
-<section class="access-panel">
-
-  <div class="container">
-
-    <header>
-      <h2>Access Control Plane</h2>
-    </header>
-
-    <div class="panel">
-      <p>Enter authorized control-plane token.</p>
-
-      <input
-        id="token"
-        type="password"
-        placeholder="Bearer token"
-      />
-
-      <br/><br/>
-
-      <button class="btn btn-primary" id="enter">
-        Enter Control Plane
-      </button>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-
-<script>
-
-document.getElementById("enter").onclick = () => {
-
-  const token = document.getElementById("token").value.trim();
-
-  if(token){
-    window.__STC_TOKEN = token;
-    window.location.href="/shield";
-  }
-
-};
-
-</script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/login.js"></script>
 
 </body>
 </html>

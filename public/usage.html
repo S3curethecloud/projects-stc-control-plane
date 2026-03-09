@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SecureTheCloud Usage & Billing</title>
+<link rel="stylesheet" href="assets/css/stc-control.css">
+</head>
+
+<body>
+
+<nav class="stc-nav">
+  <div class="logo">SecureTheCloud</div>
+  <div class="nav-links">
+    <a href="console.html">Overview</a>
+    <a href="runtime.html">Runtime</a>
+    <a href="tenants.html">Tenants</a>
+    <a href="sessions.html">Sessions</a>
+    <a href="usage.html">Usage & Billing</a>
+    <a href="docs.html">Help</a>
+  </div>
+</nav>
+
+<main class="container">
+
+<h1>Usage & Billing</h1>
+
+<h2>Platform Metrics</h2>
+
+<section class="card-grid">
+
+<div class="card">
+<h3>Tokens Issued</h3>
+<div id="platform_tokens"></div>
+</div>
+
+<div class="card">
+<h3>Policy Denied</h3>
+<div id="platform_denied"></div>
+</div>
+
+<div class="card">
+<h3>Sessions Revoked</h3>
+<div id="platform_revoked"></div>
+</div>
+
+<div class="card">
+<h3>Tenant Count</h3>
+<div id="platform_tenants"></div>
+</div>
+
+<div class="card">
+<h3>Active Sessions</h3>
+<div id="platform_sessions"></div>
+</div>
+
+</section>
+
+<h2>Tenant Usage</h2>
+
+<div class="toolbar">
+
+<select id="tenant_selector"></select>
+<button onclick="loadTenantUsage()">Load Usage</button>
+
+</div>
+
+<section class="card-grid">
+
+<div class="card">
+<h3>Tokens Issued</h3>
+<div id="tenant_tokens"></div>
+</div>
+
+<div class="card">
+<h3>Policy Denied</h3>
+<div id="tenant_denied"></div>
+</div>
+
+<div class="card">
+<h3>Sessions Revoked</h3>
+<div id="tenant_revoked"></div>
+</div>
+
+<div class="card">
+<h3>Period</h3>
+<div id="tenant_period"></div>
+</div>
+
+</section>
+
+
+<h2>Billing Preview</h2>
+
+<section class="card-grid">
+
+<div class="card">
+<h3>Billable Metric</h3>
+<div id="billing_metric"></div>
+</div>
+
+<div class="card">
+<h3>Unit Price (cents)</h3>
+<div id="billing_price"></div>
+</div>
+
+<div class="card">
+<h3>Quantity</h3>
+<div id="billing_quantity"></div>
+</div>
+
+<div class="card">
+<h3>Amount (cents)</h3>
+<div id="billing_amount"></div>
+</div>
+
+</section>
+
+<section class="card">
+
+<p>
+<b>Billing Model:</b> Only <code>tokens_issued</code> is billable in Phase 8.6.
+Policy denials and session revocations are security signals, not charges.
+</p>
+
+</section>
+
+</main>
+
+<script src="assets/js/api.js"></script>
+<script src="assets/js/usage.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SecureTheCloud Sessions</title>
+<link rel="stylesheet" href="assets/css/stc-control.css">
+</head>
+
+<body>
+
+<nav class="stc-nav">
+  <div class="logo">SecureTheCloud</div>
+  <div class="nav-links">
+    <a href="console.html">Overview</a>
+    <a href="runtime.html">Runtime</a>
+    <a href="tenants.html">Tenants</a>
+    <a href="sessions.html">Sessions</a>
+    <a href="usage.html">Usage & Billing</a>
+    <a href="docs.html">Help</a>
+  </div>
+</nav>
+
+<main class="container">
+
+<h1>Active Sessions</h1>
+
+<div class="toolbar">
+<button onclick="refreshSessions()">Refresh</button>
+</div>
+
+<table class="data-table">
+
+<thead>
+<tr>
+<th>Session ID</th>
+<th>Principal</th>
+<th>Intent</th>
+<th>Scopes</th>
+<th>Issued</th>
+<th>TTL</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="sessions_table"></tbody>
+
+</table>
+
+</main>
+
+<script src="assets/js/api.js"></script>
+<script src="assets/js/sessions.js"></script>
+
+</body>
+</html>

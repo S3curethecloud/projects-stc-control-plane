@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SecureTheCloud Console</title>
+<title>SecureTheCloud Runtime</title>
 <link rel="stylesheet" href="assets/css/stc-control.css">
 </head>
 
@@ -12,7 +12,7 @@
   <div class="logo">SecureTheCloud</div>
   <div class="nav-links">
     <a href="console.html">Overview</a>
-    <a href="shield.html">Runtime</a>
+    <a href="runtime.html">Runtime</a>
     <a href="tenants.html">Tenants</a>
     <a href="sessions.html">Sessions</a>
     <a href="usage.html">Usage & Billing</a>
@@ -22,17 +22,17 @@
 
 <main class="container">
 
-<h1>Platform Overview</h1>
+<h1>Runtime Diagnostics</h1>
 
 <section class="card-grid">
 
 <div class="card">
-<h3>Runtime Status</h3>
+<h3>Status</h3>
 <div id="runtime_status">--</div>
 </div>
 
 <div class="card">
-<h3>Redis Status</h3>
+<h3>Redis</h3>
 <div id="redis_status">--</div>
 </div>
 
@@ -51,49 +51,52 @@
 <div id="active_sessions">--</div>
 </div>
 
-</section>
-
-<h2>Platform Metrics</h2>
-
-<section class="card-grid">
-
 <div class="card">
-<h3>Tokens Issued</h3>
-<div id="tokens_issued">--</div>
-</div>
-
-<div class="card">
-<h3>Policy Denied</h3>
-<div id="policy_denied">--</div>
-</div>
-
-<div class="card">
-<h3>Sessions Revoked</h3>
-<div id="sessions_revoked">--</div>
+<h3>Current Period</h3>
+<div id="runtime_period">--</div>
 </div>
 
 </section>
 
-<h2>Tenant Preview</h2>
+<section class="card">
 
-<table class="data-table">
-<thead>
-<tr>
-<th>Tenant ID</th>
-<th>Label</th>
-<th>Status</th>
-<th>Policy Version</th>
-<th>Created</th>
-<th></th>
-</tr>
-</thead>
-<tbody id="tenant_table"></tbody>
-</table>
+<h2>Runtime Interpretation</h2>
+
+<p>
+<b>Status</b> indicates whether the control plane can reach Redis and runtime dependencies.
+</p>
+
+<p>
+<b>Active Sessions</b> represents total live agent sessions across all tenants.
+</p>
+
+<p>
+<b>Policy Revision</b> is the environment identifier for the active OPA policy bundle.
+</p>
+
+</section>
+
+<section class="card">
+
+<h2>Future Diagnostics (Reserved)</h2>
+
+<ul>
+<li>OPA latency</li>
+<li>Redis latency</li>
+<li>Integrity verification</li>
+<li>Decision stream health</li>
+</ul>
+
+<p class="muted">
+Reserved for Phase 9 observability endpoints. No telemetry is fabricated here.
+</p>
+
+</section>
 
 </main>
 
 <script src="assets/js/api.js"></script>
-<script src="assets/js/console.js"></script>
+<script src="assets/js/runtime.js"></script>
 
 </body>
 </html>

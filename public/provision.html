@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SecureTheCloud Provision Tenant</title>
+<link rel="stylesheet" href="assets/css/stc-control.css">
+</head>
+
+<body>
+
+<nav class="stc-nav">
+  <div class="logo">SecureTheCloud</div>
+  <div class="nav-links">
+    <a href="console.html">Overview</a>
+    <a href="runtime.html">Runtime</a>
+    <a href="tenants.html">Tenants</a>
+    <a href="sessions.html">Sessions</a>
+    <a href="usage.html">Usage & Billing</a>
+    <a href="docs.html">Help</a>
+  </div>
+</nav>
+
+<main class="container">
+
+<h1>Provision Tenant</h1>
+
+<section class="card">
+
+<label>Tenant ID</label>
+<input id="tenant_id" type="text" placeholder="tenant-123"/>
+
+<label>Label</label>
+<input id="label" type="text" placeholder="Example tenant"/>
+
+<label>Key Label</label>
+<input id="key_label" type="text" placeholder="initial key"/>
+
+<button onclick="provisionTenant()">Provision Tenant</button>
+
+</section>
+
+<h2>Provision Result</h2>
+
+<section class="card">
+
+<pre id="provision_result"></pre>
+
+</section>
+
+</main>
+
+<script src="assets/js/api.js"></script>
+<script src="assets/js/provision.js"></script>
+
+</body>
+</html>

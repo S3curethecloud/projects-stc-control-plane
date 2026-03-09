@@ -1,0 +1,33 @@
+if (!localStorage.getItem("STC_ADMIN_SECRET")) {
+  window.location.href = "index.html";
+}
+
+// FILE: public/assets/js/runtime.js
+
+async function loadRuntimeDiagnostics() {
+
+  const runtime = await STC_API.getAdminRuntime();
+
+  document.getElementById("runtime_status").textContent = runtime.status;
+  document.getElementById("redis_status").textContent = runtime.redis;
+  document.getElementById("policy_revision").textContent = runtime.policy_revision;
+  document.getElementById("tenant_count").textContent = runtime.tenant_count;
+  document.getElementById("active_sessions").textContent = runtime.active_sessions;
+  document.getElementById("runtime_period").textContent = runtime.period;
+}
+
+async function init() {
+
+  try {
+
+    await loadRuntimeDiagnostics();
+
+  } catch (err) {
+
+    console.error("Runtime load error:", err);
+    alert("Failed to load runtime diagnostics");
+
+  }
+}
+
+init();

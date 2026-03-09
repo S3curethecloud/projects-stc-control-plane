@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SecureTheCloud Tenants</title>
+<link rel="stylesheet" href="assets/css/stc-control.css">
+</head>
+
+<body>
+
+<nav class="stc-nav">
+  <div class="logo">SecureTheCloud</div>
+  <div class="nav-links">
+    <a href="console.html">Overview</a>
+    <a href="runtime.html">Runtime</a>
+    <a href="tenants.html">Tenants</a>
+    <a href="sessions.html">Sessions</a>
+    <a href="usage.html">Usage & Billing</a>
+    <a href="docs.html">Help</a>
+  </div>
+</nav>
+
+<main class="container">
+
+<h1>Tenant Inventory</h1>
+
+<div class="toolbar">
+  <button onclick="refreshTenants()">Refresh</button>
+  <a class="button" href="provision.html">Provision Tenant</a>
+</div>
+
+<table class="data-table">
+
+<thead>
+<tr>
+<th>Tenant ID</th>
+<th>Label</th>
+<th>Status</th>
+<th>Policy Version</th>
+<th>Created</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody id="tenant_table"></tbody>
+
+</table>
+
+</main>
+
+<script src="assets/js/api.js"></script>
+<script src="assets/js/tenants.js"></script>
+
+</body>
+</html>

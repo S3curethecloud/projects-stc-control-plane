@@ -1,366 +1,66 @@
-document.addEventListener("DOMContentLoaded", () => {
+if (!localStorage.getItem("STC_ADMIN_SECRET")) {
+  window.location.href = "index.html";
+}
 
-  const healthEl = document.getElementById("health-status");
-  const auditEl = document.getElementById("audit-status");
-  const revokeEl = document.getElementById("revoke-result");
+async function loadRuntime() {
 
-  const introspectResultEl = document.getElementById("introspect-result");
-  const introspectTokenEl = document.getElementById("introspect-token");
+  const runtime = await STC_API.getAdminRuntime();
 
-  const sessionsBody = document.getElementById("sessions-body");
+  document.getElementById("runtime_status").textContent = runtime.status;
+  document.getElementById("redis_status").textContent = runtime.redis;
+  document.getElementById("policy_revision").textContent = runtime.policy_revision;
+  document.getElementById("tenant_count").textContent = runtime.tenant_count;
+  document.getElementById("active_sessions").textContent = runtime.active_sessions;
+}
 
-  function formatTTL(ttl) {
-    const m = Math.floor(ttl / 60);
-    const s = ttl % 60;
-    return `${m}:${s.toString().padStart(2,"0")}`;
-  }
+async function loadMetrics() {
 
-  function maskSID(sid){
-    if (!sid || sid.length < 18) return sid;
-    return sid.slice(0,12) + "…" + sid.slice(-6);
-  }
+  const metrics = await STC_API.getAdminMetrics();
 
-  function statusColor(status){
-    switch(status){
-      case "ACTIVE":
-        return "green";
-      case "DENY":
-        return "red";
-      case "REVOKED":
-        return "orange";
-      case "EXPIRED":
-        return "gray";
-      default:
-        return "white";
-    }
-  }
+  document.getElementById("tokens_issued").textContent = metrics.tokens_issued;
+  document.getElementById("policy_denied").textContent = metrics.policy_denied;
+  document.getElementById("sessions_revoked").textContent = metrics.sessions_revoked;
+}
 
-  async function loadHealth() {
-    try {
-      const data = await STC_API.getHealth();
+async function loadTenants() {
 
-      healthEl.textContent = `Status: ${data.status}`;
+  const res = await STC_API.getTenants();
+  const table = document.getElementById("tenant_table");
 
-      document.getElementById("metric-runtime").textContent = data.status;
-      document.getElementById("metric-policy").textContent = data.policy_rev ?? "—";
+  table.innerHTML = "";
 
-    } catch (e) {
-      healthEl.textContent = `Error: ${e.message}`;
-    }
-  }
+  res.tenants.forEach(t => {
 
-  async function loadAudit() {
-    try {
-      const data = await STC_API.verifyAudit();
-      auditEl.textContent =
-        `Chain Status: ${data.status} • Events Verified: ${data.events_verified}`;
-    } catch (e) {
-      auditEl.textContent = `Error: ${e.message}`;
-    }
-  }
+    const tr = document.createElement("tr");
 
-  async function revokeSession() {
-    const sid = document.getElementById("session-id").value.trim();
-    if (!sid) {
-      revokeEl.textContent = "Session ID required.";
-      return;
-    }
+    tr.innerHTML = `
+      <td>${t.tenant_id}</td>
+      <td>${t.label || ""}</td>
+      <td>${t.status || ""}</td>
+      <td>${t.policy_version || ""}</td>
+      <td>${new Date(t.created_at * 1000).toISOString()}</td>
+      <td><a href="tenant-detail.html?tenant=${t.tenant_id}">Open</a></td>
+    `;
 
-    try {
-      const data = await STC_API.revokeSession(sid);
-      revokeEl.textContent = `Deleted: ${data.deleted}`;
-    } catch (e) {
-      revokeEl.textContent = `Error: ${e.message}`;
-    }
-  }
-
-  async function introspectToken() {
-    const token = introspectTokenEl.value.trim();
-
-    if (!token) {
-      introspectResultEl.textContent = "Token required.";
-      return;
-    }
-
-    introspectResultEl.textContent = "Checking...";
-
-    try {
-
-      const data = await STC_API.introspectToken(token);
-
-      const scopes = Array.isArray(data.scopes) ? data.scopes.join(", ") : "";
-      const exp = data.expires_at ? new Date(data.expires_at * 1000).toISOString() : "n/a";
-      const rev = data.policy_revision ?? "n/a";
-
-      const color = statusColor(data.status);
-
-      introspectResultEl.innerHTML =
-        `<span style="color:${color}">
-        Status: ${data.status}
-        </span> • Principal: ${data.principal}
-        • Intent: ${data.intent}
-        • Expires: ${exp}
-        • Policy: ${rev}` +
-        (scopes ? ` • Scopes: ${scopes}` : "");
-
-    } catch (e) {
-      introspectResultEl.textContent = `Error: ${e.message}`;
-    }
-  }
-
-  async function loadSessions() {
-
-    try {
-
-      const data = await STC_API.getActiveSessions();
-
-      document.getElementById("metric-sessions").textContent = data.count;
-
-      if (!data.active_sessions || data.active_sessions.length === 0) {
-
-        sessionsBody.innerHTML = `
-        <tr>
-          <td colspan="5" class="muted">No active sessions</td>
-        </tr>
-        `;
-        return;
-      }
-
-      sessionsBody.innerHTML = data.active_sessions.map(session => {
-
-        return `
-        <tr>
-          <td>${maskSID(session.sid)}</td>
-          <td>${session.principal}</td>
-          <td>${session.intent}</td>
-          <td class="ttl" data-ttl="${session.ttl_remaining}">
-            ${formatTTL(session.ttl_remaining)}
-          </td>
-          <td>
-            <button class="btn btn-danger" data-sid="${session.sid}">
-              Revoke
-            </button>
-          </td>
-        </tr>
-        `;
-
-      }).join("");
-
-    } catch (e) {
-
-      sessionsBody.innerHTML = `
-      <tr>
-        <td colspan="5" class="muted">Error loading sessions</td>
-      </tr>
-      `;
-    }
-  }
-
-  async function loadDecisions(){
-
-    try {
-
-      const data = await STC_API.getDecisions();
-
-      if(!data.events || data.events.length === 0){
-        return;
-      }
-
-      const body = document.getElementById("decision-body");
-
-      body.innerHTML = data.events.map(e => `
-        <tr class="decision-row"
-            data-id="${e.id}">
-          <td>${e.time}</td>
-          <td>${e.principal}</td>
-          <td>${e.intent}</td>
-          <td>${e.decision.toUpperCase()}</td>
-          <td>${e.risk}</td>
-        </tr>
-      `).join("");
-
-    } catch(e){
-      console.error("Decision stream error", e);
-    }
-
-  }
-
-  async function loadDecisionExplain(id){
-
-    try {
-
-      const data = await STC_API.getDecisionExplain(id);
-
-      const el = document.getElementById("decision-explain");
-
-      el.innerHTML = `
-        <h3>${data.decision.toUpperCase()}</h3>
-
-        <p><strong>Principal:</strong> ${data.principal}</p>
-        <p><strong>Intent:</strong> ${data.intent}</p>
-        <p><strong>Risk Score:</strong> ${data.risk_score}</p>
-
-        <p><strong>Policy Rule:</strong> ${data.policy_rule}</p>
-
-        <h4>Reasons</h4>
-
-        <ul>
-          ${data.reasons.map(r => `<li>${r}</li>`).join("")}
-        </ul>
-      `;
-
-    } catch(e){
-      console.error(e);
-    }
-
-  }
-
-  function startDecisionStream(){
-
-    const stream = new EventSource("/v1/decisions/stream");
-
-    stream.onmessage = function(event){
-
-      try {
-
-        const e = JSON.parse(event.data);
-
-        const body = document.getElementById("decision-body");
-
-        if(!body) return;
-
-        const row = document.createElement("tr");
-
-        const time = new Date(e.time).toLocaleTimeString();
-
-        row.classList.add("decision-row");
-        row.dataset.id = e.id;
-
-        row.innerHTML = `
-          <td>${time}</td>
-          <td>${e.principal ?? "-"}</td>
-          <td>${e.intent ?? "-"}</td>
-          <td>${e.result ?? "-"}</td>
-          <td>${e.policy_revision ?? "-"}</td>
-        `;
-
-        body.prepend(row);
-
-        while(body.children.length > 50){
-          body.removeChild(body.lastChild);
-        }
-
-      } catch(err){
-        console.error("SSE parse error", err);
-      }
-
-    };
-
-    stream.onerror = function(){
-      console.warn("Decision stream disconnected");
-    };
-
-  }
-
-  function tickTTL(){
-
-    const cells = document.querySelectorAll(".ttl");
-
-    cells.forEach(cell => {
-
-      let ttl = parseInt(cell.dataset.ttl,10);
-
-      if (ttl > 0){
-        ttl -= 1;
-        cell.dataset.ttl = ttl;
-        cell.textContent = formatTTL(ttl);
-      }
-
-    });
-
-  }
-
-  async function updateRuntimeMetrics(){
-
-    try {
-
-      const health = await STC_API.getHealth();
-      document.getElementById("metric-runtime").textContent = health.status;
-      document.getElementById("metric-policy").textContent = health.policy_rev ?? "—";
-
-    } catch(e){
-      document.getElementById("metric-runtime").textContent = "DOWN";
-    }
-
-    try {
-
-      const sessions = await STC_API.getActiveSessions();
-      document.getElementById("metric-sessions").textContent = sessions.count ?? 0;
-
-    } catch(e){
-      document.getElementById("metric-sessions").textContent = "—";
-    }
-
-  }
-
-  document.getElementById("refresh-health")
-    .addEventListener("click", loadHealth);
-
-  document.getElementById("refresh-audit")
-    .addEventListener("click", loadAudit);
-
-  document.getElementById("revoke-btn")
-    .addEventListener("click", revokeSession);
-
-  document.getElementById("introspect-btn")
-    .addEventListener("click", introspectToken);
-
-  document.getElementById("refresh-sessions")
-    .addEventListener("click", loadSessions);
-
-  sessionsBody.addEventListener("click", async (e) => {
-
-    if (e.target.dataset.sid) {
-      await STC_API.revokeSession(e.target.dataset.sid);
-      loadSessions();
-    }
+    table.appendChild(tr);
 
   });
+}
 
-  document
-    .getElementById("decision-body")
-    .addEventListener("click", (e) => {
+async function init() {
 
-      const row = e.target.closest(".decision-row");
+  try {
 
-      if(!row) return;
+    await loadRuntime();
+    await loadMetrics();
+    await loadTenants();
 
-      const id = row.dataset.id;
+  } catch (err) {
 
-      loadDecisionExplain(id);
+    console.error("Console load error:", err);
+    alert("Failed to load platform data");
 
-  });
+  }
+}
 
-  loadHealth();
-  loadAudit();
-  loadSessions();
-
-  setInterval(loadSessions, 5000);
-
-  setInterval(() => {
-    if (introspectTokenEl.value.trim()) {
-      introspectToken();
-    }
-  }, 5000);
-
-  setInterval(tickTTL,1000);
-
-  setInterval(updateRuntimeMetrics, 5000);
-  updateRuntimeMetrics();
-
-  setInterval(loadDecisions, 3000);
-  loadDecisions();
-
-  startDecisionStream();
-
-});
+init();

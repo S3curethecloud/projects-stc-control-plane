@@ -1,44 +1,48 @@
 // FILE: public/assets/js/api.js
+// SecureTheCloud Control Plane + Runtime API Client
+// Deterministic implementation aligned to Phase-8 backend contracts
 
 const STC_API = (() => {
 
   const CONFIG = {
-    RUNTIME_BASE: "http://localhost:8000",
-    TIMEOUT: 5000,
+    BASE_URL: "https://ztr-runtime.fly.dev",
+    TIMEOUT: 6000,
   };
 
-  function getApiKey() {
-    const key = sessionStorage.getItem("stc_api_key");
+  /* ---------------------------------------------------
+     Credential Retrieval
+  --------------------------------------------------- */
 
-    if (!key) {
-      const input = prompt("Enter Tenant API Key:");
-      if (!input) throw new Error("API key required");
-      sessionStorage.setItem("stc_api_key", input);
-      return input;
-    }
-
-    return key;
+  function getAdminSecret() {
+    const value = localStorage.getItem("STC_ADMIN_SECRET");
+    if (!value) throw new Error("Missing admin secret");
+    return value;
   }
 
+  function getApiKey() {
+    const value = localStorage.getItem("STC_API_KEY");
+    if (!value) throw new Error("Missing tenant API key");
+    return value;
+  }
+
+  /* ---------------------------------------------------
+     Core Request
+  --------------------------------------------------- */
+
   async function request(path, options = {}) {
-    const apiKey = getApiKey();
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
+    const timer = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
 
     try {
-      const res = await fetch(`${CONFIG.RUNTIME_BASE}${path}`, {
-        ...options,
-        headers: {
-          "Content-Type": "application/json",
-          "X-STC-API-Key": apiKey,
-          ...(options.headers || {})
-        },
-        signal: controller.signal,
+
+      const res = await fetch(`${CONFIG.BASE_URL}${path}`, {
         cache: "no-store",
+        ...options,
+        signal: controller.signal,
       });
 
-      clearTimeout(timeout);
+      clearTimeout(timer);
 
       if (!res.ok) {
         const text = await res.text();
@@ -48,26 +52,135 @@ const STC_API = (() => {
       return res.json();
 
     } catch (err) {
-      clearTimeout(timeout);
-      console.error("API error:", err);
+      clearTimeout(timer);
+      console.error("STC API error:", err);
       throw err;
     }
   }
 
+  /* ---------------------------------------------------
+     Control Plane Requests
+  --------------------------------------------------- */
+
+  function adminGet(path) {
+    return request(path, {
+      method: "GET",
+      headers: {
+        "X-Stc-Admin-Secret": getAdminSecret(),
+      },
+    });
+  }
+
+  function adminPost(path, body) {
+    return request(path, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Stc-Admin-Secret": getAdminSecret(),
+      },
+      body: JSON.stringify(body),
+    });
+  }
+
+  /* ---------------------------------------------------
+     Runtime Requests
+  --------------------------------------------------- */
+
+  function runtimeGet(path) {
+    return request(path, {
+      method: "GET",
+      headers: {
+        "X-Stc-Api-Key": getApiKey(),
+      },
+    });
+  }
+
+  function runtimePost(path, body) {
+    return request(path, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Stc-Api-Key": getApiKey(),
+      },
+      body: JSON.stringify(body),
+    });
+  }
+
+  /* ---------------------------------------------------
+     Control Plane API
+  --------------------------------------------------- */
+
+  function getAdminRuntime() {
+    return adminGet("/v1/admin/runtime");
+  }
+
+  function getAdminMetrics() {
+    return adminGet("/v1/admin/metrics");
+  }
+
+  function getTenants() {
+    return adminGet("/v1/admin/tenants");
+  }
+
+  function getTenantSummary(tenantId) {
+    return adminGet(`/v1/admin/tenants/${encodeURIComponent(tenantId)}/summary`);
+  }
+
+  function getTenantUsage(tenantId) {
+    return adminGet(`/v1/admin/tenants/${encodeURIComponent(tenantId)}/usage`);
+  }
+
+  function getTenantBilling(tenantId) {
+    return adminGet(`/v1/admin/tenants/${encodeURIComponent(tenantId)}/billing`);
+  }
+
+  function getTenantSessions(tenantId) {
+    return adminGet(`/v1/admin/tenants/${encodeURIComponent(tenantId)}/sessions`);
+  }
+
+  function provisionTenant(payload) {
+    return adminPost("/v1/admin/provision", payload);
+  }
+
+  /* ---------------------------------------------------
+     Runtime API
+  --------------------------------------------------- */
+
+  function issueToken(payload) {
+    return runtimePost("/v1/tokens/issue", payload);
+  }
+
+  function getActiveSessions() {
+    return runtimeGet("/v1/sessions/active");
+  }
+
+  function revokeSession(sessionId) {
+    return runtimePost("/v1/sessions/revoke", {
+      session_id: sessionId,
+    });
+  }
+
+  /* ---------------------------------------------------
+     Public API Surface
+  --------------------------------------------------- */
+
   return {
-    getHealth: () => request("/health"),
-    verifyAudit: () => request("/v1/audit/verify"),
-    getActiveSessions: () => request("/v1/sessions/active"),
-    introspectToken: (token) =>
-      request("/v1/introspect", {
-        method: "POST",
-        body: JSON.stringify({ token }),
-      }),
-    revokeSession: (sessionId) =>
-      request("/v1/sessions/revoke", {
-        method: "POST",
-        body: JSON.stringify({ session_id: sessionId }),
-      }),
+
+    /* control plane */
+    getAdminRuntime,
+    getAdminMetrics,
+    getTenants,
+    getTenantSummary,
+    getTenantUsage,
+    getTenantBilling,
+    getTenantSessions,
+    provisionTenant,
+
+    /* runtime plane */
+    issueToken,
+    getActiveSessions,
+    revokeSession,
+
   };
 
 })();

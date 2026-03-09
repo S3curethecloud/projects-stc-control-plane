@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SecureTheCloud Operator Help</title>
+<link rel="stylesheet" href="assets/css/stc-control.css">
+</head>
+
+<body>
+
+<nav class="stc-nav">
+  <div class="logo">SecureTheCloud</div>
+  <div class="nav-links">
+    <a href="console.html">Overview</a>
+    <a href="runtime.html">Runtime</a>
+    <a href="tenants.html">Tenants</a>
+    <a href="sessions.html">Sessions</a>
+    <a href="usage.html">Usage & Billing</a>
+    <a href="docs.html">Help</a>
+  </div>
+</nav>
+
+<main class="container">
+
+<h1>Operator Help</h1>
+
+<section class="card">
+
+<h2>Runtime Health</h2>
+
+<p>
+Use the <b>Runtime</b> page to confirm that the platform is healthy.
+</p>
+
+<ul>
+<li>Status must be <code>ok</code></li>
+<li>Redis must be <code>ok</code></li>
+<li>Policy revision should match the current runtime environment</li>
+<li>Active sessions shows total live sessions across tenants</li>
+</ul>
+
+</section>
+
+
+<section class="card">
+
+<h2>Tenant Workflow</h2>
+
+<p>Typical tenant inspection workflow:</p>
+
+<ol>
+<li>Open <b>Tenants</b> page</li>
+<li>Select tenant</li>
+<li>Inspect usage metrics</li>
+<li>Inspect billing preview</li>
+<li>Inspect active sessions</li>
+</ol>
+
+</section>
+
+
+<section class="card">
+
+<h2>Token Issuance Test</h2>
+
+<p>
+To simulate an agent request, issue a runtime token using the tenant API key.
+</p>
+
+<pre>
+POST /v1/tokens/issue
+
+{
+  "principal": "agent:test",
+  "intent": "refund:create",
+  "scopes": ["refund:create"],
+  "ttl_seconds": 600,
+  "context": {
+    "device_trust": true,
+    "session_binding": "device-abc123",
+    "risk_score": 10,
+    "after_hours": false
+  }
+}
+</pre>
+
+<p>
+A valid request returns:
+</p>
+
+<pre>
+status: issued
+session_id
+token (JWT)
+expires_in
+</pre>
+
+</section>
+
+
+<section class="card">
+
+<h2>Session Revoke</h2>
+
+<p>
+Sessions can be revoked from the <b>Sessions</b> page or the <b>Tenant Detail</b> page.
+</p>
+
+<ul>
+<li>Copy the <code>session_id</code></li>
+<li>Confirm revoke action</li>
+<li>The runtime removes the session immediately</li>
+</ul>
+
+<p>
+Revocation terminates the agent authorization immediately.
+</p>
+
+</section>
+
+
+<section class="card">
+
+<h2>Verified Backend Contracts</h2>
+
+<h3>Control Plane</h3>
+
+<pre>
+GET  /v1/admin/runtime
+GET  /v1/admin/metrics
+GET  /v1/admin/tenants
+GET  /v1/admin/tenants/{tenant_id}/summary
+GET  /v1/admin/tenants/{tenant_id}/usage
+GET  /v1/admin/tenants/{tenant_id}/billing
+GET  /v1/admin/tenants/{tenant_id}/sessions
+POST /v1/admin/provision
+</pre>
+
+<h3>Runtime Plane</h3>
+
+<pre>
+POST /v1/tokens/issue
+GET  /v1/sessions/active
+POST /v1/sessions/revoke
+</pre>
+
+</section>
+
+</main>
+
+</body>
+</html>
