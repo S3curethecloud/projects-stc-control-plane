@@ -2,6 +2,20 @@
 // SecureTheCloud Control Plane + Runtime API Client
 // Deterministic implementation aligned to Phase-8 backend contracts
 
+function stcFetch(url, options = {}) {
+
+  const token = localStorage.getItem("stc_operator_token");
+
+  options.headers = options.headers || {};
+
+  if (token) {
+    options.headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  return fetch(url, options);
+
+}
+
 const STC_API = (() => {
 
   const CONFIG = {

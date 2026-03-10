@@ -1,4 +1,38 @@
 /* =========================================================
+   STC CONTROL PLANE — ENTERPRISE THEME VARIABLES
+   ========================================================= */
+
+:root {
+
+  --stc-bg: #0f172a;
+  --stc-panel: #1e293b;
+  --stc-accent: #3b82f6;
+
+  --stc-text: #e2e8f0;
+  --stc-muted: #94a3b8;
+
+  --stc-allow: #22c55e;
+  --stc-deny: #ef4444;
+
+}
+
+body {
+  background: var(--stc-bg);
+  color: var(--stc-text);
+  font-family: system-ui, sans-serif;
+}
+
+.card {
+  background: var(--stc-panel);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.stc-nav {
+  background: #020617;
+}
+
+/* =========================================================
    STC CONTROL PLANE — ENTERPRISE DARK
    Azure x AWS Hybrid Minimal
    ========================================================= */
@@ -128,8 +162,6 @@ input{
   color:#22c55e;
 }
 
-/* subtle pulse */
-
 .activity-pulse{
   animation: activityPulse .6s ease;
 }
@@ -202,28 +234,18 @@ input{
 
 /* =========================================================
    ENTERPRISE DASHBOARD ENHANCEMENTS
-   Azure / AWS Control Plane Finish
    ========================================================= */
-
-/* ---------------------------------------------------------
-   Panel elevation effect
-   --------------------------------------------------------- */
 
 .panel{
   position:relative;
   transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
 
-/* subtle lift */
 .panel:hover{
   transform: translateY(-2px);
   box-shadow: 0 28px 80px rgba(0,0,0,.75);
   border-color: rgba(47,129,247,.35);
 }
-
-/* ---------------------------------------------------------
-   Top highlight line (enterprise dashboards use this)
-   --------------------------------------------------------- */
 
 .panel::before{
   content:"";
@@ -241,10 +263,6 @@ input{
   );
 }
 
-/* ---------------------------------------------------------
-   Runtime Stream Status Indicator
-   --------------------------------------------------------- */
-
 .status-stream-live{
   color:#22c55e;
   font-weight:600;
@@ -260,17 +278,9 @@ input{
   font-weight:600;
 }
 
-/* ---------------------------------------------------------
-   Panel spacing improvement
-   --------------------------------------------------------- */
-
 .panel + .panel{
   margin-top:24px;
 }
-
-/* ---------------------------------------------------------
-   Table polish (decision stream / sessions)
-   --------------------------------------------------------- */
 
 table{
   width:100%;
@@ -294,10 +304,6 @@ td{
 tr:hover{
   background:rgba(255,255,255,.02);
 }
-
-/* ---------------------------------------------------------
-   Decision stream row animation
-   --------------------------------------------------------- */
 
 .decision-row{
   animation: decisionFade .25s ease;
@@ -370,8 +376,6 @@ body {
   padding:8px;
 }
 
-/* Heatmap styles */
-
 .heat-low {
   background:#022c22;
 }
@@ -398,4 +402,24 @@ body {
 .status-deny {
   color: #ef4444;
   font-weight: 600;
+}
+
+.login-container {
+  max-width: 500px;
+  margin: 120px auto;
+  text-align: center;
+}
+
+textarea {
+  width: 100%;
+  height: 120px;
+  margin: 20px 0;
+}
+
+button {
+  background: #3b82f6;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
 }

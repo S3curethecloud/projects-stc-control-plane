@@ -1,5 +1,11 @@
 // SecureTheCloud layout loader
 
+const token = localStorage.getItem("stc_operator_token");
+
+if (!token && window.location.pathname !== "/login.html") {
+  window.location.href = "/login.html";
+}
+
 async function loadNav() {
 
   const container = document.getElementById("nav-container");

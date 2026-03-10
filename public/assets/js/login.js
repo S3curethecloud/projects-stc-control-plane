@@ -1,33 +1,16 @@
-// FILE: public/assets/js/login.js
+const btn = document.getElementById("login_btn");
 
-const ADMIN_KEY = "STC_ADMIN_SECRET";
-const API_KEY = "STC_API_KEY";
+btn.onclick = () => {
 
-function saveCredentials() {
+  const token = document.getElementById("token_input").value.trim();
 
-  const admin = document.getElementById("admin_secret").value.trim();
-  const api = document.getElementById("api_key").value.trim();
-
-  if (!admin) {
-    alert("Admin secret is required");
+  if (!token) {
+    alert("Token required");
     return;
   }
 
-  localStorage.setItem(ADMIN_KEY, admin);
+  localStorage.setItem("stc_operator_token", token);
 
-  if (api) {
-    localStorage.setItem(API_KEY, api);
-  }
+  window.location.href = "/console.html";
 
-  window.location.href = "console.html";
-
-}
-
-function clearCredentials() {
-
-  localStorage.removeItem(ADMIN_KEY);
-  localStorage.removeItem(API_KEY);
-
-  alert("Credentials cleared");
-
-}
+};
