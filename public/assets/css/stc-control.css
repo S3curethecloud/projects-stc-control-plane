@@ -369,3 +369,33 @@ body {
   border:1px solid #1f2937;
   padding:8px;
 }
+
+/* Heatmap styles */
+
+.heat-low {
+  background:#022c22;
+}
+
+.heat-medium {
+  background:#78350f;
+}
+
+.heat-high {
+  background:#7f1d1d;
+}
+
+.heat-critical {
+  background:#b91c1c;
+  color:white;
+  font-weight:600;
+}
+
+.status-allow {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+.status-deny {
+  color: #ef4444;
+  font-weight: 600;
+}
