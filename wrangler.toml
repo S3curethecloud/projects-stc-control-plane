@@ -1,15 +1,13 @@
 name = "stc-control-plane"
-type = "javascript"
 
-account_id = "<YOUR_CF_ACCOUNT_ID>"
-workers_dev = false
+account_id = "15405b0703a8372dfa942f9e685a2903"
 
-route = "app.securethecloud.dev/*"
-zone_id = "<YOUR_ZONE_ID>"
+main = "auth-gate.js"
+compatibility_date = "2026-03-10"
 
-[site]
-bucket = "./public"
-entry-point = "worker"
+routes = [
+  { pattern = "app.securethecloud.dev/*", zone_id = "7e38da83a47554b5e315587a0936f645" }
+]
 
-[env.production]
-workers_dev = false
+[assets]
+directory = "./public"
