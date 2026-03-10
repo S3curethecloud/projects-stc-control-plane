@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Operator Token | SecureTheCloud</title>
+<link rel="stylesheet" href="assets/css/stc-control.css">
+</head>
+
+<body>
+
+<div id="nav-container"></div>
+
+<main class="container">
+
+<h1>Operator Token Issuer</h1>
+
+<section class="card">
+
+<label>Operator Principal</label>
+<input id="principal" value="admin">
+
+<label>Scopes</label>
+<input id="scopes" value="controlplane:access">
+
+<label>TTL Seconds</label>
+<input id="ttl" value="3600">
+
+<button id="issue_token">Generate Token</button>
+
+<textarea id="token_output"></textarea>
+
+</section>
+
+</main>
+
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/operator.js"></script>
+
+</body>
+</html>

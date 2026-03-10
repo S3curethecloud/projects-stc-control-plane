@@ -6,6 +6,14 @@ if (!token && window.location.pathname !== "/login.html") {
   window.location.href = "/login.html";
 }
 
+function stcLogout() {
+
+  localStorage.removeItem("stc_operator_token");
+
+  window.location.href = "/login.html";
+
+}
+
 async function loadNav() {
 
   const container = document.getElementById("nav-container");
