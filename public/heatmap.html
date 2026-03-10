@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Decision Heatmap | SecureTheCloud</title>
+<link rel="stylesheet" href="assets/css/stc-control.css">
+</head>
+
+<body>
+
+<div id="nav-container"></div>
+
+<main class="container">
+
+<h1>Decision Heatmap</h1>
+<p>Tenant authorization activity for the current billing period.</p>
+
+<table class="data-table">
+
+<thead>
+<tr>
+<th>Tenant</th>
+<th>Tokens Issued</th>
+<th>Policy Denied</th>
+<th>Sessions Revoked</th>
+</tr>
+</thead>
+
+<tbody id="heatmap_table"></tbody>
+
+</table>
+
+</main>
+
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/heatmap.js"></script>
+
+</body>
+</html>
