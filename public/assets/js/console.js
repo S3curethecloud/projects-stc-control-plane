@@ -17,11 +17,14 @@ async function loadRuntime() {
 
 async function loadMetrics() {
 
-  const metrics = await STC_API.getAdminMetrics();
+  const res = await STC_API.getAdminMetrics();
+
+  const metrics = res.metrics;
 
   document.getElementById("tokens_issued").textContent = metrics.tokens_issued;
   document.getElementById("policy_denied").textContent = metrics.policy_denied;
   document.getElementById("sessions_revoked").textContent = metrics.sessions_revoked;
+
 }
 
 async function loadTenants() {
