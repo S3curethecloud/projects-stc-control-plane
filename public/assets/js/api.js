@@ -9,7 +9,7 @@ function stcFetch(url, options = {}) {
   options.headers = options.headers || {};
 
   if (token) {
-    options.headers["Authorization"] = Bearer ${token};
+    options.headers["Authorization"] = `Bearer ${token}`;
   }
 
   return fetch(url, options);
@@ -45,12 +45,12 @@ const STC_API = (() => {
 
   async function request(path, options = {}) {
 
-    let controller = new AbortController();
-    let timer = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
 
     try {
 
-      const res = await fetch(${CONFIG.BASE_URL}${path}, {
+      const res = await fetch(`${CONFIG.BASE_URL}${path}`, {
         cache: "no-store",
         ...options,
         signal: controller.signal,
@@ -66,15 +66,8 @@ const STC_API = (() => {
       return res.json();
 
     } catch (err) {
-
       clearTimeout(timer);
-
-      if (err.name === "AbortError") {
-        console.warn("API request timed out:", path);
-      } else {
-        console.error("STC API error:", err);
-      }
-
+      console.error("STC API error:", err);
       throw err;
     }
   }
@@ -149,19 +142,19 @@ const STC_API = (() => {
   }
 
   function getTenantSummary(tenantId) {
-    return adminGet(/v1/admin/tenants/${encodeURIComponent(tenantId)}/summary);
+    return adminGet(`/v1/admin/tenants/${encodeURIComponent(tenantId)}/summary`);
   }
 
   function getTenantUsage(tenantId) {
-    return adminGet(/v1/admin/tenants/${encodeURIComponent(tenantId)}/usage);
+    return adminGet(`/v1/admin/tenants/${encodeURIComponent(tenantId)}/usage`);
   }
 
   function getTenantBilling(tenantId) {
-    return adminGet(/v1/admin/tenants/${encodeURIComponent(tenantId)}/billing);
+    return adminGet(`/v1/admin/tenants/${encodeURIComponent(tenantId)}/billing`);
   }
 
   function getTenantSessions(tenantId) {
-    return adminGet(/v1/admin/tenants/${encodeURIComponent(tenantId)}/sessions);
+    return adminGet(`/v1/admin/tenants/${encodeURIComponent(tenantId)}/sessions`);
   }
 
   function provisionTenant(payload) {
