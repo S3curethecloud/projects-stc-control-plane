@@ -66,7 +66,7 @@ async function init() {
   try {
 
     await loadTenants();      // load once
-    await refreshConsole();   // load metrics/runtime
+    await refreshConsole();   // load runtime + metrics
 
     setInterval(refreshConsole, REFRESH_INTERVAL);
 
