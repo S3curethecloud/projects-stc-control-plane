@@ -56,3 +56,7 @@ function startStream() {
 }
 
 startStream();
+
+function clearStream() {
+  table.innerHTML = "";
+}
