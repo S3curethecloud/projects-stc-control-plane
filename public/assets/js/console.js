@@ -36,22 +36,24 @@ async function loadTenants() {
 
   document.getElementById("tenant_count").textContent = res.tenants.length;
 
-  res.tenants.forEach(t => {
+  for (const t of res.tenants) {
+
+    const summary = await STC_API.getTenantSummary(t.tenant_id);
 
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
       <td>${t.tenant_id}</td>
       <td>${t.label || ""}</td>
-      <td>${t.status || ""}</td>
-      <td>${t.policy_version || ""}</td>
+      <td>${summary.status || "active"}</td>
+      <td>${summary.policy_version || "v1"}</td>
       <td>${new Date(t.created_at * 1000).toISOString()}</td>
       <td><a href="tenant-detail.html?tenant=${t.tenant_id}">Open</a></td>
     `;
 
     table.appendChild(tr);
 
-  });
+  }
 }
 
 async function refreshConsole() {
