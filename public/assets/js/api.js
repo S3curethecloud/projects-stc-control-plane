@@ -45,8 +45,8 @@ const STC_API = (() => {
 
   async function request(path, options = {}) {
 
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
+    let controller = new AbortController();
+    let timer = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
 
     try {
 
@@ -66,8 +66,15 @@ const STC_API = (() => {
       return res.json();
 
     } catch (err) {
+
       clearTimeout(timer);
-      console.error("STC API error:", err);
+
+      if (err.name === "AbortError") {
+        console.warn("API request timed out:", path);
+      } else {
+        console.error("STC API error:", err);
+      }
+
       throw err;
     }
   }
