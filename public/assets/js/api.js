@@ -129,7 +129,6 @@ const STC_API = (() => {
       status: "healthy",
       redis: r.redis_ok ? "ok" : "failed",
       policy_revision: r.policy_revision,
-      tenant_count: r.tenant_count || "-",
       active_sessions: r.active_sessions || 0
     }));
   }

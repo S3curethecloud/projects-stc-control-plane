@@ -11,19 +11,30 @@ async function loadRuntime() {
   document.getElementById("runtime_status").textContent = runtime.status;
   document.getElementById("redis_status").textContent = runtime.redis;
   document.getElementById("policy_revision").textContent = runtime.policy_revision;
-  document.getElementById("tenant_count").textContent = runtime.tenant_count;
   document.getElementById("active_sessions").textContent = runtime.active_sessions;
+
 }
 
 async function loadMetrics() {
 
   const res = await STC_API.getAdminMetrics();
 
-  const metrics = res.metrics;
+  const metrics = res.metrics || res;
+  const platform = res.platform || {};
 
-  document.getElementById("tokens_issued").textContent = metrics.tokens_issued;
-  document.getElementById("policy_denied").textContent = metrics.policy_denied;
-  document.getElementById("sessions_revoked").textContent = metrics.sessions_revoked;
+  document.getElementById("tokens_issued").textContent =
+    metrics.tokens_issued ?? "--";
+
+  document.getElementById("policy_denied").textContent =
+    metrics.policy_denied ?? "--";
+
+  document.getElementById("sessions_revoked").textContent =
+    metrics.sessions_revoked ?? "--";
+
+  if (platform.tenant_count !== undefined) {
+    document.getElementById("tenant_count").textContent =
+      platform.tenant_count;
+  }
 
 }
 
@@ -65,8 +76,8 @@ async function init() {
 
   try {
 
-    await loadTenants();      // load once
-    await refreshConsole();   // load runtime + metrics
+    await loadTenants();
+    await refreshConsole();
 
     setInterval(refreshConsole, REFRESH_INTERVAL);
 
