@@ -1,35 +1,26 @@
 const REFRESH_INTERVAL = 10000;
 
-function decisionColor(value) {
-
-  if (value > 10) return "status-deny";
-  if (value > 0) return "status-warning";
-  return "status-ok";
-
-}
-
 async function loadHeatmap() {
 
   try {
 
-    const res = await STC_API.getRuntimeMetrics();
+    const tenants = await STC_API.getTenants();
 
     const table = document.getElementById("heatmap_table");
 
     table.innerHTML = "";
 
-    if (!res.decisions) return;
+    for (const t of tenants.tenants) {
 
-    for (const row of res.decisions) {
+      const usage = await STC_API.getTenantUsage(t.tenant_id);
 
       const tr = document.createElement("tr");
 
       tr.innerHTML = `
-        <td>${row.tenant_id}</td>
-        <td>${row.intent}</td>
-        <td class="status-ok">${row.allow_count}</td>
-        <td class="status-deny">${row.deny_count}</td>
-        <td class="${decisionColor(row.risk_avg)}">${row.risk_avg || 0}</td>
+        <td>${t.tenant_id}</td>
+        <td>${usage.tokens_issued || 0}</td>
+        <td>${usage.policy_denied || 0}</td>
+        <td>${usage.sessions_revoked || 0}</td>
       `;
 
       table.appendChild(tr);
