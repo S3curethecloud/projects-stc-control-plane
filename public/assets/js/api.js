@@ -108,23 +108,39 @@ const STC_API = (() => {
   --------------------------------------------------- */
 
   function runtimeGet(path) {
+
+    const headers = {};
+    const key = localStorage.getItem("STC_API_KEY");
+
+    if (key) {
+      headers["X-Stc-Api-Key"] = key;
+    }
+
     return request(path, {
       method: "GET",
-      headers: {
-        "X-Stc-Api-Key": getApiKey(),
-      },
+      headers
     });
+
   }
 
   function runtimePost(path, body) {
+
+    const headers = {
+      "Content-Type": "application/json"
+    };
+
+    const key = localStorage.getItem("STC_API_KEY");
+
+    if (key) {
+      headers["X-Stc-Api-Key"] = key;
+    }
+
     return request(path, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Stc-Api-Key": getApiKey(),
-      },
+      headers,
       body: JSON.stringify(body),
     });
+
   }
 
   /* ---------------------------------------------------
