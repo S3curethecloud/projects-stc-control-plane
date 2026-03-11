@@ -31,6 +31,8 @@ async function loadTenants() {
 
   table.innerHTML = "";
 
+  document.getElementById("tenant_count").textContent = res.tenants.length;
+
   res.tenants.forEach(t => {
 
     const tr = document.createElement("tr");
