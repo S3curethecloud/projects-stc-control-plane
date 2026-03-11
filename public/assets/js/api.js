@@ -9,7 +9,7 @@ function stcFetch(url, options = {}) {
   options.headers = options.headers || {};
 
   if (token) {
-    options.headers["Authorization"] = `Bearer ${token}`;
+    options.headers["Authorization"] = Bearer ${token};
   }
 
   return fetch(url, options);
@@ -50,7 +50,7 @@ const STC_API = (() => {
 
     try {
 
-      const res = await fetch(`${CONFIG.BASE_URL}${path}`, {
+      const res = await fetch(${CONFIG.BASE_URL}${path}, {
         cache: "no-store",
         ...options,
         signal: controller.signal,
@@ -108,39 +108,23 @@ const STC_API = (() => {
   --------------------------------------------------- */
 
   function runtimeGet(path) {
-
-    const headers = {};
-    const key = localStorage.getItem("STC_API_KEY");
-
-    if (key) {
-      headers["X-Stc-Api-Key"] = key;
-    }
-
     return request(path, {
       method: "GET",
-      headers
+      headers: {
+        "X-Stc-Api-Key": getApiKey(),
+      },
     });
-
   }
 
   function runtimePost(path, body) {
-
-    const headers = {
-      "Content-Type": "application/json"
-    };
-
-    const key = localStorage.getItem("STC_API_KEY");
-
-    if (key) {
-      headers["X-Stc-Api-Key"] = key;
-    }
-
     return request(path, {
       method: "POST",
-      headers,
+      headers: {
+        "Content-Type": "application/json",
+        "X-Stc-Api-Key": getApiKey(),
+      },
       body: JSON.stringify(body),
     });
-
   }
 
   /* ---------------------------------------------------
@@ -165,19 +149,19 @@ const STC_API = (() => {
   }
 
   function getTenantSummary(tenantId) {
-    return adminGet(`/v1/admin/tenants/${encodeURIComponent(tenantId)}/summary`);
+    return adminGet(/v1/admin/tenants/${encodeURIComponent(tenantId)}/summary);
   }
 
   function getTenantUsage(tenantId) {
-    return adminGet(`/v1/admin/tenants/${encodeURIComponent(tenantId)}/usage`);
+    return adminGet(/v1/admin/tenants/${encodeURIComponent(tenantId)}/usage);
   }
 
   function getTenantBilling(tenantId) {
-    return adminGet(`/v1/admin/tenants/${encodeURIComponent(tenantId)}/billing`);
+    return adminGet(/v1/admin/tenants/${encodeURIComponent(tenantId)}/billing);
   }
 
   function getTenantSessions(tenantId) {
-    return adminGet(`/v1/admin/tenants/${encodeURIComponent(tenantId)}/sessions`);
+    return adminGet(/v1/admin/tenants/${encodeURIComponent(tenantId)}/sessions);
   }
 
   function provisionTenant(payload) {
