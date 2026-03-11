@@ -1,57 +1,54 @@
 const REFRESH_INTERVAL = 10000;
 
-function denialClass(denied) {
+function decisionColor(value) {
 
-  if (denied === 0) return "heat-low";
-  if (denied < 5) return "heat-medium";
-  if (denied < 20) return "heat-high";
-
-  return "heat-critical";
+  if (value > 10) return "status-deny";
+  if (value > 0) return "status-warning";
+  return "status-ok";
 
 }
 
 async function loadHeatmap() {
 
-  const res = await STC_API.request("/v1/admin/decision-heatmap");
-
-  const table = document.getElementById("heatmap_table");
-
-  table.innerHTML = "";
-
-  res.tenants.forEach(t => {
-
-    const row = document.createElement("tr");
-
-    const denialStyle = denialClass(t.policy_denied);
-
-    row.innerHTML = `
-      <td>${t.tenant_id}</td>
-      <td>${t.tokens_issued}</td>
-      <td class="${denialStyle}">${t.policy_denied}</td>
-      <td>${t.sessions_revoked}</td>
-    `;
-
-    table.appendChild(row);
-
-  });
-
-}
-
-async function refresh() {
-
   try {
-    await loadHeatmap();
+
+    const res = await STC_API.getRuntimeMetrics();
+
+    const table = document.getElementById("heatmap_table");
+
+    table.innerHTML = "";
+
+    if (!res.decisions) return;
+
+    for (const row of res.decisions) {
+
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>${row.tenant_id}</td>
+        <td>${row.intent}</td>
+        <td class="status-ok">${row.allow_count}</td>
+        <td class="status-deny">${row.deny_count}</td>
+        <td class="${decisionColor(row.risk_avg)}">${row.risk_avg || 0}</td>
+      `;
+
+      table.appendChild(tr);
+
+    }
+
   } catch (err) {
-    console.error(err);
+
+    console.error("Heatmap load failed:", err);
+
   }
 
 }
 
 async function init() {
 
-  await refresh();
+  await loadHeatmap();
 
-  setInterval(refresh, REFRESH_INTERVAL);
+  setInterval(loadHeatmap, REFRESH_INTERVAL);
 
 }
 
