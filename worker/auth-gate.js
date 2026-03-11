@@ -43,6 +43,22 @@ function isRateLimited(ip) {
   return false;
 }
 
+function applySecurityHeaders(response) {
+
+  const headers = new Headers(response.headers);
+
+  headers.set(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://ztr-runtime.fly.dev; img-src 'self' data:; font-src 'self';"
+  );
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers
+  });
+}
+
 export default {
   async fetch(request, env) {
 
@@ -73,7 +89,8 @@ export default {
 
     // Allow all public routes
     if (!isProtected) {
-      return env.ASSETS.fetch(request);
+      const response = await env.ASSETS.fetch(request);
+      return applySecurityHeaders(response);
     }
 
     const authHeader = request.headers.get("Authorization");
@@ -101,7 +118,9 @@ export default {
 
       const newReq = new Request(request, { headers: newHeaders });
 
-      return env.ASSETS.fetch(newReq);
+      const response = await env.ASSETS.fetch(newReq);
+
+      return applySecurityHeaders(response);
 
     } catch (err) {
 
