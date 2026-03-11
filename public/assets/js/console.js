@@ -4,6 +4,10 @@ if (!localStorage.getItem("STC_ADMIN_SECRET")) {
 
 const REFRESH_INTERVAL = 10000;
 
+/* ------------------------------
+   Runtime Health
+------------------------------ */
+
 async function loadRuntime() {
 
   const runtime = await STC_API.getAdminRuntime();
@@ -14,6 +18,10 @@ async function loadRuntime() {
   document.getElementById("active_sessions").textContent = runtime.active_sessions;
 
 }
+
+/* ------------------------------
+   Platform Metrics
+------------------------------ */
 
 async function loadMetrics() {
 
@@ -31,12 +39,14 @@ async function loadMetrics() {
   document.getElementById("sessions_revoked").textContent =
     metrics.sessions_revoked ?? "--";
 
-  if (platform.tenant_count !== undefined) {
-    document.getElementById("tenant_count").textContent =
-      platform.tenant_count;
-  }
+  document.getElementById("tenant_count").textContent =
+    platform.tenant_count ?? "--";
 
 }
+
+/* ------------------------------
+   Tenant Table (static)
+------------------------------ */
 
 async function loadTenants() {
 
@@ -66,27 +76,41 @@ async function loadTenants() {
 
 }
 
-async function refreshConsole() {
+/* ------------------------------
+   Refresh Loop
+------------------------------ */
+
+async function refreshTelemetry() {
+
   try {
+
     await loadRuntime();
     await loadMetrics();
+
   } catch (err) {
-    console.error("Refresh error:", err);
+
+    console.error("Telemetry refresh error:", err);
+
   }
+
 }
+
+/* ------------------------------
+   Initialization
+------------------------------ */
 
 async function init() {
 
   try {
 
-    await loadTenants();
-    await refreshConsole();
+    await loadTenants();        // once
+    await refreshTelemetry();   // first load
 
-    setInterval(refreshConsole, REFRESH_INTERVAL);
+    setInterval(refreshTelemetry, REFRESH_INTERVAL);
 
   } catch (err) {
 
-    console.error("Console load error:", err);
+    console.error("Console initialization error:", err);
     alert("Failed to load platform data");
 
   }
