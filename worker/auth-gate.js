@@ -62,6 +62,10 @@ export default {
 
     const url = new URL(request.url);
 
+    if (url.pathname === "/") {
+      return Response.redirect(url.origin + "/login.html", 302);
+    }
+
     const protectedRoutes = ["/shield", "/copilot", "/console"];
     const isProtected = protectedRoutes.some((p) =>
       url.pathname === p || url.pathname.startsWith(p + "/")

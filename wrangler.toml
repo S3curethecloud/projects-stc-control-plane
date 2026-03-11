@@ -2,7 +2,7 @@ name = "stc-control-plane"
 
 account_id = "15405b0703a8372dfa942f9e685a2903"
 
-main = "auth-gate.js"
+main = "worker/auth-gate.js"
 compatibility_date = "2026-03-10"
 
 routes = [
