@@ -13,7 +13,8 @@ function formatTime(ts) {
 
 async function loadSessions() {
 
-  const res = await STC_API.getActiveSessions();
+  const tenant = localStorage.getItem("STC_TENANT_ID");
+  const res = await STC_API.getTenantSessions(tenant);
   const table = document.getElementById("sessions_table");
 
   table.innerHTML = "";

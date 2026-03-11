@@ -36,4 +36,8 @@ async function loadNav() {
 
 }
 
-document.addEventListener("DOMContentLoaded", loadNav);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", loadNav);
+} else {
+  loadNav();
+}
