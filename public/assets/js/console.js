@@ -11,7 +11,8 @@ async function loadRuntime() {
   document.getElementById("runtime_status").textContent = runtime.status;
   document.getElementById("redis_status").textContent = runtime.redis;
   document.getElementById("policy_revision").textContent = runtime.policy_revision;
-  document.getElementById("tenant_count").textContent = runtime.tenant_count;
+  document.getElementById("tenant_count").textContent =
+    runtime.tenant_count ?? document.querySelectorAll("#tenant_table tr").length;
   document.getElementById("active_sessions").textContent = runtime.active_sessions;
 }
 
