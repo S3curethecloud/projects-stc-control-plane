@@ -45,8 +45,6 @@ async function loadTenants() {
 
   table.innerHTML = "";
 
-  document.getElementById("tenant_count").textContent = res.tenants.length;
-
   for (const t of res.tenants) {
 
     const summary = await STC_API.getTenantSummary(t.tenant_id);
@@ -65,11 +63,16 @@ async function loadTenants() {
     table.appendChild(tr);
 
   }
+
 }
 
 async function refreshConsole() {
-  await loadRuntime();
-  await loadMetrics();
+  try {
+    await loadRuntime();
+    await loadMetrics();
+  } catch (err) {
+    console.error("Refresh error:", err);
+  }
 }
 
 async function init() {
