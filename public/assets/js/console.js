@@ -59,14 +59,14 @@ async function loadTenants() {
 async function refreshConsole() {
   await loadRuntime();
   await loadMetrics();
-  await loadTenants();
 }
 
 async function init() {
 
   try {
 
-    await refreshConsole();
+    await loadTenants();      // load once
+    await refreshConsole();   // load metrics/runtime
 
     setInterval(refreshConsole, REFRESH_INTERVAL);
 
