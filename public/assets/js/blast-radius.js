@@ -20,7 +20,8 @@ const cy = cytoscape({
   'text-valign':'center',
   'text-halign':'center',
   'color':'#ffffff',
-  'font-size':10,
+  'font-size':11,
+  'font-weight':'bold',
   'text-outline-width':2,
   'text-outline-color':'#0b2239',
   'width':28,
@@ -39,7 +40,10 @@ const cy = cytoscape({
   selector: 'node[type="intent"]',
   style:{
   'background-color':'#ffc857',
-  'color':'#000000'
+  'label':'data(label)',
+  'color':'#ffffff',
+  'text-outline-width':2,
+  'text-outline-color':'#000000'
   }
   },
 
