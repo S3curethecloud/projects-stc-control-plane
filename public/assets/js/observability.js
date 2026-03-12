@@ -1,49 +1,37 @@
-const REFRESH_INTERVAL = 5000;
+async function loadObservability(){
 
-async function loadActivity() {
+  const apiKey = localStorage.getItem("STC_API_KEY");
 
-  const data = await STC_API.getRuntimeActivity();
+  const res = await fetch(
+    "https://ztr-runtime.fly.dev/v1/audit/metrics",
+    { headers: { "X-Stc-Api-Key": apiKey } }
+  );
 
-  document.getElementById("tokens").textContent =
-    data.tokens_issued;
+  const data = await res.json();
 
-  document.getElementById("allowed").textContent =
-    data.policy_allowed;
+  document.getElementById("tokens_issued").innerText =
+    data.tokens_issued || 0;
 
-  document.getElementById("denied").textContent =
-    data.policy_denied;
+  document.getElementById("policy_allowed").innerText =
+    data.policy_allowed || 0;
 
-  document.getElementById("revoked").textContent =
-    data.sessions_revoked;
-}
+  document.getElementById("policy_denied").innerText =
+    data.policy_denied || 0;
 
-async function loadMetrics() {
+  document.getElementById("sessions_revoked").innerText =
+    data.sessions_revoked || 0;
 
-  const metrics = await STC_API.getRuntimeMetrics();
+  document.getElementById("decision_latency").innerText =
+    data.decision_latency_ms || 0;
 
-  document.getElementById("decision_latency").textContent =
-    metrics.decision_latency_ms;
+  document.getElementById("opa_latency").innerText =
+    data.opa_latency_ms || 0;
 
-  document.getElementById("opa_latency").textContent =
-    metrics.opa_latency_ms;
-
-  document.getElementById("redis_latency").textContent =
-    metrics.redis_latency_ms;
-}
-
-async function refreshObservability() {
-
-  await loadActivity();
-  await loadMetrics();
+  document.getElementById("redis_latency").innerText =
+    data.redis_latency_ms || 0;
 
 }
 
-async function init() {
+loadObservability();
 
-  await refreshObservability();
-
-  setInterval(refreshObservability, REFRESH_INTERVAL);
-
-}
-
-init();
+setInterval(loadObservability, 5000);
