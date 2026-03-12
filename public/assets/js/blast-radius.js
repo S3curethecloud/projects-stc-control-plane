@@ -5,38 +5,68 @@ const STREAM_URL =
 
 const table = document.getElementById("blast_table");
 
-const graph = cytoscape({
+const cy = cytoscape({
+
   container: document.getElementById("blast_graph"),
 
+  elements: [],
+
   style: [
+
     {
-      selector: "node",
+      selector: 'node[type="agent"]',
       style: {
-        "background-color": "#4db3ff",
-        "label": "data(label)",
-        "color": "#fff",
-        "text-valign": "center",
-        "text-halign": "center",
-        "font-size": "10px"
+        'background-color': '#4da3ff',
+        'label': 'data(label)',
+        'color': '#ffffff',
+        'text-valign': 'center',
+        'text-halign': 'center'
       }
     },
+
     {
-      selector: "edge",
+      selector: 'node[type="intent"]',
       style: {
-        "line-color": "#7aa8d8",
-        "target-arrow-color": "#7aa8d8",
-        "target-arrow-shape": "triangle"
+        'background-color': '#ffc857',
+        'label': 'data(label)'
+      }
+    },
+
+    {
+      selector: 'node[type="resource"]',
+      style: {
+        'background-color': '#ff5c5c',
+        'label': 'data(label)'
+      }
+    },
+
+    {
+      selector: 'node[type="tenant"]',
+      style: {
+        'background-color': '#9b6cff',
+        'label': 'data(label)'
+      }
+    },
+
+    {
+      selector: 'edge',
+      style: {
+        'curve-style': 'bezier',
+        'target-arrow-shape': 'triangle',
+        'line-color': '#8fb7d9',
+        'target-arrow-color': '#8fb7d9',
+        'width': 2
       }
     }
+
   ],
 
-  layout:{
-    name:"breadthfirst",
-    directed:true,
-    spacingFactor:1.6,
-    padding:30,
-    animate:false
+  layout: {
+    name: "breadthfirst",
+    directed: true,
+    padding: 20
   }
+
 });
 
 let totalDecisions = 0;
@@ -114,14 +144,15 @@ if(event.decision === "deny"){
 
 }
 
-function ensureNode(id, label){
+function ensureNode(id, label, type){
 
-  if(graph.getElementById(id).length === 0){
+  if(!cy.getElementById(id).length){
 
-    graph.add({
+    cy.add({
       data:{
         id:id,
-        label:label
+        label:label,
+        type:type
       }
     });
 
@@ -129,20 +160,18 @@ function ensureNode(id, label){
 
 }
 
-function ensureEdge(source,target){
+function addEdgeSafe(source, target) {
 
   const id = source + "_" + target;
 
-  if(graph.getElementById(id).length === 0){
-
-    graph.add({
-      data:{
-        id:id,
-        source:source,
-        target:target
+  if (!cy.getElementById(id).length) {
+    cy.add({
+      data: {
+        id,
+        source,
+        target
       }
     });
-
   }
 
 }
@@ -154,17 +183,20 @@ const intent = "intent_" + event.intent;
 const resource = "resource_" + computeImpact(event.intent);
 const tenant = "tenant_" + (event.tenant_id || "unknown");
 
-ensureNode(agent, event.principal);
-ensureNode(intent, event.intent);
-ensureNode(resource, computeImpact(event.intent));
-ensureNode(tenant, event.tenant_id || "unknown");
+ensureNode(agent, event.principal, "agent");
 
-ensureEdge(agent,intent);
-ensureEdge(intent,resource);
-ensureEdge(resource,tenant);
+ensureNode(intent, event.intent, "intent");
 
-if(graph.nodes().length < 25){
-  graph.layout({ name:"breadthfirst", directed:true }).run();
+ensureNode(resource, computeImpact(event.intent), "resource");
+
+ensureNode(tenant, event.tenant_id || "unknown", "tenant");
+
+addEdgeSafe(agent, intent);
+addEdgeSafe(intent, resource);
+addEdgeSafe(resource, tenant);
+
+if(cy.nodes().length < 25){
+  cy.layout({ name:"breadthfirst", directed:true }).run();
 }
 
 }
@@ -172,8 +204,6 @@ if(graph.nodes().length < 25){
 async function loadBlastRadius() {
 
   const sessions = await STC_API.getActiveSessions();
-
-  const table = document.getElementById("blast_table");
 
   table.innerHTML = "";
 
@@ -196,8 +226,6 @@ async function loadBlastRadius() {
 }
 
 async function loadRecent() {
-
-  const apiKey = localStorage.getItem("STC_API_KEY");
 
   const res = await fetch(
     "https://ztr-runtime.fly.dev/v1/decisions?limit=20",
