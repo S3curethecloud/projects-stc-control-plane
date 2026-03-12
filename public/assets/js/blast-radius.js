@@ -5,6 +5,10 @@ const STREAM_URL =
 
 const table = document.getElementById("blast_table");
 
+let totalDecisions = 0;
+const agents = new Set();
+const tenants = new Set();
+
 function computeImpact(intent) {
 
   if (!intent) return "application";
@@ -51,6 +55,19 @@ function addRow(event) {
 
 }
 
+function updateSummary(event){
+
+totalDecisions++;
+
+agents.add(event.principal);
+tenants.add(event.tenant_id);
+
+document.getElementById("total_decisions").innerText = totalDecisions;
+document.getElementById("active_agents").innerText = agents.size;
+document.getElementById("active_tenants").innerText = tenants.size;
+
+}
+
 async function loadRecent() {
 
   const apiKey = localStorage.getItem("STC_API_KEY");
@@ -63,13 +80,16 @@ async function loadRecent() {
   const data = await res.json();
 
   for (const e of data.events) {
-    addRow({
+    const event = {
       timestamp: e.time / 1000,
       tenant_id: "tenant-launch",
       principal: e.principal,
       intent: e.intent,
       decision: e.result
-    });
+    };
+
+    addRow(event);
+    updateSummary(event);
   }
 
 }
@@ -85,6 +105,7 @@ function startStream() {
       const event = JSON.parse(msg.data);
 
       addRow(event);
+      updateSummary(event);
 
     } catch (err) {
 
