@@ -30,10 +30,12 @@ const graph = cytoscape({
     }
   ],
 
-  layout: {
-    name: "breadthfirst",
-    directed: true,
-    spacingFactor: 1.5
+  layout:{
+    name:"breadthfirst",
+    directed:true,
+    spacingFactor:1.6,
+    padding:30,
+    animate:false
   }
 });
 
@@ -107,28 +109,35 @@ document.getElementById("active_tenants").innerText = tenants.size;
 
 }
 
-function ensureNode(id, label) {
+function ensureNode(id, label){
 
-  if (graph.getElementById(id).length === 0) {
+  if(graph.getElementById(id).length === 0){
+
     graph.add({
-      data: { id: id, label: label }
+      data:{
+        id:id,
+        label:label
+      }
     });
+
   }
 
 }
 
-function ensureEdge(source, target) {
+function ensureEdge(source,target){
 
   const id = source + "_" + target;
 
-  if (graph.getElementById(id).length === 0) {
+  if(graph.getElementById(id).length === 0){
+
     graph.add({
-      data: {
-        id: id,
-        source: source,
-        target: target
+      data:{
+        id:id,
+        source:source,
+        target:target
       }
     });
+
   }
 
 }
@@ -145,14 +154,16 @@ ensureNode(intent, event.intent);
 ensureNode(resource, computeImpact(event.intent));
 ensureNode(tenant, event.tenant_id);
 
-ensureEdge(agent, intent);
-ensureEdge(intent, resource);
-ensureEdge(resource, tenant);
+ensureEdge(agent,intent);
+ensureEdge(intent,resource);
+ensureEdge(resource,tenant);
 
 graph.layout({
-  name: "breadthfirst",
-  directed: true,
-  spacingFactor: 1.5
+  name:"breadthfirst",
+  directed:true,
+  spacingFactor:1.6,
+  padding:30,
+  animate:false
 }).run();
 
 }
@@ -195,6 +206,7 @@ async function loadRecent() {
   const data = await res.json();
 
   for (const e of data.events) {
+
     const event = {
       timestamp: e.time,
       tenant_id: e.tenant_id || "unknown",
@@ -219,6 +231,8 @@ function startStream() {
     try {
 
       const event = JSON.parse(msg.data);
+
+      event.timestamp = event.timestamp * 1000;
 
       addRow(event);
       updateSummary(event);

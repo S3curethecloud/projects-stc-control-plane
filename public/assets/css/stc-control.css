@@ -583,3 +583,7 @@ border-radius:10px;
 padding:20px;
 overflow:hidden;
 }
+
+.graph-container{
+overflow:hidden;
+}
