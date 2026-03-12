@@ -1,4 +1,4 @@
-const STREAM_URL = "https://ztr-runtime.fly.dev/decisions/stream";
+const STREAM_URL = "https://ztr-runtime.fly.dev/v1/decisions/stream";
 
 const table = document.getElementById("blast_table");
 
