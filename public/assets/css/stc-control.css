@@ -587,3 +587,13 @@ overflow:hidden;
 .graph-container{
 overflow:hidden;
 }
+
+#redis_status {
+color:#6ee7b7;
+font-weight:600;
+}
+
+#audit_chain {
+color:#60a5fa;
+font-weight:600;
+}

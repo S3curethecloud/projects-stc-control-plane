@@ -6,18 +6,20 @@ async function loadIntegrity(){
 
   const data = await res.json();
 
-  document.getElementById("runtime_rev").innerText = data.runtime_revision;
+  document.getElementById("runtime_rev").innerText =
+    data.runtime_revision || "unknown";
 
-  document.getElementById("policy_rev").innerText = data.policy_revision;
+  document.getElementById("policy_rev").innerText =
+    data.policy_revision || "unknown";
 
   document.getElementById("redis_status").innerText =
     data.redis_ok ? "healthy" : "offline";
 
-  document.getElementById("audit_chain").innerText = data.audit_chain;
+  document.getElementById("audit_chain").innerText =
+    data.ledger_anchor || "not anchored";
 
   document.getElementById("last_check").innerText =
-    new Date(data.timestamp * 1000).toLocaleString();
-
+    new Date((data.timestamp || Date.now()/1000) * 1000).toLocaleString();
 }
 
 loadIntegrity();
