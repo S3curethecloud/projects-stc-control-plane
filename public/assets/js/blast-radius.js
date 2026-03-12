@@ -31,7 +31,9 @@ const graph = cytoscape({
   ],
 
   layout: {
-    name: "breadthfirst"
+    name: "breadthfirst",
+    directed: true,
+    spacingFactor: 1.5
   }
 });
 
@@ -59,14 +61,21 @@ function formatTime(ts) {
 
   if (!ts) return "";
 
-  return new Date(ts * 1000).toLocaleString();
+  return new Date(ts).toLocaleString();
+
 }
 
 function addRow(event) {
 
+  const key = event.timestamp + event.principal + event.intent;
+
+  if (document.getElementById(key)) return;
+
   const impact = computeImpact(event.intent);
 
   const row = document.createElement("tr");
+
+  row.id = key;
 
   row.innerHTML = `
     <td>${formatTime(event.timestamp)}</td>
@@ -140,7 +149,11 @@ ensureEdge(agent, intent);
 ensureEdge(intent, resource);
 ensureEdge(resource, tenant);
 
-graph.layout({ name: "breadthfirst" }).run();
+graph.layout({
+  name: "breadthfirst",
+  directed: true,
+  spacingFactor: 1.5
+}).run();
 
 }
 
@@ -158,7 +171,7 @@ async function loadBlastRadius() {
       timestamp: s.issued_at,
       principal: s.principal,
       intent: s.intent,
-      tenant_id: s.tenant_id,
+      tenant_id: s.tenant_id || "unknown",
       decision: "allow"
     };
 
@@ -183,8 +196,8 @@ async function loadRecent() {
 
   for (const e of data.events) {
     const event = {
-      timestamp: e.time / 1000,
-      tenant_id: e.tenant_id,
+      timestamp: e.time,
+      tenant_id: e.tenant_id || "unknown",
       principal: e.principal,
       intent: e.intent,
       decision: e.result
