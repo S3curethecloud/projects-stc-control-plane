@@ -51,6 +51,29 @@ function addRow(event) {
 
 }
 
+async function loadRecent() {
+
+  const apiKey = localStorage.getItem("STC_API_KEY");
+
+  const res = await fetch(
+    "https://ztr-runtime.fly.dev/v1/decisions?limit=20",
+    { headers: { "X-Stc-Api-Key": apiKey } }
+  );
+
+  const data = await res.json();
+
+  for (const e of data.events) {
+    addRow({
+      timestamp: e.time / 1000,
+      tenant_id: "tenant-launch",
+      principal: e.principal,
+      intent: e.intent,
+      decision: e.result
+    });
+  }
+
+}
+
 function startStream() {
 
   const source = new EventSource(STREAM_URL);
@@ -77,4 +100,9 @@ function startStream() {
 
 }
 
-startStream();
+async function init() {
+  await loadRecent();
+  startStream();
+}
+
+init();
