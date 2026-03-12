@@ -107,6 +107,11 @@ document.getElementById("total_decisions").innerText = totalDecisions;
 document.getElementById("active_agents").innerText = agents.size;
 document.getElementById("active_tenants").innerText = tenants.size;
 
+if(event.decision === "deny"){
+  const el = document.getElementById("high_risk");
+  el.innerText = parseInt(el.innerText) + 1;
+}
+
 }
 
 function ensureNode(id, label){
@@ -147,24 +152,20 @@ function addGraphEvent(event){
 const agent = "agent_" + event.principal;
 const intent = "intent_" + event.intent;
 const resource = "resource_" + computeImpact(event.intent);
-const tenant = "tenant_" + event.tenant_id;
+const tenant = "tenant_" + (event.tenant_id || "unknown");
 
 ensureNode(agent, event.principal);
 ensureNode(intent, event.intent);
 ensureNode(resource, computeImpact(event.intent));
-ensureNode(tenant, event.tenant_id);
+ensureNode(tenant, event.tenant_id || "unknown");
 
 ensureEdge(agent,intent);
 ensureEdge(intent,resource);
 ensureEdge(resource,tenant);
 
-graph.layout({
-  name:"breadthfirst",
-  directed:true,
-  spacingFactor:1.6,
-  padding:30,
-  animate:false
-}).run();
+if(graph.nodes().length < 25){
+  graph.layout({ name:"breadthfirst", directed:true }).run();
+}
 
 }
 
