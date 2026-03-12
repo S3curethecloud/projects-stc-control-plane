@@ -1,4 +1,7 @@
-const STREAM_URL = "https://ztr-runtime.fly.dev/v1/decisions/stream";
+const API_KEY = localStorage.getItem("STC_API_KEY");
+
+const STREAM_URL =
+  "https://ztr-runtime.fly.dev/v1/decisions/stream?api_key=" + API_KEY;
 
 const table = document.getElementById("blast_table");
 
