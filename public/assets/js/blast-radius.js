@@ -78,10 +78,23 @@ const cy = cytoscape({
   layout: {
     name: "breadthfirst",
     directed: true,
-    padding: 20
+    padding: 20,
+    spacingFactor: 1.3,
+    avoidOverlap: true,
+    animate: true
   }
 
 });
+
+function relayoutGraph(){
+  cy.layout({
+    name: "breadthfirst",
+    directed: true,
+    padding: 20,
+    spacingFactor: 1.3,
+    animate: true
+  }).run();
+}
 
 let totalDecisions = 0;
 const agents = new Set();
@@ -166,7 +179,8 @@ function ensureNode(id, label, type){
       data:{
         id:id,
         label:label,
-        type:type
+        type:type,
+        layer:type
       }
     });
 
@@ -241,8 +255,8 @@ animateEdge(agent, intent);
 animateEdge(intent, resource);
 animateEdge(resource, tenant);
 
-if(cy.nodes().length < 25){
-  cy.layout({ name:"breadthfirst", directed:true }).run();
+if(cy.nodes().length < 40){
+  relayoutGraph();
 }
 
 }
