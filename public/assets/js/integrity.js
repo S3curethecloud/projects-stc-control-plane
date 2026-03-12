@@ -1,47 +1,23 @@
-const REFRESH_INTERVAL = 10000;
+async function loadIntegrity(){
 
-function formatTime(ts) {
-  if (!ts) return "";
-  return new Date(ts * 1000).toLocaleString();
-}
+  const res = await fetch(
+    "https://ztr-runtime.fly.dev/v1/runtime/integrity"
+  );
 
-async function loadIntegrity() {
+  const data = await res.json();
 
-  const data = await STC_API.getRuntimeIntegrity();
+  document.getElementById("runtime_rev").innerText = data.runtime_revision;
 
-  document.getElementById("runtime_revision").textContent =
-    data.runtime_revision;
+  document.getElementById("policy_rev").innerText = data.policy_revision;
 
-  document.getElementById("policy_revision").textContent =
-    data.policy_revision;
+  document.getElementById("redis_status").innerText =
+    data.redis_ok ? "healthy" : "offline";
 
-  document.getElementById("ledger_anchor").textContent =
-    data.ledger_anchor || "none";
+  document.getElementById("audit_chain").innerText = data.audit_chain;
 
-  document.getElementById("redis_status").textContent =
-    data.redis_ok ? "OK" : "ERROR";
-
-  document.getElementById("timestamp").textContent =
-    formatTime(data.timestamp);
+  document.getElementById("last_check").innerText =
+    new Date(data.timestamp * 1000).toLocaleString();
 
 }
 
-async function refreshIntegrity() {
-
-  try {
-    await loadIntegrity();
-  } catch (err) {
-    console.error("Integrity load error:", err);
-  }
-
-}
-
-async function init() {
-
-  await refreshIntegrity();
-
-  setInterval(refreshIntegrity, REFRESH_INTERVAL);
-
-}
-
-init();
+loadIntegrity();
