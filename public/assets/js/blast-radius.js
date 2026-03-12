@@ -1,31 +1,6 @@
-async function loadBlastRadius() {
+const STREAM_URL = "https://ztr-runtime.fly.dev/decisions/stream";
 
-  const sessions = await STC_API.getActiveSessions();
-
-  const table = document.getElementById("blast_table");
-
-  table.innerHTML = "";
-
-  for (const s of sessions.sessions) {
-
-    const impact = computeImpact(s.intent);
-
-    const row = document.createElement("tr");
-
-    row.innerHTML = `
-      <td>${formatTime(s.issued_at)}</td>
-      <td>${s.principal}</td>
-      <td>${s.intent}</td>
-      <td>${s.tenant_id}</td>
-      <td>allow</td>
-      <td>${impact}</td>
-    `;
-
-    table.appendChild(row);
-
-  }
-
-}
+const table = document.getElementById("blast_table");
 
 function computeImpact(intent) {
 
@@ -41,7 +16,6 @@ function computeImpact(intent) {
     return "auth-system";
 
   return "application";
-
 }
 
 function formatTime(ts) {
@@ -49,13 +23,55 @@ function formatTime(ts) {
   if (!ts) return "";
 
   return new Date(ts * 1000).toLocaleString();
+}
+
+function addRow(event) {
+
+  const impact = computeImpact(event.intent);
+
+  const row = document.createElement("tr");
+
+  row.innerHTML = `
+    <td>${formatTime(event.timestamp)}</td>
+    <td>${event.principal}</td>
+    <td>${event.intent}</td>
+    <td>${event.tenant_id}</td>
+    <td>${event.decision}</td>
+    <td>${impact}</td>
+  `;
+
+  table.prepend(row);
+
+  if (table.children.length > 100) {
+    table.removeChild(table.lastChild);
+  }
 
 }
 
-async function init() {
+function startStream() {
 
-  await loadBlastRadius();
+  const source = new EventSource(STREAM_URL);
+
+  source.onmessage = (msg) => {
+
+    try {
+
+      const event = JSON.parse(msg.data);
+
+      addRow(event);
+
+    } catch (err) {
+
+      console.error("stream parse error", err);
+
+    }
+
+  };
+
+  source.onerror = () => {
+    console.log("stream reconnecting...");
+  };
 
 }
 
-init();
+startStream();

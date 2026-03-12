@@ -122,3 +122,7 @@ if (document.readyState === "loading") {
 } else {
   init();
 }
+
+if (!localStorage.getItem("STC_API_KEY")) {
+  alert("Missing STC API key");
+}
