@@ -5,6 +5,36 @@ const STREAM_URL =
 
 const table = document.getElementById("blast_table");
 
+const graph = cytoscape({
+  container: document.getElementById("blast_graph"),
+
+  style: [
+    {
+      selector: "node",
+      style: {
+        "background-color": "#4db3ff",
+        "label": "data(label)",
+        "color": "#fff",
+        "text-valign": "center",
+        "text-halign": "center",
+        "font-size": "10px"
+      }
+    },
+    {
+      selector: "edge",
+      style: {
+        "line-color": "#7aa8d8",
+        "target-arrow-color": "#7aa8d8",
+        "target-arrow-shape": "triangle"
+      }
+    }
+  ],
+
+  layout: {
+    name: "breadthfirst"
+  }
+});
+
 let totalDecisions = 0;
 const agents = new Set();
 const tenants = new Set();
@@ -68,6 +98,30 @@ document.getElementById("active_tenants").innerText = tenants.size;
 
 }
 
+function addGraphEvent(event){
+
+const agent = "agent_" + event.principal;
+const intent = "intent_" + event.intent;
+const resource = "resource_" + computeImpact(event.intent);
+const tenant = "tenant_" + event.tenant_id;
+
+graph.add([
+  { data: { id: agent, label: event.principal } },
+  { data: { id: intent, label: event.intent } },
+  { data: { id: resource, label: computeImpact(event.intent) } },
+  { data: { id: tenant, label: event.tenant_id } }
+]);
+
+graph.add([
+  { data: { source: agent, target: intent } },
+  { data: { source: intent, target: resource } },
+  { data: { source: resource, target: tenant } }
+]);
+
+graph.layout({ name: "breadthfirst" }).run();
+
+}
+
 async function loadRecent() {
 
   const apiKey = localStorage.getItem("STC_API_KEY");
@@ -90,6 +144,7 @@ async function loadRecent() {
 
     addRow(event);
     updateSummary(event);
+    addGraphEvent(event);
   }
 
 }
@@ -106,6 +161,7 @@ function startStream() {
 
       addRow(event);
       updateSummary(event);
+      addGraphEvent(event);
 
     } catch (err) {
 
