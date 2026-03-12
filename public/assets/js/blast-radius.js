@@ -122,9 +122,13 @@ graph.layout({ name: "breadthfirst" }).run();
 
 }
 
-async function loadSessions() {
+async function loadBlastRadius() {
 
   const sessions = await STC_API.getActiveSessions();
+
+  const table = document.getElementById("blast_table");
+
+  table.innerHTML = "";
 
   for (const s of sessions.sessions) {
 
@@ -200,9 +204,11 @@ function startStream() {
 }
 
 async function init() {
-  await loadSessions();
+
+  await loadBlastRadius();
   await loadRecent();
   startStream();
+
 }
 
 init();
