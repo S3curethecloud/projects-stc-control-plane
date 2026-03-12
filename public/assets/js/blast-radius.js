@@ -122,6 +122,28 @@ graph.layout({ name: "breadthfirst" }).run();
 
 }
 
+async function loadSessions() {
+
+  const sessions = await STC_API.getActiveSessions();
+
+  for (const s of sessions.sessions) {
+
+    const event = {
+      timestamp: s.issued_at,
+      principal: s.principal,
+      intent: s.intent,
+      tenant_id: s.tenant_id,
+      decision: "allow"
+    };
+
+    addRow(event);
+    updateSummary(event);
+    addGraphEvent(event);
+
+  }
+
+}
+
 async function loadRecent() {
 
   const apiKey = localStorage.getItem("STC_API_KEY");
@@ -178,6 +200,7 @@ function startStream() {
 }
 
 async function init() {
+  await loadSessions();
   await loadRecent();
   startStream();
 }
