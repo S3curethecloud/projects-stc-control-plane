@@ -162,8 +162,8 @@ async function loadRecent() {
   for (const e of data.events) {
     const event = {
       timestamp: e.time / 1000,
-      tenant_id: e.tenant_id
-      principal: e.principal,
+      tenant_id: e.tenant_id,
+       principal: e.principal, 
       intent: e.intent,
       decision: e.result
     };
