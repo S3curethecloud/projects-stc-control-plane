@@ -256,7 +256,7 @@ async function loadBlastRadius() {
   for (const s of sessions.sessions) {
 
     const event = {
-      timestamp: s.issued_at,
+      timestamp: s.issued_at * 1000,
       principal: s.principal,
       intent: s.intent,
       tenant_id: s.tenant_id || "unknown",
