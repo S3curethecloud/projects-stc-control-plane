@@ -64,7 +64,8 @@ const cy = cytoscape({
   'target-arrow-shape':'triangle',
   'line-color':'#8fb7d9',
   'target-arrow-color':'#8fb7d9',
-  'width':2
+  'width':2,
+  'opacity':0.9
   }
   }
 
@@ -185,6 +186,34 @@ function addEdgeSafe(source, target) {
 
 }
 
+function animateEdge(source, target){
+
+  const edgeId = source + "_" + target;
+
+  const edge = cy.getElementById(edgeId);
+
+  if(!edge.length) return;
+
+  edge.animate({
+    style:{
+      'line-color':'#00e5ff',
+      'target-arrow-color':'#00e5ff',
+      'width':4
+    }
+  },{
+    duration:300
+  }).delay(200).animate({
+    style:{
+      'line-color':'#8fb7d9',
+      'target-arrow-color':'#8fb7d9',
+      'width':2
+    }
+  },{
+    duration:500
+  });
+
+}
+
 function addGraphEvent(event){
 
 const agent = "agent_" + event.principal;
@@ -203,6 +232,10 @@ ensureNode(tenant, event.tenant_id || "unknown", "tenant");
 addEdgeSafe(agent, intent);
 addEdgeSafe(intent, resource);
 addEdgeSafe(resource, tenant);
+
+animateEdge(agent, intent);
+animateEdge(intent, resource);
+animateEdge(resource, tenant);
 
 if(cy.nodes().length < 25){
   cy.layout({ name:"breadthfirst", directed:true }).run();
