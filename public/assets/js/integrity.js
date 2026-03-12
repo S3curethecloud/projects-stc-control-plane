@@ -21,3 +21,8 @@ async function loadIntegrity(){
 }
 
 loadIntegrity();
+
+// auto refresh integrity every 10 seconds
+setInterval(() => {
+  loadIntegrity();
+}, 10000);
