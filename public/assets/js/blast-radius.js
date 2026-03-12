@@ -98,6 +98,32 @@ document.getElementById("active_tenants").innerText = tenants.size;
 
 }
 
+function ensureNode(id, label) {
+
+  if (graph.getElementById(id).length === 0) {
+    graph.add({
+      data: { id: id, label: label }
+    });
+  }
+
+}
+
+function ensureEdge(source, target) {
+
+  const id = source + "_" + target;
+
+  if (graph.getElementById(id).length === 0) {
+    graph.add({
+      data: {
+        id: id,
+        source: source,
+        target: target
+      }
+    });
+  }
+
+}
+
 function addGraphEvent(event){
 
 const agent = "agent_" + event.principal;
@@ -105,18 +131,14 @@ const intent = "intent_" + event.intent;
 const resource = "resource_" + computeImpact(event.intent);
 const tenant = "tenant_" + event.tenant_id;
 
-graph.add([
-  { data: { id: agent, label: event.principal } },
-  { data: { id: intent, label: event.intent } },
-  { data: { id: resource, label: computeImpact(event.intent) } },
-  { data: { id: tenant, label: event.tenant_id } }
-]);
+ensureNode(agent, event.principal);
+ensureNode(intent, event.intent);
+ensureNode(resource, computeImpact(event.intent));
+ensureNode(tenant, event.tenant_id);
 
-graph.add([
-  { data: { source: agent, target: intent } },
-  { data: { source: intent, target: resource } },
-  { data: { source: resource, target: tenant } }
-]);
+ensureEdge(agent, intent);
+ensureEdge(intent, resource);
+ensureEdge(resource, tenant);
 
 graph.layout({ name: "breadthfirst" }).run();
 
@@ -163,7 +185,7 @@ async function loadRecent() {
     const event = {
       timestamp: e.time / 1000,
       tenant_id: e.tenant_id,
-       principal: e.principal, 
+      principal: e.principal,
       intent: e.intent,
       decision: e.result
     };

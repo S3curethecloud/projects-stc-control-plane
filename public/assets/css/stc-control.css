@@ -551,7 +551,7 @@ margin-bottom:10px;
 }
 
 .summary-card span{
-font-size:28px;
+font-size:34px;
 font-weight:bold;
 color:#4db3ff;
 }
@@ -566,4 +566,20 @@ padding:20px;
 
 #blast_graph{
 height:300px;
+}
+
+#blast_graph{
+height:420px;
+width:100%;
+background:#0a1524;
+border-radius:6px;
+}
+
+.graph-container{
+margin-bottom:30px;
+background:#0f1b2b;
+border:1px solid #1e3a5c;
+border-radius:10px;
+padding:20px;
+overflow:hidden;
 }
