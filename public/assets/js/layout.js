@@ -1,5 +1,16 @@
 // SecureTheCloud layout loader
 
+// ------------------------------------------------------
+// Global Runtime Configuration
+// ------------------------------------------------------
+
+window.STC_API_KEY = "FCn017yGzG5Y7zv3HcZUg03vcNYfHNCXpnEWBOMPXr0";
+
+
+// ------------------------------------------------------
+// Navigation Loader
+// ------------------------------------------------------
+
 async function loadNav() {
   const container = document.getElementById("nav-container");
 

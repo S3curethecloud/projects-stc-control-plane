@@ -1,4 +1,4 @@
-const API_KEY = "FCn017yGzG5Y7zv3HcZUg03vcNYfHNCXpnEWBOMPXr0";
+const API_KEY = window.STC_API_KEY;
 
 const STREAM_URL =
   "https://ztr-runtime.fly.dev/v1/decisions/stream?api_key=" + API_KEY;

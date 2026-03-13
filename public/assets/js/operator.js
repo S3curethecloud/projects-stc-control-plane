@@ -6,7 +6,7 @@ btn.onclick = async () => {
   const scopes = document.getElementById("scopes").value.split(" ");
   const ttl = parseInt(document.getElementById("ttl").value);
 
-  const apiKey = document.getElementById("api_key").value;
+  const apiKey = window.STC_API_KEY;
 
   const res = await fetch("https://ztr-runtime.fly.dev/v1/tokens/issue", {
     method: "POST",
