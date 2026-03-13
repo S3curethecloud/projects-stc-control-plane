@@ -2,21 +2,20 @@ const REFRESH_INTERVAL = 10000;
 
 async function loadAnomalies() {
 
-  const res = await STC_API.request("/v1/admin/anomalies");
+  const res = await fetch("https://ztr-runtime.fly.dev/v1/intelligence/risk");
+  const data = await res.json();
 
   const table = document.getElementById("anomaly_table");
 
   table.innerHTML = "";
 
-  res.anomalies.forEach(a => {
+  data.top_risky_tenants.forEach(t => {
 
     const row = document.createElement("tr");
 
     row.innerHTML = `
-      <td>${a.tenant_id}</td>
-      <td>${a.baseline}</td>
-      <td>${a.current}</td>
-      <td>${a.threshold}</td>
+      <td>${t.tenant}</td>
+      <td>${t.risk}</td>
     `;
 
     table.appendChild(row);
