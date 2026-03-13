@@ -1,4 +1,7 @@
-const STREAM_URL = "https://ztr-runtime.fly.dev/v1/decisions/stream";
+const API_KEY = "FCn017yGzG5Y7zv3HcZUg03vcNYfHNCXpnEWBOMPXr0";
+
+const STREAM_URL =
+  "https://ztr-runtime.fly.dev/v1/decisions/stream?api_key=" + API_KEY;
 
 const table = document.getElementById("activity_table");
 
