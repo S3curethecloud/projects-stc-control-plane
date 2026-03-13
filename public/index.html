@@ -16,28 +16,24 @@
 
 <h2>Control Plane Access</h2>
 
-<label>Admin Secret</label>
+<label for="admin_secret">Admin Secret</label>
 <input id="admin_secret" type="password" placeholder="X-Stc-Admin-Secret"/>
 
-<label>Tenant API Key (optional)</label>
+<label for="api_key">Tenant API Key (optional)</label>
 <input id="api_key" type="text" placeholder="X-Stc-Api-Key"/>
 
 <div class="toolbar">
-
-<button onclick="saveCredentials()">Enter Console</button>
-<button onclick="clearCredentials()">Clear Stored Keys</button>
-
+  <button id="enter_console_btn" type="button">Enter Console</button>
+  <button id="clear_keys_btn" type="button">Clear Stored Keys</button>
 </div>
 
 </section>
 
 <section class="card">
-
 <p>
 The Admin Secret is required for the control plane.
 The Tenant API Key enables runtime operations such as session inspection.
 </p>
-
 </section>
 
 </main>

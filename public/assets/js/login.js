@@ -1,55 +1,48 @@
-```javascript
-// FILE: public/assets/js/login.js
-// SecureTheCloud Operator Login
+import { setAdminSecret, setApiKey, clearAdminSecret, clearApiKey } from "./auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+  const enterBtn = document.getElementById("enter_console_btn");
+  const clearBtn = document.getElementById("clear_keys_btn");
+  const adminInput = document.getElementById("admin_secret");
+  const apiKeyInput = document.getElementById("api_key");
 
-  const btn = document.getElementById("login_btn");
-  const input = document.getElementById("token_input");
-  const status = document.getElementById("login_status");
-
-  function submitLogin() {
-
-    const token = input.value.trim();
-
-    if (!token) {
-      status.textContent = "Token required";
-      return;
-    }
-
-    try {
-
-      localStorage.setItem("stc_operator_token", token);
-
-      status.textContent = "Token stored. Loading console...";
-
-      setTimeout(() => {
-        window.location.href = "/console.html";
-      }, 300);
-
-    } catch (err) {
-      console.error("Login error:", err);
-      status.textContent = "Failed to store token";
-    }
-
+  if (adminInput) {
+    adminInput.value = localStorage.getItem("STC_ADMIN_SECRET") || "";
   }
 
-  // Button click
-  if (btn) {
-    btn.addEventListener("click", submitLogin);
+  if (apiKeyInput) {
+    apiKeyInput.value = localStorage.getItem("STC_API_KEY") || "";
   }
 
-  // Ctrl + Enter submit
-  if (input) {
-    input.addEventListener("keydown", (event) => {
+  if (enterBtn) {
+    enterBtn.addEventListener("click", () => {
+      const adminSecret = adminInput ? adminInput.value.trim() : "";
+      const apiKey = apiKeyInput ? apiKeyInput.value.trim() : "";
 
-      if (event.ctrlKey && event.key === "Enter") {
-        event.preventDefault();
-        submitLogin();
+      if (!adminSecret) {
+        alert("Admin Secret required");
+        return;
       }
 
+      setAdminSecret(adminSecret);
+
+      if (apiKey) {
+        setApiKey(apiKey);
+      } else {
+        clearApiKey();
+      }
+
+      window.location.href = "/console.html";
     });
   }
 
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      clearAdminSecret();
+      clearApiKey();
+
+      if (adminInput) adminInput.value = "";
+      if (apiKeyInput) apiKeyInput.value = "";
+    });
+  }
 });
-```

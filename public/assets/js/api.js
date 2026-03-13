@@ -3,7 +3,6 @@
 // Deterministic implementation aligned to Phase-8 backend contracts
 
 function stcFetch(url, options = {}) {
-
   const token = localStorage.getItem("stc_operator_token");
 
   options.headers = options.headers || {};
@@ -13,11 +12,9 @@ function stcFetch(url, options = {}) {
   }
 
   return fetch(url, options);
-
 }
 
 const STC_API = (() => {
-
   const CONFIG = {
     BASE_URL: "https://ztr-runtime.fly.dev",
     TIMEOUT: 6000,
@@ -44,13 +41,11 @@ const STC_API = (() => {
   --------------------------------------------------- */
 
   async function request(path, options = {}) {
-
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
 
     try {
-
-      const res = await fetch(`${CONFIG.BASE_URL}${path}`, {
+      const res = await stcFetch(`${CONFIG.BASE_URL}${path}`, {
         cache: "no-store",
         ...options,
         signal: controller.signal,
@@ -64,7 +59,6 @@ const STC_API = (() => {
       }
 
       return res.json();
-
     } catch (err) {
       clearTimeout(timer);
       console.error("STC API error:", err);
@@ -215,7 +209,6 @@ const STC_API = (() => {
   --------------------------------------------------- */
 
   return {
-
     /* control plane */
     getAdminRuntime,
     getAdminMetrics,
@@ -235,7 +228,5 @@ const STC_API = (() => {
     getRuntimeActivity,
     getRuntimeIntegrity,
     getRuntimeMetrics
-
   };
-
 })();

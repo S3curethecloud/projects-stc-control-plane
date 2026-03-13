@@ -19,7 +19,7 @@ function addRow(event) {
 
   row.innerHTML = `
     <td>${formatTime(event.timestamp)}</td>
-    <td>${event.tenant}</td>
+    <td>${event.tenant_id}</td>
     <td>${event.principal}</td>
     <td>${event.intent}</td>
     <td class="${decisionClass(event.decision)}">${event.decision}</td>
