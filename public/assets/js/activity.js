@@ -38,6 +38,9 @@ function startStream() {
 
   const source = new EventSource(STREAM_URL);
 
+  const status = document.getElementById("stream_status");
+  status.innerText = "Connected";
+
   source.onmessage = (msg) => {
 
     try {
@@ -51,6 +54,7 @@ function startStream() {
 
   source.onerror = () => {
     console.log("stream reconnecting...");
+    status.innerText = "Reconnecting...";
   };
 
 }
