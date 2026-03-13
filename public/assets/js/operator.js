@@ -19,6 +19,7 @@ btn.onclick = async () => {
       scopes,
       ttl_seconds: ttl,
       intent: "controlplane:access",
+      tenant_id: "tenant-launch",
       context: {}
     })
   });
