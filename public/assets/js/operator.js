@@ -6,13 +6,13 @@ btn.onclick = async () => {
   const scopes = document.getElementById("scopes").value.split(" ");
   const ttl = parseInt(document.getElementById("ttl").value);
 
-  const token = localStorage.getItem("stc_operator_token");
+  const apiKey = document.getElementById("api_key").value;
 
   const res = await fetch("https://ztr-runtime.fly.dev/v1/tokens/issue", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + token
+      "X-Stc-Api-Key": apiKey
     },
     body: JSON.stringify({
       principal,
