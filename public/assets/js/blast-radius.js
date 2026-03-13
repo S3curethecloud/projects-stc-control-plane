@@ -71,6 +71,23 @@ const cy = cytoscape({
   'width':2,
   'opacity':0.9
   }
+  },
+
+  {
+    selector: 'edge.attack-path',
+    style: {
+      'line-color': '#ff4d4f',
+      'target-arrow-color': '#ff4d4f',
+      'width': 4
+    }
+  },
+
+  {
+    selector: 'node.attack-node',
+    style: {
+      'border-width': 3,
+      'border-color': '#ff4d4f'
+    }
   }
 
   ],
@@ -94,6 +111,32 @@ function relayoutGraph(){
     spacingFactor: 1.3,
     animate: true
   }).run();
+}
+
+const seenEvents = new Set();
+
+function eventKey(event) {
+  return [
+    event.timestamp,
+    event.tenant_id || "unknown",
+    event.principal || "",
+    event.intent || "",
+    event.decision || ""
+  ].join("|");
+}
+
+function processEvent(event) {
+
+  const key = eventKey(event);
+
+  if (seenEvents.has(key)) return;
+
+  seenEvents.add(key);
+
+  addRow(event);
+  updateSummary(event);
+  addGraphEvent(event);
+
 }
 
 let totalDecisions = 0;
@@ -153,37 +196,37 @@ function addRow(event) {
 
 }
 
-function updateSummary(event){
+function updateSummary(event) {
 
-totalDecisions++;
+  totalDecisions++;
 
-agents.add(event.principal);
-tenants.add(event.tenant_id);
+  agents.add(event.principal);
 
-document.getElementById("total_decisions").innerText = totalDecisions;
-document.getElementById("active_agents").innerText = agents.size;
-document.getElementById("active_tenants").innerText = tenants.size;
+  if (event.tenant_id && event.tenant_id !== "unknown") {
+    tenants.add(event.tenant_id);
+  }
 
-if(event.decision === "deny"){
-  const el = document.getElementById("high_risk");
-  el.innerText = parseInt(el.innerText) + 1;
+  document.getElementById("total_decisions").innerText = totalDecisions;
+  document.getElementById("active_agents").innerText = agents.size;
+  document.getElementById("active_tenants").innerText = tenants.size;
+
+  if (event.decision === "deny") {
+    const el = document.getElementById("high_risk");
+    el.innerText = String(parseInt(el.innerText || "0", 10) + 1);
+  }
+
 }
 
-}
+function ensureNode(id, label, type) {
 
-function ensureNode(id, label, type){
-
-  if(!cy.getElementById(id).length){
-
+  if (cy.getElementById(id).length === 0) {
     cy.add({
-      data:{
-        id:id,
-        label:label,
-        type:type,
-        layer:type
+      data: {
+        id: id,
+        label: label,
+        type: type
       }
     });
-
   }
 
 }
@@ -204,61 +247,92 @@ function addEdgeSafe(source, target) {
 
 }
 
-function animateEdge(source, target){
+function addGraphEvent(event) {
 
-  const edgeId = source + "_" + target;
+  const agent = "agent_" + event.principal;
+  const intent = "intent_" + event.intent;
+  const resource = "resource_" + computeImpact(event.intent);
+  const tenantId = event.tenant_id || "unknown";
+  const tenant = "tenant_" + tenantId;
 
-  const edge = cy.getElementById(edgeId);
+  ensureNode(agent, event.principal, "agent");
+  ensureNode(intent, event.intent, "intent");
+  ensureNode(resource, computeImpact(event.intent), "resource");
+  ensureNode(tenant, tenantId, "tenant");
 
-  if(!edge.length) return;
+  addEdgeSafe(agent, intent);
+  addEdgeSafe(intent, resource);
+  addEdgeSafe(resource, tenant);
 
-  edge.animate({
-    style:{
-      'line-color':'#00e5ff',
-      'target-arrow-color':'#00e5ff',
-      'width':4
-    }
-  },{
-    duration:300
-  }).delay(200).animate({
-    style:{
-      'line-color':'#8fb7d9',
-      'target-arrow-color':'#8fb7d9',
-      'width':2
-    }
-  },{
-    duration:500
+  if (cy.nodes().length < 40) {
+    relayoutGraph();
+  }
+
+}
+
+function detectAttackPaths() {
+
+  const paths = [];
+
+  cy.edges().forEach(e1 => {
+    cy.edges().forEach(e2 => {
+      cy.edges().forEach(e3 => {
+
+        if (
+          e1.target().id() === e2.source().id() &&
+          e2.target().id() === e3.source().id()
+        ) {
+
+          const n1 = cy.getElementById(e1.source().id());
+          const n2 = cy.getElementById(e1.target().id());
+          const n3 = cy.getElementById(e2.target().id());
+          const n4 = cy.getElementById(e3.target().id());
+
+          if (
+            n1.data("type") === "agent" &&
+            n2.data("type") === "intent" &&
+            n3.data("type") === "resource" &&
+            n4.data("type") === "tenant"
+          ) {
+            paths.push({
+              edges: [e1.id(), e2.id(), e3.id()],
+              resource: n3.id()
+            });
+          }
+
+        }
+
+      });
+    });
+  });
+
+  return paths;
+}
+
+function clearAttackHighlights() {
+  cy.edges().removeClass("attack-path");
+  cy.nodes().removeClass("attack-node");
+}
+
+function highlightAttackPaths(paths) {
+
+  clearAttackHighlights();
+
+  paths.forEach(path => {
+
+    path.edges.forEach(edgeId => {
+      cy.getElementById(edgeId).addClass("attack-path");
+    });
+
+    cy.getElementById(path.resource).addClass("attack-node");
+
   });
 
 }
 
-function addGraphEvent(event){
-
-const agent = "agent_" + event.principal;
-const intent = "intent_" + event.intent;
-const resource = "resource_" + computeImpact(event.intent);
-const tenant = "tenant_" + (event.tenant_id || "unknown");
-
-ensureNode(agent, event.principal, "agent");
-
-ensureNode(intent, event.intent, "intent");
-
-ensureNode(resource, computeImpact(event.intent), "resource");
-
-ensureNode(tenant, event.tenant_id || "unknown", "tenant");
-
-addEdgeSafe(agent, intent);
-addEdgeSafe(intent, resource);
-addEdgeSafe(resource, tenant);
-
-animateEdge(agent, intent);
-animateEdge(intent, resource);
-animateEdge(resource, tenant);
-
-if(cy.nodes().length < 40){
-  relayoutGraph();
-}
-
+function analyzeGraph() {
+  const paths = detectAttackPaths();
+  highlightAttackPaths(paths);
 }
 
 async function loadBlastRadius() {
@@ -277,9 +351,7 @@ async function loadBlastRadius() {
       decision: "allow"
     };
 
-    addRow(event);
-    updateSummary(event);
-    addGraphEvent(event);
+    processEvent(event);
 
   }
 
@@ -304,9 +376,8 @@ async function loadRecent() {
       decision: e.result
     };
 
-    addRow(event);
-    updateSummary(event);
-    addGraphEvent(event);
+    processEvent(event);
+
   }
 
 }
@@ -323,9 +394,10 @@ function startStream() {
 
       event.timestamp = event.timestamp * 1000;
 
-      addRow(event);
-      updateSummary(event);
-      addGraphEvent(event);
+      processEvent(event);
+      analyzeGraph();
+
+      status.innerText = "Connected";
 
     } catch (err) {
 
@@ -345,6 +417,9 @@ async function init() {
 
   await loadBlastRadius();
   await loadRecent();
+
+  analyzeGraph();
+
   startStream();
 
 }
