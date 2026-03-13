@@ -1,16 +1,22 @@
 const btn = document.getElementById("login_btn");
 
-btn.onclick = () => {
+if (!btn) {
+  console.error("login_btn not found");
+} else {
 
-  const token = document.getElementById("token_input").value.trim();
+  btn.onclick = () => {
 
-  if (!token) {
-    alert("Token required");
-    return;
-  }
+    const input = document.getElementById("token_input");
+    const token = input ? input.value.trim() : "";
 
-  localStorage.setItem("stc_operator_token", token);
+    if (!token) {
+      alert("Token required");
+      return;
+    }
 
-  window.location.href = "/console.html";
+    localStorage.setItem("stc_operator_token", token);
 
-};
+    window.location.href = "/console.html";
+  };
+
+}
