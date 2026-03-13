@@ -18,7 +18,8 @@ btn.onclick = async () => {
       principal,
       scopes,
       ttl_seconds: ttl,
-      intent: "controlplane:access"
+      intent: "controlplane:access",
+      context: {}
     })
   });
 
