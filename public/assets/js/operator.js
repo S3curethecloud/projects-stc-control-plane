@@ -25,6 +25,12 @@ btn.onclick = async () => {
 
   const data = await res.json();
 
+  if (!res.ok) {
+    document.getElementById("token_output").value =
+      JSON.stringify(data, null, 2);
+    return;
+  }
+
   document.getElementById("token_output").value = data.token;
 
 };
