@@ -20,7 +20,10 @@ btn.onclick = async () => {
       ttl_seconds: ttl,
       intent: "controlplane:access",
       context: {
-        tenant_id: "tenant-launch"
+        tenant_id: "tenant-launch",
+        risk_score: 0,
+        device_trust: "trusted",
+        network_zone: "internal"
       }
     })
   });
