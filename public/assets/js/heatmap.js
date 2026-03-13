@@ -1,70 +1,68 @@
-const REFRESH_INTERVAL = 10000;
+const API_KEY = "FCn017yGzG5Y7zv3HcZUg03vcNYfHNCXpnEWBOMPXr0";
 
-async function loadHeatmap() {
+const STREAM_URL =
+  "https://ztr-runtime.fly.dev/v1/decisions/stream?api_key=" + API_KEY;
 
-  try {
+const table = document.getElementById("activity_table");
 
-    const tenants = await STC_API.getTenants();
+function formatTime(ts) {
+  if (!ts) return "";
+  return new Date(ts * 1000).toLocaleString();
+}
 
-    const table = document.getElementById("heatmap_table");
+function decisionClass(decision) {
+  if (decision === "allow") return "status-allow";
+  if (decision === "deny") return "status-deny";
+  return "";
+}
 
-    table.innerHTML = "";
+function addRow(event) {
 
-    let totalTokens = 0;
-    let totalDenied = 0;
-    let totalRevoked = 0;
+  const row = document.createElement("tr");
 
-    for (const t of tenants.tenants) {
+  row.innerHTML = `
+    <td>${formatTime(event.timestamp)}</td>
+    <td>${event.tenant_id}</td>
+    <td>${event.principal}</td>
+    <td>${event.intent}</td>
+    <td class="${decisionClass(event.decision)}">${event.decision}</td>
+    <td>${event.risk_score || ""}</td>
+    <td>${event.policy_revision || ""}</td>
+  `;
 
-      const usage = await STC_API.getTenantUsage(t.tenant_id);
+  table.prepend(row);
 
-      const tokens = usage.tokens_issued || 0;
-      const denied = usage.policy_denied || 0;
-      const revoked = usage.sessions_revoked || 0;
-
-      const risk = denied * 5 + revoked * 3;
-
-      totalTokens += tokens;
-      totalDenied += denied;
-      totalRevoked += revoked;
-
-      const tr = document.createElement("tr");
-
-      let riskClass = "";
-
-      if (risk > 20) riskClass = "status-deny";
-      else if (risk > 5) riskClass = "status-warning";
-
-      tr.innerHTML = `
-        <td>${t.tenant_id}</td>
-        <td>${tokens}</td>
-        <td>${denied}</td>
-        <td>${revoked}</td>
-        <td class="${riskClass}">${risk}</td>
-      `;
-
-      table.appendChild(tr);
-
-    }
-
-    document.getElementById("total_tokens").textContent = totalTokens;
-    document.getElementById("total_denied").textContent = totalDenied;
-    document.getElementById("total_revoked").textContent = totalRevoked;
-
-  } catch (err) {
-
-    console.error("Heatmap load failed:", err);
-
+  if (table.children.length > 100) {
+    table.removeChild(table.lastChild);
   }
+}
+
+function startStream() {
+
+  const source = new EventSource(STREAM_URL);
+
+  const status = document.getElementById("stream_status");
+
+  source.onmessage = (msg) => {
+
+    status.innerText = "Connected";
+
+    const event = JSON.parse(msg.data);
+
+    addRow(event);
+
+  };
+
+  source.onerror = () => {
+
+    status.innerText = "Reconnecting...";
+
+  };
 
 }
 
-async function init() {
+startStream();
 
-  await loadHeatmap();
-
-  setInterval(loadHeatmap, REFRESH_INTERVAL);
-
+function clearStream() {
+  table.innerHTML = "";
 }
-
-init();
