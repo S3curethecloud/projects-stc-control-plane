@@ -1,22 +1,55 @@
-const btn = document.getElementById("login_btn");
+```javascript
+// FILE: public/assets/js/login.js
+// SecureTheCloud Operator Login
 
-if (!btn) {
-  console.error("login_btn not found");
-} else {
+document.addEventListener("DOMContentLoaded", () => {
 
-  btn.onclick = () => {
+  const btn = document.getElementById("login_btn");
+  const input = document.getElementById("token_input");
+  const status = document.getElementById("login_status");
 
-    const input = document.getElementById("token_input");
-    const token = input ? input.value.trim() : "";
+  function submitLogin() {
+
+    const token = input.value.trim();
 
     if (!token) {
-      alert("Token required");
+      status.textContent = "Token required";
       return;
     }
 
-    localStorage.setItem("stc_operator_token", token);
+    try {
 
-    window.location.href = "/console.html";
-  };
+      localStorage.setItem("stc_operator_token", token);
 
-}
+      status.textContent = "Token stored. Loading console...";
+
+      setTimeout(() => {
+        window.location.href = "/console.html";
+      }, 300);
+
+    } catch (err) {
+      console.error("Login error:", err);
+      status.textContent = "Failed to store token";
+    }
+
+  }
+
+  // Button click
+  if (btn) {
+    btn.addEventListener("click", submitLogin);
+  }
+
+  // Ctrl + Enter submit
+  if (input) {
+    input.addEventListener("keydown", (event) => {
+
+      if (event.ctrlKey && event.key === "Enter") {
+        event.preventDefault();
+        submitLogin();
+      }
+
+    });
+  }
+
+});
+```

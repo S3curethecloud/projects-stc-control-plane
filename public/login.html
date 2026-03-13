@@ -1,25 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <title>SecureTheCloud Operator Login</title>
 <link rel="stylesheet" href="assets/css/stc-control.css">
 </head>
 
 <body>
 
-<div class="login-container">
+<main class="container">
+
+<section class="card login-container">
 
 <h1>SecureTheCloud</h1>
 <p class="muted">Operator Access</p>
 
-<textarea id="token_input" placeholder="Paste operator JWT token"></textarea>
+<label for="token_input">Operator JWT Token</label>
+<textarea 
+  id="token_input"
+  placeholder="Paste operator JWT token"
+></textarea>
 
-<button id="login_btn">Access Control Plane</button>
-
-<p id="login_status"></p>
-
+<div class="toolbar">
+  <button id="login_btn">Access Control Plane</button>
 </div>
+
+<p id="login_status" class="muted"></p>
+
+</section>
+
+</main>
 
 <script src="assets/js/login.js"></script>
 
