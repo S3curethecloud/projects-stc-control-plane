@@ -366,7 +366,9 @@ async function loadRecent() {
 
   const data = await res.json();
 
-  for (const e of data.events) {
+  const events = data.events || data;
+
+  for (const e of events) {
 
     const event = {
       timestamp: e.time,
