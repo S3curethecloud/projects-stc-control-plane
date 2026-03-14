@@ -16,7 +16,7 @@ function stcFetch(url, options = {}) {
 
 const STC_API = (() => {
   const CONFIG = {
-    BASE_URL: "https://ztr-runtime.fly.dev",
+    BASE_URL: "https://app.securethecloud.dev",
     TIMEOUT: 6000,
   };
 
@@ -115,6 +115,22 @@ const STC_API = (() => {
   }
 
   /* ---------------------------------------------------
+     DASHBOARD API (CONTROL PLANE)
+  --------------------------------------------------- */
+
+  function getDashboardDecisions() {
+    return adminGet("/v1/dashboard/decisions");
+  }
+
+  function getDashboardSessions() {
+    return adminGet("/v1/dashboard/sessions");
+  }
+
+  function getDashboardIntelligence() {
+    return adminGet("/v1/dashboard/intelligence");
+  }
+
+  /* ---------------------------------------------------
      Control Plane API
   --------------------------------------------------- */
 
@@ -209,6 +225,11 @@ const STC_API = (() => {
   --------------------------------------------------- */
 
   return {
+    /* dashboard */
+    getDashboardDecisions,
+    getDashboardSessions,
+    getDashboardIntelligence,
+
     /* control plane */
     getAdminRuntime,
     getAdminMetrics,
