@@ -9,6 +9,7 @@ async function loadIntelligence() {
   const principalTable = document.getElementById("principal_table");
   const policyDrift = document.getElementById("policy_drift");
   const timestamp = document.getElementById("intelligence_timestamp");
+  const denySpike = document.getElementById("deny_spike");
 
   tenantTable.innerHTML = "";
   principalTable.innerHTML = "";
@@ -32,6 +33,12 @@ async function loadIntelligence() {
   });
 
   policyDrift.textContent = data.policy_drift ? "Drift detected" : "No drift detected";
+
+  denySpike.textContent =
+    data.deny_spike.detected
+      ? `Spike detected: ${data.deny_spike.current}`
+      : `Normal (${data.deny_spike.current})`;
+
   timestamp.textContent = "Last Updated: " + new Date(data.timestamp * 1000).toLocaleString();
 }
 
