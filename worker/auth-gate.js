@@ -1,4 +1,4 @@
-import * as jose from "jose";
+// FILE: worker/auth-gate.js
 
 // Optional: operator IP allowlist (SOC / admin access)
 // Enable later when needed
@@ -19,9 +19,7 @@ function isAllowedOperatorIP(ip) {
 }
 
 function isRateLimited(ip) {
-
   const now = Date.now();
-
   const entry = rateMap.get(ip);
 
   if (!entry) {
@@ -44,7 +42,6 @@ function isRateLimited(ip) {
 }
 
 function applySecurityHeaders(response) {
-
   const headers = new Headers(response.headers);
 
   headers.set(
@@ -61,8 +58,8 @@ function applySecurityHeaders(response) {
 
 export default {
   async fetch(request, env) {
-
     const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+    const url = new URL(request.url);
 
     // Optional SOC IP restriction
     // Uncomment when needed
@@ -76,79 +73,11 @@ export default {
       return new Response("Rate limit exceeded", { status: 429 });
     }
 
-    const url = new URL(request.url);
-
     if (url.pathname === "/") {
-      return Response.redirect(url.origin + "/login.html", 302);
+      return Response.redirect(url.origin + "/index.html", 302);
     }
 
-    const protectedRoutes = ["/shield", "/copilot", "/console"];
-    const isProtected = protectedRoutes.some((p) =>
-      url.pathname === p || url.pathname.startsWith(p + "/")
-    );
-
-    // Allow all public routes
-    if (!isProtected) {
-      const response = await env.ASSETS.fetch(request);
-      return applySecurityHeaders(response);
-    }
-
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return unauthorizedRedirect("required");
-    }
-
-    const token = authHeader.slice(7);
-
-    try {
-
-      const payload = await verifyToken(token);
-
-      if (!payload || payload.exp * 1000 < Date.now()) {
-        throw new Error("expired");
-      }
-
-      // You can refine scope logic here (if needed)
-      if (!payload.scope?.includes("controlplane:access")) {
-        throw new Error("invalid-scope");
-      }
-
-      const newHeaders = new Headers(request.headers);
-      newHeaders.set("X-STC-Tenant", payload.tenant_id || "");
-
-      const newReq = new Request(request, { headers: newHeaders });
-
-      const response = await env.ASSETS.fetch(newReq);
-
-      return applySecurityHeaders(response);
-
-    } catch (err) {
-
-      return unauthorizedRedirect("invalid");
-
-    }
+    const response = await env.ASSETS.fetch(request);
+    return applySecurityHeaders(response);
   }
 };
-
-function unauthorizedRedirect(reason) {
-
-  return Response.redirect(
-    `https://app.securethecloud.dev/?auth=${reason}`,
-    302
-  );
-
-}
-
-async function verifyToken(token) {
-
-  const jwksUri = "https://ztr-runtime.fly.dev/.well-known/jwks.json";
-
-  const jwks = jose.createRemoteJWKSet(new URL(jwksUri));
-
-  const { payload } = await jose.jwtVerify(token, jwks, {
-    algorithms: ["RS256"],
-  });
-
-  return payload;
-
-}
