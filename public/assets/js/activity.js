@@ -39,7 +39,9 @@ function addRow(event) {
 
 function startStream() {
 
-  const source = new EventSource(STREAM_URL);
+  const source = new EventSource("/v1/decisions/stream", {
+    headers: { Authorization: "Bearer " + API_KEY }
+  });
 
   const status = document.getElementById("stream_status");
   status.innerText = "Connected";
