@@ -366,9 +366,9 @@ async function loadRecent() {
 
   const data = await res.json();
 
-  const events = data.events || data;
+  const events = data.events || [];
 
-  for (const e of events) {
+  events.forEach(e => {
 
     const event = {
       timestamp: e.time,
@@ -380,7 +380,7 @@ async function loadRecent() {
 
     processEvent(event);
 
-  }
+  });
 
 }
 
