@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Decision Heatmap | SecureTheCloud</title>
+<title>SecureTheCloud Heatmap</title>
 <link rel="stylesheet" href="assets/css/stc-control.css">
 </head>
 
@@ -12,27 +12,28 @@
 
 <main class="container">
 
-<h1>Decision Heatmap</h1>
-<p>Tenant authorization activity for the current billing period.</p>
+<h1>Tenant Activity Heatmap</h1>
 
 <section class="card-grid">
 
 <div class="card">
 <h3>Total Tokens Issued</h3>
-<div id="total_tokens">0</div>
+<div id="total_tokens_issued">--</div>
 </div>
 
 <div class="card">
 <h3>Total Policy Denied</h3>
-<div id="total_denied">0</div>
+<div id="total_policy_denied">--</div>
 </div>
 
 <div class="card">
 <h3>Total Sessions Revoked</h3>
-<div id="total_revoked">0</div>
+<div id="total_sessions_revoked">--</div>
 </div>
 
 </section>
+
+<h2>Tenant Activity</h2>
 
 <table class="data-table">
 
@@ -42,11 +43,11 @@
 <th>Tokens Issued</th>
 <th>Policy Denied</th>
 <th>Sessions Revoked</th>
-<th>Risk Score</th>
+<th>Risk</th>
 </tr>
 </thead>
 
-<tbody id="heatmap_table"></tbody>
+<tbody id="heatmap_table_body"></tbody>
 
 </table>
 

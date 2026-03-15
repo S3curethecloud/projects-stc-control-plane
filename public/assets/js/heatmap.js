@@ -1,105 +1,47 @@
-const REFRESH_INTERVAL = 10000;
-
-const heatmapCanvas = document.getElementById("risk_heatmap")
-
-const ctx = heatmapCanvas.getContext("2d")
-
-function drawRisk(score){
-
-  ctx.clearRect(0,0,400,100)
-
-  let color="green"
-
-  if(score>30) color="orange"
-  if(score>60) color="red"
-
-  ctx.fillStyle=color
-
-  ctx.fillRect(0,0,score*3,100)
-
-}
-
-function updateHeatmap(event){
-
-  drawRisk(event.risk_score || 10)
-
-}
-
 async function loadHeatmap() {
 
-  try {
+  const tenantsRes = await STC_API.getTenants();
+  const tenants = tenantsRes.tenants || [];
 
-    const tenants = await STC_API.getTenants();
+  const tbody = document.getElementById("heatmap_table_body");
 
-    const table = document.getElementById("heatmap_table");
+  tbody.innerHTML = "";
 
-    table.innerHTML = "";
+  let totalIssued = 0;
+  let totalDenied = 0;
+  let totalRevoked = 0;
 
-    let totalTokens = 0;
-    let totalDenied = 0;
-    let totalRevoked = 0;
+  for (const tenant of tenants) {
 
-    for (const t of tenants.tenants) {
+    const usage = await STC_API.getTenantUsage(tenant.tenant_id);
 
-      const usage = await STC_API.getTenantUsage(t.tenant_id);
+    const issued = usage.tokens_issued ?? 0;
+    const denied = usage.policy_denied ?? 0;
+    const revoked = usage.sessions_revoked ?? 0;
+    const risk = usage.risk_score ?? "--";
 
-      const tokens = usage.tokens_issued || 0;
-      const denied = usage.policy_denied || 0;
-      const revoked = usage.sessions_revoked || 0;
+    totalIssued += issued;
+    totalDenied += denied;
+    totalRevoked += revoked;
 
-      const risk = denied * 5 + revoked * 3;
+    const row = document.createElement("tr");
 
-      totalTokens += tokens;
-      totalDenied += denied;
-      totalRevoked += revoked;
+    row.innerHTML = `
+      <td>${tenant.tenant_id}</td>
+      <td>${issued}</td>
+      <td>${denied}</td>
+      <td>${revoked}</td>
+      <td>${risk}</td>
+    `;
 
-      const tr = document.createElement("tr");
-
-      let riskClass = "";
-
-      if (risk > 20) riskClass = "status-deny";
-      else if (risk > 5) riskClass = "status-warning";
-
-      tr.innerHTML = `
-        <td>${t.tenant_id}</td>
-        <td>${tokens}</td>
-        <td>${denied}</td>
-        <td>${revoked}</td>
-        <td class="${riskClass}">${risk}</td>
-      `;
-
-      table.appendChild(tr);
-
-    }
-
-    document.getElementById("total_tokens").textContent = totalTokens;
-    document.getElementById("total_denied").textContent = totalDenied;
-    document.getElementById("total_revoked").textContent = totalRevoked;
-
-  } catch (err) {
-
-    console.error("Heatmap load failed:", err);
+    tbody.appendChild(row);
 
   }
 
-}
-
-async function init() {
-
-  await loadHeatmap();
-
-  setInterval(loadHeatmap, REFRESH_INTERVAL);
+  document.getElementById("total_tokens_issued").textContent = totalIssued;
+  document.getElementById("total_policy_denied").textContent = totalDenied;
+  document.getElementById("total_sessions_revoked").textContent = totalRevoked;
 
 }
 
-init();
-
-source.onmessage=(msg)=>{
-
-  const event = JSON.parse(msg.data)
-
-  addDecisionRow(event)
-
-  updateHeatmap(event)
-
-}
+document.addEventListener("DOMContentLoaded", loadHeatmap);

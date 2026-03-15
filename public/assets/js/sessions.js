@@ -11,6 +11,40 @@ function formatTime(ts) {
   return new Date(ts * 1000).toISOString();
 }
 
+function attachSessionHandlers() {
+
+  document.querySelectorAll(".revoke-button").forEach((button) => {
+
+    button.addEventListener("click", async () => {
+
+      const sessionId = button.getAttribute("data-session-id");
+
+      try {
+        await STC_API.revokeSession(sessionId);
+        await loadSessions();
+
+      } catch (err) {
+        console.error("Revoke failed", err);
+      }
+
+    });
+
+  });
+
+}
+
+function attachToolbarHandlers() {
+
+  const btn = document.getElementById("refresh_sessions_btn");
+
+  if (!btn) return;
+
+  btn.addEventListener("click", async () => {
+    await loadSessions();
+  });
+
+}
+
 async function loadSessions() {
 
   const tenant = localStorage.getItem("STC_TENANT_ID");
@@ -21,7 +55,7 @@ async function loadSessions() {
 
   const sessions = res.sessions || res.active_sessions || [];
 
-  sessions.forEach(s => {
+  sessions.forEach((s) => {
 
     const tr = document.createElement("tr");
 
@@ -42,7 +76,9 @@ async function loadSessions() {
       <td>${s.ttl}</td>
 
       <td>
-        <button onclick="revoke('${s.session_id}')">Revoke</button>
+        <button class="revoke-button" data-session-id="${s.session_id}">
+          Revoke
+        </button>
       </td>
     `;
 
@@ -50,30 +86,7 @@ async function loadSessions() {
 
   });
 
-}
-
-async function revoke(sessionId) {
-
-  const confirmed = confirm(
-    "Revoke session " + sessionId + " ?"
-  );
-
-  if (!confirmed) return;
-
-  try {
-
-    await STC_API.revokeSession(sessionId);
-
-    alert("Session revoked");
-
-    await loadSessions();
-
-  } catch (err) {
-
-    console.error(err);
-    alert("Failed to revoke session");
-
-  }
+  attachSessionHandlers();
 
 }
 
@@ -89,21 +102,11 @@ async function refreshSessionsLoop() {
   await loadSessions();
 }
 
-async function init() {
+document.addEventListener("DOMContentLoaded", () => {
 
-  try {
+  attachToolbarHandlers();
+  loadSessions();
 
-    await refreshSessionsLoop();
+  setInterval(refreshSessionsLoop, REFRESH_INTERVAL);
 
-    setInterval(refreshSessionsLoop, REFRESH_INTERVAL);
-
-  } catch (err) {
-
-    console.error("Session load error:", err);
-    alert("Failed to load sessions");
-
-  }
-
-}
-
-init();
+});

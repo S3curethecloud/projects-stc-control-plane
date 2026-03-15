@@ -1,198 +1,92 @@
-const apiKey = localStorage.getItem("STC_API_KEY");
+const BLAST_MAP = {
+  "refund:create": ["payment_db", "audit_ledger", "ledger_backup"],
+  "payment:update": ["payment_db", "notification_bus"],
+  "token:issue": ["session_store", "audit_ledger"],
+  "default": ["runtime_control"]
+};
 
-const STREAM_URL =
-  "https://ztr-runtime.fly.dev/v1/decisions/stream?api_key=" + apiKey;
+function renderBlastRadius(event) {
 
-const table = document.getElementById("blast_table");
+  const svg = document.getElementById("blast_radius_graph");
 
-const cy = cytoscape({
+  if (!svg) return;
 
-  container: document.getElementById("blast_graph"),
+  svg.innerHTML = "";
 
-  elements: [],
+  const title = document.createElementNS("http://www.w3.org/2000/svg","text");
+  title.setAttribute("x","40");
+  title.setAttribute("y","40");
+  title.setAttribute("fill","#ffffff");
+  title.setAttribute("font-size","20");
+  title.textContent = `${event.principal} → ${event.intent}`;
 
-  style: [
+  svg.appendChild(title);
 
-  {
-  selector: 'node',
-  style:{
-  'label':'data(label)',
-  'text-valign':'center',
-  'text-halign':'center',
-  'color':'#ffffff',
-  'font-size':11,
-  'font-weight':'bold',
-  'text-outline-width':2,
-  'text-outline-color':'#0b2239',
-  'width':28,
-  'height':28
-  }
-  },
+  const impacts = BLAST_MAP[event.intent] || BLAST_MAP.default;
 
-  {
-  selector: 'node[type="agent"]',
-  style:{
-  'background-color':'#4da3ff'
-  }
-  },
+  impacts.forEach((impact,index)=>{
 
-  {
-  selector: 'node[type="intent"]',
-  style:{
-  'background-color':'#ffc857',
-  'label':'data(label)',
-  'color':'#ffffff',
-  'text-outline-width':2,
-  'text-outline-color':'#000000'
-  }
-  },
+    const y = 120 + (index * 80);
 
-  {
-  selector: 'node[type="resource"]',
-  style:{
-  'background-color':'#ff5c5c'
-  }
-  },
+    const node = document.createElementNS("http://www.w3.org/2000/svg","text");
 
-  {
-  selector: 'node[type="tenant"]',
-  style:{
-  'background-color':'#9b6cff'
-  }
-  },
+    node.setAttribute("x","260");
+    node.setAttribute("y",y);
+    node.setAttribute("fill","#9eb0d5");
+    node.setAttribute("font-size","18");
 
-  {
-  selector:'edge',
-  style:{
-  'curve-style':'bezier',
-  'target-arrow-shape':'triangle',
-  'line-color':'#8fb7d9',
-  'target-arrow-color':'#8fb7d9',
-  'width':2,
-  'opacity':0.9
-  }
-  },
+    node.textContent = impact;
 
-  {
-    selector: 'edge.attack-path',
-    style: {
-      'line-color': '#ff4d4f',
-      'target-arrow-color': '#ff4d4f',
-      'width': 4
+    svg.appendChild(node);
+
+  });
+
+}
+
+async function startBlastRadiusStream(){
+
+  const API_KEY = window.STC_API_KEY;
+
+  const res = await fetch(
+    "https://ztr-runtime.fly.dev/v1/decisions/stream",
+    {
+      headers: {
+        "Accept":"text/event-stream",
+        "X-Stc-Api-Key": API_KEY
+      }
     }
-  },
+  );
 
-  {
-    selector: 'node.attack-node',
-    style: {
-      'border-width': 3,
-      'border-color': '#ff4d4f'
-    }
-  }
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
 
-  ],
+  let buffer = "";
 
-  layout: {
-    name: "breadthfirst",
-    directed: true,
-    padding: 20,
-    spacingFactor: 1.3,
-    avoidOverlap: true,
-    animate: true
-  }
+  while(true){
 
-});
+    const {value,done} = await reader.read();
 
-function drawBlastRadius(intent){
+    if(done) break;
 
-  const canvas=document.getElementById("blast_canvas")
+    buffer += decoder.decode(value,{stream:true});
 
-  const ctx=canvas.getContext("2d")
+    const blocks = buffer.split("\n\n");
+    buffer = blocks.pop();
 
-  ctx.clearRect(0,0,400,400)
+    for(const block of blocks){
 
-  ctx.beginPath()
-  ctx.arc(200,200,40,0,2*Math.PI)
-  ctx.fillStyle="#3aa6ff"
-  ctx.fill()
+      const line = block.split("\n").find(l => l.startsWith("data:"));
 
-  ctx.fillText("Agent",180,205)
+      if(!line) continue;
 
-  ctx.beginPath()
-  ctx.arc(200,200,120,0,2*Math.PI)
-  ctx.strokeStyle="#ff9c3a"
-  ctx.stroke()
+      const event = JSON.parse(line.slice(5));
 
-  ctx.fillText(intent,160,100)
-
-}
-
-const seenEvents = new Set();
-
-function eventKey(event) {
-  return [
-    event.timestamp,
-    event.tenant_id || "unknown",
-    event.principal || "",
-    event.intent || "",
-    event.decision || ""
-  ].join("|");
-}
-
-function processEvent(event) {
-
-  const key = eventKey(event);
-
-  if (seenEvents.has(key)) return;
-
-  seenEvents.add(key);
-
-  addRow(event);
-  updateSummary(event);
-  addGraphEvent(event);
-
-  drawBlastRadius(event.intent)
-
-}
-
-function startStream() {
-
-  const source = new EventSource(STREAM_URL);
-
-  source.onmessage = (msg) => {
-
-    try {
-
-      const event = JSON.parse(msg.data);
-
-      event.timestamp = event.timestamp * 1000;
-
-      processEvent(event);
-      analyzeGraph();
-
-    } catch (err) {
-
-      console.error("stream parse error", err);
+      renderBlastRadius(event);
 
     }
 
-  };
-
-  source.onerror = () => {
-    console.log("stream reconnecting...");
-  };
+  }
 
 }
 
-async function init() {
-
-  await loadBlastRadius();
-  await loadRecent();
-
-  analyzeGraph();
-
-  startStream();
-
-}
-
-init();
+document.addEventListener("DOMContentLoaded", startBlastRadiusStream);
