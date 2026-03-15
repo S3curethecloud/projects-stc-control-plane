@@ -16,8 +16,9 @@ function stcFetch(url, options = {}) {
 
 const STC_API = (() => {
   const CONFIG = {
-    BASE_URL: "https://app.securethecloud.dev",
-    TIMEOUT: 6000,
+    CONTROL_URL: "https://app.securethecloud.dev",
+    RUNTIME_URL: "https://ztr-runtime.fly.dev",
+    TIMEOUT: 6000
   };
 
   /* ---------------------------------------------------
@@ -40,12 +41,12 @@ const STC_API = (() => {
      Core Request
   --------------------------------------------------- */
 
-  async function request(path, options = {}) {
+  async function request(url, options = {}) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
 
     try {
-      const res = await stcFetch(`${CONFIG.BASE_URL}${path}`, {
+      const res = await stcFetch(url, {
         cache: "no-store",
         ...options,
         signal: controller.signal,
@@ -71,7 +72,7 @@ const STC_API = (() => {
   --------------------------------------------------- */
 
   function adminGet(path) {
-    return request(path, {
+    return request(`${CONFIG.CONTROL_URL}${path}`, {
       method: "GET",
       headers: {
         "X-Stc-Admin-Secret": getAdminSecret(),
@@ -80,7 +81,7 @@ const STC_API = (() => {
   }
 
   function adminPost(path, body) {
-    return request(path, {
+    return request(`${CONFIG.CONTROL_URL}${path}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -95,7 +96,7 @@ const STC_API = (() => {
   --------------------------------------------------- */
 
   function runtimeGet(path) {
-    return request(path, {
+    return request(`${CONFIG.RUNTIME_URL}${path}`, {
       method: "GET",
       headers: {
         "X-Stc-Api-Key": getApiKey(),
@@ -104,7 +105,7 @@ const STC_API = (() => {
   }
 
   function runtimePost(path, body) {
-    return request(path, {
+    return request(`${CONFIG.RUNTIME_URL}${path}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -115,7 +116,7 @@ const STC_API = (() => {
   }
 
   /* ---------------------------------------------------
-     DASHBOARD API (CONTROL PLANE)
+     DASHBOARD API
   --------------------------------------------------- */
 
   function getDashboardDecisions() {
@@ -197,7 +198,7 @@ const STC_API = (() => {
 
     const apiKey = getApiKey()
 
-    const url = `${CONFIG.BASE_URL}/v1/decisions/stream?api_key=${apiKey}`
+    const url = `${CONFIG.RUNTIME_URL}/v1/decisions/stream?api_key=${apiKey}`
 
     const stream = new EventSource(url)
 
@@ -224,30 +225,15 @@ const STC_API = (() => {
   --------------------------------------------------- */
 
   function getRuntimeActivity() {
-    return request("/v1/runtime/activity", {
-      method: "GET",
-      headers: {
-        "X-Stc-Admin-Secret": getAdminSecret(),
-      }
-    });
+    return adminGet("/v1/runtime/activity");
   }
 
   function getRuntimeIntegrity() {
-    return request("/v1/runtime/integrity", {
-      method: "GET",
-      headers: {
-        "X-Stc-Admin-Secret": getAdminSecret(),
-      }
-    });
+    return adminGet("/v1/runtime/integrity");
   }
 
   function getRuntimeMetrics() {
-    return request("/v1/metrics", {
-      method: "GET",
-      headers: {
-        "X-Stc-Admin-Secret": getAdminSecret(),
-      }
-    });
+    return adminGet("/v1/metrics");
   }
 
   /* ---------------------------------------------------
@@ -255,12 +241,10 @@ const STC_API = (() => {
   --------------------------------------------------- */
 
   return {
-    /* dashboard */
     getDashboardDecisions,
     getDashboardSessions,
     getDashboardIntelligence,
 
-    /* control plane */
     getAdminRuntime,
     getAdminMetrics,
     getTenants,
@@ -270,15 +254,15 @@ const STC_API = (() => {
     getTenantSessions,
     provisionTenant,
 
-    /* runtime plane */
     issueToken,
     getActiveSessions,
     revokeSession,
 
-    /* streaming */
     subscribeDecisionStream,
 
-    /* observability */
+    runtimeGet,
+    runtimePost,
+
     getRuntimeActivity,
     getRuntimeIntegrity,
     getRuntimeMetrics
