@@ -39,27 +39,40 @@ function addRow(event) {
 
 function startStream() {
 
-  const source = new EventSource("/v1/decisions/stream", {
-    headers: { Authorization: "Bearer " + API_KEY }
-  });
-
   const status = document.getElementById("stream_status");
+
+  const url = `${STREAM_URL}?api_key=${API_KEY}`;
+
+  const source = new EventSource(url);
+
   status.innerText = "Connected";
 
   source.onmessage = (msg) => {
 
     try {
+
       const event = JSON.parse(msg.data);
+
       addRow(event);
+
     } catch (err) {
+
       console.error("stream parse error", err);
+
     }
 
   };
 
   source.onerror = () => {
+
     console.log("stream reconnecting...");
+
     status.innerText = "Reconnecting...";
+
+    source.close();
+
+    setTimeout(startStream, 3000);
+
   };
 
 }
