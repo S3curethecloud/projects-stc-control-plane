@@ -190,6 +190,36 @@ const STC_API = (() => {
   }
 
   /* ---------------------------------------------------
+     SSE DECISION STREAM
+  --------------------------------------------------- */
+
+  function subscribeDecisionStream(onEvent) {
+
+    const apiKey = getApiKey()
+
+    const url = `${CONFIG.BASE_URL}/v1/decisions/stream?api_key=${apiKey}`
+
+    const stream = new EventSource(url)
+
+    stream.onmessage = (event) => {
+        try {
+            const data = JSON.parse(event.data)
+            onEvent(data)
+        } catch (e) {
+            console.error("Stream parse error", e)
+        }
+    }
+
+    stream.onerror = () => {
+        console.warn("Decision stream disconnected — reconnecting in 3s")
+        stream.close()
+        setTimeout(() => subscribeDecisionStream(onEvent), 3000)
+    }
+
+    return stream
+  }
+
+  /* ---------------------------------------------------
      PHASE 9 OBSERVABILITY
   --------------------------------------------------- */
 
@@ -245,9 +275,30 @@ const STC_API = (() => {
     getActiveSessions,
     revokeSession,
 
+    /* streaming */
+    subscribeDecisionStream,
+
     /* observability */
     getRuntimeActivity,
     getRuntimeIntegrity,
     getRuntimeMetrics
   };
 })();
+
+
+setInterval(async () => {
+
+  const sessions = await STC_API.getActiveSessions()
+
+  renderSessions(sessions)
+
+}, 5000)
+
+
+setInterval(async () => {
+
+  const integrity = await STC_API.runtimeGet("/v1/audit/verify")
+
+  renderIntegrity(integrity)
+
+}, 10000)
