@@ -1,5 +1,30 @@
 const REFRESH_INTERVAL = 10000;
 
+const heatmapCanvas = document.getElementById("risk_heatmap")
+
+const ctx = heatmapCanvas.getContext("2d")
+
+function drawRisk(score){
+
+  ctx.clearRect(0,0,400,100)
+
+  let color="green"
+
+  if(score>30) color="orange"
+  if(score>60) color="red"
+
+  ctx.fillStyle=color
+
+  ctx.fillRect(0,0,score*3,100)
+
+}
+
+function updateHeatmap(event){
+
+  drawRisk(event.risk_score || 10)
+
+}
+
 async function loadHeatmap() {
 
   try {
@@ -68,3 +93,13 @@ async function init() {
 }
 
 init();
+
+source.onmessage=(msg)=>{
+
+  const event = JSON.parse(msg.data)
+
+  addDecisionRow(event)
+
+  updateHeatmap(event)
+
+}
