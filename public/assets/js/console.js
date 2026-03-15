@@ -70,16 +70,68 @@ async function loadTenants() {
 }
 
 /* ------------------------------
+   Audit Integrity
+------------------------------ */
+
+async function loadIntegrity() {
+
+  const data = await STC_API.runtimeGet("/v1/audit/verify");
+
+  document.getElementById("audit_status").textContent =
+      data.status === "valid" ? "✔ VALID" : "BROKEN";
+
+  document.getElementById("audit_events").textContent =
+      `Events: ${data.events_verified}`;
+
+}
+
+/* ------------------------------
+   Session Count Indicator
+------------------------------ */
+
+async function loadSessionsIndicator() {
+
+  const res = await STC_API.getActiveSessions();
+
+  document.getElementById("session_count").textContent =
+      res.active_sessions;
+
+}
+
+/* ------------------------------
+   Risk Indicator
+------------------------------ */
+
+function updateRiskLevel(score) {
+
+  let level = "LOW";
+
+  if (score >= 60) level = "HIGH";
+  else if (score >= 30) level = "MEDIUM";
+
+  document.getElementById("risk_level").textContent = level;
+
+}
+
+/* ------------------------------
    Refresh Loop
 ------------------------------ */
 
 async function refreshTelemetry() {
+
   try {
+
     await loadRuntime();
     await loadMetrics();
+    await loadIntegrity();
+    await loadSessionsIndicator();
+
   } catch (err) {
+
     console.error("Telemetry refresh error:", err);
+
   }
+
 }
 
 /* ------------------------------

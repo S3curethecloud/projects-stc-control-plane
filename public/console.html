@@ -12,7 +12,57 @@
 
 <main class="container">
 
-<h1>Platform Overview</h1>
+<h1>SecureTheCloud Command Center</h1>
+
+<!-- SOC STATUS ROW -->
+<section class="soc-status">
+
+<div class="soc-card">
+<h3>Audit Integrity</h3>
+<div id="audit_status">--</div>
+<div id="audit_events">--</div>
+</div>
+
+<div class="soc-card">
+<h3>Active Sessions</h3>
+<div id="session_count">--</div>
+</div>
+
+<div class="soc-card">
+<h3>Policy Revision</h3>
+<div id="policy_revision">--</div>
+</div>
+
+<div class="soc-card">
+<h3>Risk Level</h3>
+<div id="risk_level">LOW</div>
+</div>
+
+</section>
+
+<h2>Live Authorization Decisions</h2>
+
+<div class="stream-indicator">
+Activity Stream: <span id="stream_status">Connecting...</span>
+</div>
+
+<table class="data-table">
+
+<thead>
+<tr>
+<th>Time</th>
+<th>Tenant</th>
+<th>Principal</th>
+<th>Intent</th>
+<th>Decision</th>
+<th>Risk</th>
+<th>Policy</th>
+</tr>
+</thead>
+
+<tbody id="activity_table"></tbody>
+
+</table>
 
 <section class="card-grid">
 
@@ -65,10 +115,6 @@
 </section>
 
 <h2>Tenant Preview</h2>
-
-<div class="stream-indicator">
-  Activity Stream: <span id="stream_status">Connecting...</span>
-</div>
 
 <table class="data-table">
 <thead>
