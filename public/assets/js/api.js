@@ -270,19 +270,3 @@ const STC_API = (() => {
 })();
 
 
-setInterval(async () => {
-
-  const sessions = await STC_API.getActiveSessions()
-
-  renderSessions(sessions)
-
-}, 5000)
-
-
-setInterval(async () => {
-
-  const integrity = await STC_API.runtimeGet("/v1/audit/verify")
-
-  renderIntegrity(integrity)
-
-}, 10000)
