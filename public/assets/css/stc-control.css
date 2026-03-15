@@ -631,3 +631,9 @@ font-weight:600;
 color:#e74c3c;
 font-weight:600;
 }
+
+#riskdna-graph {
+    height: 400px;
+    background: #0f1b2d;
+    border-radius: 12px;
+}
