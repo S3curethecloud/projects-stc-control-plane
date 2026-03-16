@@ -79,9 +79,8 @@ export default {
 
     const response = await env.ASSETS.fetch(request);
 
-    // Prevent worker crash when asset missing
-    if (!response || response.status === 404) {
-      return response;
+    if (!response) {
+      return new Response("Not Found", { status: 404 });
     }
 
     return applySecurityHeaders(response);
