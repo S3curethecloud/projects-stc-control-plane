@@ -83,6 +83,10 @@ function addDecisionRow(event) {
   if (window.GlobalBlastRadius && typeof window.GlobalBlastRadius.register === "function") {
     window.GlobalBlastRadius.register(event);
   }
+
+  if (window.RiskDNAUniverse && typeof window.RiskDNAUniverse.ingest === "function") {
+    window.RiskDNAUniverse.ingest(event);
+  }
 }
 
 function renderSessions(data) {
