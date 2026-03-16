@@ -7,7 +7,6 @@
 
 <link rel="stylesheet" href="/assets/css/stc-control.css">
 
-
 <style>
 body{
   background:#0a1224;
@@ -273,7 +272,22 @@ tr:last-child td{
   </section>
 
   <section class="panel">
-    <h2>RiskDNA Graph</h2>
+    <h2>RiskDNA Authorization Path</h2>
+
+    <div style="margin-bottom:14px">
+
+      <input
+        id="riskdna_timeline"
+        type="range"
+        min="0"
+        max="0"
+        value="0"
+        style="width:100%"
+        oninput="RiskDNATimeline.replay(this.value)"
+      >
+
+    </div>
+
     <div id="riskdna_graph"></div>
   </section>
 
