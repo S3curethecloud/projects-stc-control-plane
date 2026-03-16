@@ -78,6 +78,12 @@ export default {
     }
 
     const response = await env.ASSETS.fetch(request);
+
+    // Prevent worker crash when asset missing
+    if (!response || response.status === 404) {
+      return response;
+    }
+
     return applySecurityHeaders(response);
   }
 };
