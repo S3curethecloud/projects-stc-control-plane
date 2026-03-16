@@ -1,173 +1,231 @@
-let nodes = new vis.DataSet([])
-let edges = new vis.DataSet([])
+(function () {
+  const BLAST_MAP = {
+    "refund:create": ["payment_db", "audit_ledger", "ledger_backup"],
+    "payment:update": ["payment_db", "notification_bus"],
+    "token:issue": ["session_store", "audit_ledger"],
+    "default": ["runtime_control"]
+  };
 
-let latestEvent = null
+  let latestEvent = null;
+  const EVENT_HISTORY_LIMIT = 50;
+  const eventHistory = [];
+  let threatPulseActive = false;
+  let threatPulseTime = 0;
 
-const EVENT_HISTORY_LIMIT = 50
-const eventHistory = []
-
-let threatPulseActive = false
-let threatPulseTime = 0
-
-const container = document.getElementById("riskdna_graph")
-
-const data = {
-  nodes: nodes,
-  edges: edges
-}
-
-const options = {
-  nodes: {
-    shape: "dot",
-    size: 18,
-    font: { color: "#ffffff" }
-  },
-  edges: {
-    color: "#4ea1ff",
-    smooth: true
-  },
-  physics: {
-    stabilization: false,
-    barnesHut: { gravitationalConstant: -4000 }
-  },
-  interaction: {
-    hover: true
-  }
-}
-
-const network = new vis.Network(container, data, options)
-
-function riskColor(score){
-  if(score >= 40) return "#ff6b6b"
-  if(score >= 10) return "#ffb84d"
-  return "#2ecc71"
-}
-
-function deriveImpacts(event){
-
-  if(event.impacts) return event
-
-  const impacts = []
-
-  const intent = event.intent || ""
-
-  if(intent.includes("refund")){
-    impacts.push("payment_db")
-    impacts.push("ledger")
+  function clear(container) {
+    container.innerHTML = "";
   }
 
-  if(intent.includes("token")){
-    impacts.push("auth_service")
+  function riskColor(score) {
+    const n = Number(score || 0);
+    if (n >= 40) return "#ff6b6b";
+    if (n >= 10) return "#ffb84d";
+    return "#2ecc71";
   }
 
-  if(intent.includes("session")){
-    impacts.push("session_store")
+  function drawNode(svg, x, y, w, h, title, subtitle, fill) {
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    rect.setAttribute("x", x);
+    rect.setAttribute("y", y);
+    rect.setAttribute("width", w);
+    rect.setAttribute("height", h);
+    rect.setAttribute("rx", 14);
+    rect.setAttribute("fill", fill);
+    rect.setAttribute("stroke", "rgba(85,183,255,0.22)");
+    rect.setAttribute("stroke-width", "1");
+
+    const t1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    t1.setAttribute("x", x + 16);
+    t1.setAttribute("y", y + 28);
+    t1.setAttribute("fill", "#ffffff");
+    t1.setAttribute("font-size", "16");
+    t1.setAttribute("font-weight", "700");
+    t1.textContent = title;
+
+    const t2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    t2.setAttribute("x", x + 16);
+    t2.setAttribute("y", y + 52);
+    t2.setAttribute("fill", "#9eb0d5");
+    t2.setAttribute("font-size", "13");
+    t2.textContent = subtitle;
+
+    g.appendChild(rect);
+    g.appendChild(t1);
+    g.appendChild(t2);
+    svg.appendChild(g);
   }
 
-  event.impacts = impacts
+  function drawLine(svg, x1, y1, x2, y2, color, dashed = false) {
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", x1);
+    line.setAttribute("y1", y1);
+    line.setAttribute("x2", x2);
+    line.setAttribute("y2", y2);
+    line.setAttribute("stroke", color);
+    line.setAttribute("stroke-width", "3");
+    line.setAttribute("stroke-linecap", "round");
+    if (dashed) line.setAttribute("stroke-dasharray", "8 8");
+    svg.appendChild(line);
+  }
 
-  return event
-}
+  function drawLabel(svg, x, y, text, color = "#8aa4d4") {
+    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    label.setAttribute("x", x);
+    label.setAttribute("y", y);
+    label.setAttribute("fill", color);
+    label.setAttribute("font-size", "12");
+    label.setAttribute("font-weight", "600");
+    label.textContent = text;
+    svg.appendChild(label);
+  }
 
-function updateTimelineSlider() {
+  function renderPlaceholder(container) {
+    clear(container);
 
-  const slider = document.getElementById("riskdna_timeline");
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 1100 360");
+    svg.setAttribute("width", "100%");
+    svg.setAttribute("height", "360");
 
-  if (!slider) return;
-  if (eventHistory.length === 0) return;
+    const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    bg.setAttribute("x", "0");
+    bg.setAttribute("y", "0");
+    bg.setAttribute("width", "1100");
+    bg.setAttribute("height", "360");
+    bg.setAttribute("rx", "12");
+    bg.setAttribute("fill", "#0b162b");
 
-  const latestIndex = eventHistory.length - 1;
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.setAttribute("x", "550");
+    text.setAttribute("y", "185");
+    text.setAttribute("fill", "#9eb0d5");
+    text.setAttribute("font-size", "22");
+    text.setAttribute("text-anchor", "middle");
+    text.textContent = "Awaiting live RiskDNA event…";
 
-  slider.max = latestIndex;
-  slider.value = latestIndex;
+    svg.appendChild(bg);
+    svg.appendChild(text);
+    container.appendChild(svg);
+  }
 
-  window.RiskDNATimeline.replay(latestIndex);
-}
+  function renderEvent(container, event) {
+    clear(container);
 
-function renderEvent(container, event){
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 1100 360");
+    svg.setAttribute("width", "100%");
+    svg.setAttribute("height", "360");
 
-  if(!container) return
+    const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    bg.setAttribute("x", "0");
+    bg.setAttribute("y", "0");
+    bg.setAttribute("width", "1100");
+    bg.setAttribute("height", "360");
+    bg.setAttribute("rx", "12");
+    bg.setAttribute("fill", "#0b162b");
+    svg.appendChild(bg);
 
-  nodes.clear()
-  edges.clear()
+    const impacts = BLAST_MAP[event.intent] || BLAST_MAP.default;
+    const pulseActive = threatPulseActive && Date.now() - threatPulseTime < 1500;
 
-  const risk = event.risk_score || 0
-  const riskNodeColor = riskColor(risk)
+    const decisionFill =
+      event.decision === "deny"
+        ? (pulseActive ? "#ff4d4d" : "#5a1f24")
+        : "#0f2b1e";
 
-  let decisionColor
+    const riskFill = riskColor(event.risk_score);
+    const policyLineColor = event.decision === "deny" ? "#ff6b6b" : "#2ecc71";
+    const blastLineColor = pulseActive ? "#ff4d4d" : "#ffb84d";
 
-  if (event.decision === "deny") {
+    drawNode(svg, 60, 120, 180, 76, "Tenant", event.tenant_id || "--", "#102041");
+    drawNode(svg, 300, 70, 200, 76, "Principal", event.principal || "--", "#102041");
+    drawNode(svg, 300, 210, 200, 76, "Intent", event.intent || "--", "#102041");
+    drawNode(svg, 560, 70, 190, 76, "Decision", String(event.decision || "--").toUpperCase(), decisionFill);
+    drawNode(svg, 560, 210, 190, 76, "Risk Score", String(event.risk_score ?? "--"), riskFill);
 
-    if (threatPulseActive && Date.now() - threatPulseTime < 1500) {
-      decisionColor = "#ff4d4d"
-    } else {
-      decisionColor = "#3a1418"
+    drawLine(svg, 240, 158, 300, 108, "#4ea1ff");
+    drawLine(svg, 240, 158, 300, 248, "#4ea1ff");
+    drawLine(svg, 500, 108, 560, 108, policyLineColor);
+    drawLine(svg, 500, 248, 560, 248, "#2ecc71");
+
+    drawLabel(svg, 518, 96, "policy");
+    drawLabel(svg, 518, 236, "risk");
+    drawLabel(svg, 62, 42, "RiskDNA Authorization Path", "#55b7ff");
+    drawLabel(svg, 560, 328, `Policy Revision: ${event.policy_revision || "--"}`, "#9eb0d5");
+
+    impacts.forEach((impact, index) => {
+      const y = 58 + (index * 90);
+      drawNode(svg, 830, y, 210, 64, "Blast Radius", impact, "#162a3f");
+      drawLine(svg, 750, 108, 830, y + 32, blastLineColor, true);
+    });
+
+    if (threatPulseActive && Date.now() - threatPulseTime > 1500) {
+      threatPulseActive = false;
     }
 
+    container.appendChild(svg);
+  }
+
+  function updateTimelineSlider() {
+    const slider = document.getElementById("riskdna_timeline");
+    if (!slider) return;
+    if (eventHistory.length === 0) return;
+
+    const latestIndex = eventHistory.length - 1;
+    slider.max = latestIndex;
+    slider.value = latestIndex;
+
+    window.RiskDNATimeline.replay(latestIndex);
+  }
+
+  window.RiskDNATimeline = {
+    replay(index) {
+      const event = eventHistory[Number(index)];
+      if (!event) return;
+
+      const container = document.getElementById("riskdna_graph");
+      if (!container) return;
+
+      renderEvent(container, event);
+    }
+  };
+
+  window.RiskDNAGraph = {
+    pushEvent(event) {
+      latestEvent = event;
+
+      if (event.decision === "deny") {
+        threatPulseActive = true;
+        threatPulseTime = Date.now();
+      }
+
+      eventHistory.push(event);
+      if (eventHistory.length > EVENT_HISTORY_LIMIT) {
+        eventHistory.shift();
+      }
+
+      updateTimelineSlider();
+    },
+
+    reset() {
+      latestEvent = null;
+      const container = document.getElementById("riskdna_graph");
+      if (!container) return;
+      renderPlaceholder(container);
+    }
+  };
+
+  function init() {
+    const container = document.getElementById("riskdna_graph");
+    if (!container) return;
+    renderPlaceholder(container);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
   } else {
-
-    decisionColor = "#0f2b1e"
-
+    init();
   }
-
-  nodes.add([
-    { id: 1, label: event.tenant_id || "tenant", color: "#4ea1ff" },
-    { id: 2, label: event.principal || "principal", color: "#2ecc71" },
-    { id: 3, label: event.intent || "intent", color: "#f39c12" },
-    { id: 4, label: "Risk Score\n"+risk, color: riskNodeColor },
-    { id: 5, label: event.decision || "decision", color: decisionColor }
-  ])
-
-  edges.add([
-    { from:1, to:2 },
-    { from:2, to:3 },
-    { from:3, to:4 },
-    { from:4, to:5 }
-  ])
-
-  if (threatPulseActive && Date.now() - threatPulseTime > 1500) {
-    threatPulseActive = false
-  }
-
-}
-
-window.RiskDNAGraph = {
-
-  pushEvent(event){
-
-    event = deriveImpacts(event)
-
-    latestEvent = event
-
-    if (event.decision === "deny") {
-      threatPulseActive = true
-      threatPulseTime = Date.now()
-    }
-
-    eventHistory.push(event)
-
-    if (eventHistory.length > EVENT_HISTORY_LIMIT) {
-      eventHistory.shift()
-    }
-
-    updateTimelineSlider()
-
-  }
-
-}
-
-window.RiskDNATimeline = {
-
-  replay(index){
-
-    const event = eventHistory[index]
-
-    if(!event) return
-
-    const container = document.getElementById("riskdna_graph")
-
-    renderEvent(container, event)
-
-  }
-
-}
+})();
