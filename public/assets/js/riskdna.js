@@ -62,7 +62,18 @@
     line.setAttribute("stroke", color);
     line.setAttribute("stroke-width", "3");
     line.setAttribute("stroke-linecap", "round");
-    if (dashed) line.setAttribute("stroke-dasharray", "8 8");
+
+    if (dashed) {
+      line.setAttribute("stroke-dasharray", "8 8");
+      const animate = document.createElementNS("http://www.w3.org/2000/svg", "animate");
+      animate.setAttribute("attributeName", "stroke-dashoffset");
+      animate.setAttribute("from", "16");
+      animate.setAttribute("to", "0");
+      animate.setAttribute("dur", "1.2s");
+      animate.setAttribute("repeatCount", "indefinite");
+      line.appendChild(animate);
+    }
+
     svg.appendChild(line);
   }
 
@@ -130,8 +141,8 @@
     drawNode(svg, 60, 120, 180, 76, "Tenant", event.tenant_id || "--", "#102041");
     drawNode(svg, 300, 70, 200, 76, "Principal", event.principal || "--", "#102041");
     drawNode(svg, 300, 210, 200, 76, "Intent", event.intent || "--", "#102041");
-    drawNode(svg, 560, 70, 190, 76, "Decision", (event.decision || "--").toUpperCase(), "#13253b");
-    drawNode(svg, 560, 210, 190, 76, "Risk Score", String(event.risk_score ?? "--"), "#13253b");
+    drawNode(svg, 560, 70, 190, 76, "Decision", (event.decision || "--").toUpperCase(), decisionColor);
+    drawNode(svg, 560, 210, 190, 76, "Risk Score", String(event.risk_score ?? "--"), scoreColor);
 
     drawLine(svg, 240, 158, 300, 108, "#4ea1ff");
     drawLine(svg, 240, 158, 300, 248, "#4ea1ff");
@@ -147,7 +158,7 @@
       drawLine(svg, 750, 108, 830, y + 32, "#ffb84d", true);
     });
 
-    drawLabel(svg, 62, 42, "Latest authorization path", "#55b7ff");
+    drawLabel(svg, 62, 42, "RiskDNA Authorization Path", "#55b7ff");
     drawLabel(svg, 560, 328, `Policy Revision: ${event.policy_revision || "--"}`, "#9eb0d5");
 
     container.appendChild(svg);
