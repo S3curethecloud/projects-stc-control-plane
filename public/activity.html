@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Runtime Activity Stream</title>
-<link rel="stylesheet" href="assets/css/stc-control.css">
+<link rel="stylesheet" href="/assets/css/stc-control.css">
 </head>
 
 <body>
@@ -12,38 +13,44 @@
 
 <main class="container">
 
-<h1>Live Decision Stream</h1>
+  <h1>Live Decision Stream</h1>
+  <p class="card-sub">
+    Real-time authorization decisions flowing from the runtime decision stream.
+  </p>
 
-<div class="stream-status" id="stream_status">
-Connecting...
-</div>
+  <section class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;">
+      <div id="stream_status" class="card-sub">Connecting...</div>
+      <div class="toolbar">
+        <button id="clear_stream_button" type="button">Clear</button>
+      </div>
+    </div>
 
-<div class="toolbar">
-<button onclick="clearStream()">Clear</button>
-</div>
-
-<table class="data-table">
-
-<thead>
-<tr>
-<th>Time</th>
-<th>Tenant</th>
-<th>Principal</th>
-<th>Intent</th>
-<th>Decision</th>
-<th>Risk</th>
-<th>Policy</th>
-</tr>
-</thead>
-
-<tbody id="activity_table"></tbody>
-
-</table>
+    <table class="data-table" style="margin-top:16px;">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Tenant</th>
+          <th>Principal</th>
+          <th>Intent</th>
+          <th>Decision</th>
+          <th>Risk</th>
+          <th>Policy</th>
+        </tr>
+      </thead>
+      <tbody id="activity_table">
+        <tr id="activity_empty">
+          <td colspan="7" class="empty">Awaiting runtime decision events...</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 
 </main>
 
-<script src="assets/js/layout.js"></script>
-<script src="assets/js/activity.js"></script>
+<script src="/assets/js/layout.js"></script>
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/activity.js"></script>
 
 </body>
 </html>

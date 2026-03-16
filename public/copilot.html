@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Copilot | SecureTheCloud</title>
-<link rel="stylesheet" href="assets/css/stc-control.css">
+<link rel="stylesheet" href="/assets/css/stc-control.css">
 </head>
 
 <body>
@@ -12,17 +13,68 @@
 
 <main class="container">
 
-<h1>Deterministic Copilot</h1>
+  <h1>Deterministic Copilot</h1>
+  <p class="card-sub">
+    Executive-grade platform summary derived from runtime, integrity, and tenant telemetry.
+  </p>
 
-<section class="card">
-<div id="copilot-panel"></div>
-</section>
+  <section class="card-grid">
+
+    <div class="card">
+      <h3>Platform Status</h3>
+      <div id="copilot_platform_status" class="card-value">--</div>
+      <div id="copilot_platform_detail" class="card-sub">Awaiting telemetry</div>
+    </div>
+
+    <div class="card">
+      <h3>Audit Status</h3>
+      <div id="copilot_audit_status" class="card-value">--</div>
+      <div id="copilot_audit_detail" class="card-sub">Awaiting integrity signal</div>
+    </div>
+
+    <div class="card">
+      <h3>Highest Risk Tenant</h3>
+      <div id="copilot_top_tenant" class="card-value">--</div>
+      <div id="copilot_top_tenant_detail" class="card-sub">Awaiting tenant usage</div>
+    </div>
+
+    <div class="card">
+      <h3>Recommended Action</h3>
+      <div id="copilot_action_title" class="card-value">--</div>
+      <div id="copilot_action_detail" class="card-sub">Awaiting analysis</div>
+    </div>
+
+  </section>
+
+  <section class="card">
+    <h3>Executive Brief</h3>
+    <div id="copilot_brief" class="card-sub">
+      Awaiting platform summary...
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>Operator Notes</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Signal</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody id="copilot_notes_table">
+        <tr>
+          <td colspan="2" class="empty">Awaiting notes…</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 
 </main>
 
-<script src="assets/js/layout.js"></script>
-<script src="assets/js/api.js"></script>
-<script src="assets/js/copilot.js"></script>
+<script src="/assets/js/layout.js"></script>
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/copilot.js"></script>
 
 </body>
 </html>

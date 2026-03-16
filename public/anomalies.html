@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Decision Intelligence</title>
-<link rel="stylesheet" href="assets/css/stc-control.css">
+<link rel="stylesheet" href="/assets/css/stc-control.css">
 </head>
 
 <body>
@@ -12,58 +13,88 @@
 
 <main class="container">
 
-<h1>Decision Intelligence</h1>
+  <h1>Decision Intelligence</h1>
+  <p class="card-sub">
+    Deterministic intelligence summary derived from risk telemetry, deny pressure, and policy stability.
+  </p>
 
-<section class="card">
+  <section class="card-grid">
 
-<h2>Top Risky Tenants</h2>
+    <div class="card">
+      <h3>Highest Risk Tenant</h3>
+      <div id="highest_risk_tenant" class="card-value">--</div>
+      <div id="highest_risk_detail" class="card-sub">Awaiting risk telemetry</div>
+    </div>
 
-<table class="data-table">
-<thead>
-<tr>
-<th>Tenant</th>
-<th>Risk Score</th>
-</tr>
-</thead>
-<tbody id="tenant_table"></tbody>
-</table>
+    <div class="card">
+      <h3>Top Suspicious Principal</h3>
+      <div id="top_principal" class="card-value">--</div>
+      <div id="top_principal_detail" class="card-sub">Awaiting principal telemetry</div>
+    </div>
 
-</section>
+    <div class="card">
+      <h3>Deny Spike</h3>
+      <div id="deny_spike" class="card-value">--</div>
+      <div id="deny_spike_detail" class="card-sub">Awaiting deny pressure signal</div>
+    </div>
 
-<section class="card">
+    <div class="card">
+      <h3>Policy Drift</h3>
+      <div id="policy_drift" class="card-value">--</div>
+      <div id="policy_drift_detail" class="card-sub">Awaiting drift analysis</div>
+    </div>
 
-<h2>Suspicious Principals</h2>
+  </section>
 
-<table class="data-table">
-<thead>
-<tr>
-<th>Principal</th>
-<th>Event Count</th>
-</tr>
-</thead>
-<tbody id="principal_table"></tbody>
-</table>
+  <section class="card">
+    <h2>Top Risky Tenants</h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Tenant</th>
+          <th>Risk Score</th>
+        </tr>
+      </thead>
+      <tbody id="tenant_table">
+        <tr id="tenant_empty">
+          <td colspan="2" class="empty">Awaiting tenant intelligence...</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 
-</section>
+  <section class="card">
+    <h2>Suspicious Principals</h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Principal</th>
+          <th>Event Count</th>
+        </tr>
+      </thead>
+      <tbody id="principal_table">
+        <tr id="principal_empty">
+          <td colspan="2" class="empty">Awaiting principal intelligence...</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 
-<section class="card">
-<h2>Deny Spike Detection</h2>
-<div id="deny_spike"></div>
-</section>
+  <section class="card">
+    <h2>Last Updated</h2>
+    <div id="intelligence_timestamp" class="card-sub">Awaiting refresh...</div>
+  </section>
 
-<section class="card">
-
-<h2>Policy Drift Status</h2>
-<div id="policy_drift"></div>
-<div id="intelligence_timestamp"></div>
-
-</section>
+  <section class="card">
+    <h2>Intelligence Notes</h2>
+    <div id="intelligence_notes" class="card-sub">Awaiting intelligence notes...</div>
+  </section>
 
 </main>
 
-<script src="assets/js/layout.js"></script>
-<script src="assets/js/api.js"></script>
-<script src="assets/js/anomalies.js"></script>
+<script src="/assets/js/layout.js"></script>
+<script src="/assets/js/api.js"></script>
+<script src="/assets/js/intelligence.js"></script>
 
 </body>
 </html>
