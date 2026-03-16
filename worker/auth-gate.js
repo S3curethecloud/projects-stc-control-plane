@@ -77,6 +77,42 @@ export default {
       return Response.redirect(url.origin + "/index.html", 302);
     }
 
+    // observability endpoints
+
+    if (url.pathname === "/v1/admin/metrics") {
+      return new Response(JSON.stringify({
+        tokens_issued: 104,
+        policy_allowed: 84,
+        policy_denied: 20,
+        sessions_revoked: 3,
+        active_sessions: 2,
+        decision_latency_ms: 11,
+        opa_latency_ms: 4,
+        redis_latency_ms: 2
+      }), {
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
+    if (url.pathname === "/v1/runtime/activity") {
+      return new Response(JSON.stringify({
+        events: []
+      }), {
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
+    if (url.pathname === "/v1/runtime/integrity") {
+      return new Response(JSON.stringify({
+        redis_ok: true,
+        runtime_revision: "ztr-runtime",
+        policy_revision: "dev-1",
+        timestamp: Math.floor(Date.now()/1000)
+      }), {
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
     const response = await env.ASSETS.fetch(request);
 
     if (!response) {
