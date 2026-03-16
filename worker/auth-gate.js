@@ -179,6 +179,31 @@ export default {
       });
     }
 
+    if (url.pathname === "/v1/intelligence/risk") {
+      return new Response(JSON.stringify({
+        top_risky_tenants: [
+          { tenant: "tenant-launch", risk: 20 },
+          { tenant: "tenant-xyz", risk: 15 },
+          { tenant: "tenant-75a", risk: 12 },
+          { tenant: "tenant-75", risk: 9 },
+          { tenant: "tenant-abc", risk: 5 }
+        ],
+        suspicious_principals: [
+          { principal: "agent-demo", events: 14 },
+          { principal: "agent_refund", events: 9 },
+          { principal: "agent-ops", events: 4 }
+        ],
+        deny_spike: {
+          detected: true,
+          current: 20
+        },
+        policy_drift: false,
+        timestamp: Math.floor(Date.now() / 1000)
+      }), {
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
     const response = await env.ASSETS.fetch(request);
 
     if (!response) {
