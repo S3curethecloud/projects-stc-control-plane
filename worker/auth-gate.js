@@ -113,6 +113,72 @@ export default {
       });
     }
 
+    // tenant administration endpoints
+
+    if (url.pathname === "/v1/admin/tenants") {
+      return new Response(JSON.stringify({
+        tenants: [
+          { tenant_id: "tenant-abc", label: "Test Tenant" },
+          { tenant_id: "tenant-75", label: "Phase 7.5 Test Tenant" },
+          { tenant_id: "tenant-75a", label: "Phase 7.5A Load Test Tenant" },
+          { tenant_id: "tenant-xyz", label: "New Tenant" },
+          { tenant_id: "tenant-launch", label: "Launch Tenant" }
+        ]
+      }), {
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
+    const usageMatch = url.pathname.match(/^\/v1\/admin\/tenants\/([^/]+)\/usage$/);
+
+    if (usageMatch) {
+      const tenantId = decodeURIComponent(usageMatch[1]);
+
+      const usageByTenant = {
+        "tenant-abc": {
+          tokens_issued: 12,
+          policy_denied: 1,
+          sessions_revoked: 0,
+          risk_score: 5
+        },
+        "tenant-75": {
+          tokens_issued: 18,
+          policy_denied: 2,
+          sessions_revoked: 1,
+          risk_score: 9
+        },
+        "tenant-75a": {
+          tokens_issued: 20,
+          policy_denied: 3,
+          sessions_revoked: 0,
+          risk_score: 12
+        },
+        "tenant-xyz": {
+          tokens_issued: 24,
+          policy_denied: 4,
+          sessions_revoked: 0,
+          risk_score: 15
+        },
+        "tenant-launch": {
+          tokens_issued: 30,
+          policy_denied: 10,
+          sessions_revoked: 2,
+          risk_score: 20
+        }
+      };
+
+      return new Response(JSON.stringify(
+        usageByTenant[tenantId] || {
+          tokens_issued: 0,
+          policy_denied: 0,
+          sessions_revoked: 0,
+          risk_score: 0
+        }
+      ), {
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
     const response = await env.ASSETS.fetch(request);
 
     if (!response) {
