@@ -33,13 +33,20 @@ function createNode(type, label){
 
 }
 
+const BLAST_MAP = {
+  "refund:create": ["payment_db", "audit_ledger", "ledger_backup"],
+  "payment:update": ["payment_db", "notification_bus"],
+  "token:issue": ["session_store", "audit_ledger"],
+  "default": ["runtime_control"]
+};
+
 function addEvent(event){
 
   nodes.push(createNode("tenant", event.tenant_id))
   nodes.push(createNode("principal", event.principal))
   nodes.push(createNode("intent", event.intent))
 
-  const impacts = event.impacts || []
+  const impacts = BLAST_MAP[event.intent] || BLAST_MAP.default
 
   impacts.forEach(s => {
     nodes.push(createNode("service", s))

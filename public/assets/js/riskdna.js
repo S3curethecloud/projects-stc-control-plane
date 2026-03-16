@@ -1,76 +1,173 @@
-(function(){
+let nodes = new vis.DataSet([])
+let edges = new vis.DataSet([])
 
-const serviceHits = {}
+let latestEvent = null
 
-function drawMap() {
+const EVENT_HISTORY_LIMIT = 50
+const eventHistory = []
 
-  const container = document.getElementById("blast_radius_map")
+let threatPulseActive = false
+let threatPulseTime = 0
+
+const container = document.getElementById("riskdna_graph")
+
+const data = {
+  nodes: nodes,
+  edges: edges
+}
+
+const options = {
+  nodes: {
+    shape: "dot",
+    size: 18,
+    font: { color: "#ffffff" }
+  },
+  edges: {
+    color: "#4ea1ff",
+    smooth: true
+  },
+  physics: {
+    stabilization: false,
+    barnesHut: { gravitationalConstant: -4000 }
+  },
+  interaction: {
+    hover: true
+  }
+}
+
+const network = new vis.Network(container, data, options)
+
+function riskColor(score){
+  if(score >= 40) return "#ff6b6b"
+  if(score >= 10) return "#ffb84d"
+  return "#2ecc71"
+}
+
+function deriveImpacts(event){
+
+  if(event.impacts) return event
+
+  const impacts = []
+
+  const intent = event.intent || ""
+
+  if(intent.includes("refund")){
+    impacts.push("payment_db")
+    impacts.push("ledger")
+  }
+
+  if(intent.includes("token")){
+    impacts.push("auth_service")
+  }
+
+  if(intent.includes("session")){
+    impacts.push("session_store")
+  }
+
+  event.impacts = impacts
+
+  return event
+}
+
+function updateTimelineSlider() {
+
+  const slider = document.getElementById("riskdna_timeline");
+
+  if (!slider) return;
+  if (eventHistory.length === 0) return;
+
+  const latestIndex = eventHistory.length - 1;
+
+  slider.max = latestIndex;
+  slider.value = latestIndex;
+
+  window.RiskDNATimeline.replay(latestIndex);
+}
+
+function renderEvent(container, event){
+
   if(!container) return
 
-  container.innerHTML = ""
+  nodes.clear()
+  edges.clear()
 
-  const services = Object.keys(serviceHits)
+  const risk = event.risk_score || 0
+  const riskNodeColor = riskColor(risk)
 
-  if(services.length === 0){
-    container.innerHTML =
-      "<div style='color:#8aa4d4'>Awaiting system impact data…</div>"
-    return
+  let decisionColor
+
+  if (event.decision === "deny") {
+
+    if (threatPulseActive && Date.now() - threatPulseTime < 1500) {
+      decisionColor = "#ff4d4d"
+    } else {
+      decisionColor = "#3a1418"
+    }
+
+  } else {
+
+    decisionColor = "#0f2b1e"
+
   }
 
-  const grid = document.createElement("div")
-  grid.style.display = "grid"
-  grid.style.gridTemplateColumns = "repeat(auto-fill, minmax(180px,1fr))"
-  grid.style.gap = "16px"
+  nodes.add([
+    { id: 1, label: event.tenant_id || "tenant", color: "#4ea1ff" },
+    { id: 2, label: event.principal || "principal", color: "#2ecc71" },
+    { id: 3, label: event.intent || "intent", color: "#f39c12" },
+    { id: 4, label: "Risk Score\n"+risk, color: riskNodeColor },
+    { id: 5, label: event.decision || "decision", color: decisionColor }
+  ])
 
-  services.forEach(service => {
+  edges.add([
+    { from:1, to:2 },
+    { from:2, to:3 },
+    { from:3, to:4 },
+    { from:4, to:5 }
+  ])
 
-    const count = serviceHits[service]
-
-    const card = document.createElement("div")
-
-    card.style.background = "#0f223d"
-    card.style.borderRadius = "10px"
-    card.style.padding = "14px"
-    card.style.border = "1px solid rgba(85,183,255,0.15)"
-
-    let color = "#2ecc71"
-    if(count > 5) color = "#ffb84d"
-    if(count > 10) color = "#ff6b6b"
-
-    card.innerHTML = `
-      <div style="font-weight:700">${service}</div>
-      <div style="margin-top:6px;color:${color}">
-        impact events: ${count}
-      </div>
-    `
-
-    grid.appendChild(card)
-
-  })
-
-  container.appendChild(grid)
-
-}
-
-window.GlobalBlastRadius = {
-
-  register(event){
-
-    const impacts = event.impacts || []
-
-    impacts.forEach(service => {
-
-      if(!serviceHits[service]){
-        serviceHits[service] = 0
-      }
-
-      serviceHits[service]++
-
-    })
-
-    drawMap()
+  if (threatPulseActive && Date.now() - threatPulseTime > 1500) {
+    threatPulseActive = false
   }
 
 }
 
-})();
+window.RiskDNAGraph = {
+
+  pushEvent(event){
+
+    event = deriveImpacts(event)
+
+    latestEvent = event
+
+    if (event.decision === "deny") {
+      threatPulseActive = true
+      threatPulseTime = Date.now()
+    }
+
+    eventHistory.push(event)
+
+    if (eventHistory.length > EVENT_HISTORY_LIMIT) {
+      eventHistory.shift()
+    }
+
+    updateTimelineSlider()
+
+  }
+
+}
+
+window.RiskDNATimeline = {
+
+  replay(index){
+
+    const event = eventHistory[index]
+
+    if(!event) return
+
+    const container = document.getElementById("riskdna_graph")
+
+    renderEvent(container, event)
+
+  }
+
+}
