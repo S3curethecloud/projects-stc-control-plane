@@ -179,6 +179,33 @@ export default {
       });
     }
 
+    const billingMatch = url.pathname.match(/^\/v1\/admin\/tenants\/([^/]+)\/billing$/);
+
+    if (billingMatch) {
+      const tenantId = decodeURIComponent(billingMatch[1]);
+
+      const usageByTenant = {
+        "tenant-abc": { tokens_issued: 12 },
+        "tenant-75": { tokens_issued: 18 },
+        "tenant-75a": { tokens_issued: 20 },
+        "tenant-xyz": { tokens_issued: 24 },
+        "tenant-launch": { tokens_issued: 30 }
+      };
+
+      const quantity = usageByTenant[tenantId]?.tokens_issued ?? 0;
+      const unitPriceCents = 5;
+
+      return new Response(JSON.stringify({
+        tenant_id: tenantId,
+        billable_metric: "tokens_issued",
+        unit_price_cents: unitPriceCents,
+        quantity,
+        amount_cents: quantity * unitPriceCents
+      }), {
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
     if (url.pathname === "/v1/intelligence/risk") {
       return new Response(JSON.stringify({
         top_risky_tenants: [
