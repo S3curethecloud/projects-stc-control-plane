@@ -79,6 +79,10 @@ function addDecisionRow(event) {
   if (window.RiskDNAGraph && typeof window.RiskDNAGraph.pushEvent === "function") {
     window.RiskDNAGraph.pushEvent(event);
   }
+
+  if (window.GlobalBlastRadius && typeof window.GlobalBlastRadius.register === "function") {
+    window.GlobalBlastRadius.register(event);
+  }
 }
 
 function renderSessions(data) {
