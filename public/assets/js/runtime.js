@@ -7,15 +7,29 @@ if (!localStorage.getItem("STC_ADMIN_SECRET")) {
 const REFRESH_INTERVAL = 15000;
 
 async function loadRuntimeDiagnostics() {
+  const [runtime, tenantsRes, metrics] = await Promise.all([
+    STC_API.getAdminRuntime(),
+    STC_API.getTenants(),
+    STC_API.getAdminMetrics()
+  ]);
 
-  const runtime = await STC_API.getAdminRuntime();
+  document.getElementById("runtime_status").textContent =
+    runtime.status || "--";
 
-  document.getElementById("runtime_status").textContent = runtime.status;
-  document.getElementById("redis_status").textContent = runtime.redis;
-  document.getElementById("policy_revision").textContent = runtime.policy_revision;
-  document.getElementById("tenant_count").textContent = runtime.tenant_count;
-  document.getElementById("active_sessions").textContent = runtime.active_sessions;
-  document.getElementById("runtime_period").textContent = runtime.period;
+  document.getElementById("redis_status").textContent =
+    runtime.redis || "--";
+
+  document.getElementById("policy_revision").textContent =
+    runtime.policy_revision || "--";
+
+  document.getElementById("tenant_count").textContent =
+    Array.isArray(tenantsRes.tenants) ? tenantsRes.tenants.length : 0;
+
+  document.getElementById("active_sessions").textContent =
+    metrics.active_sessions ?? runtime.active_sessions ?? 0;
+
+  document.getElementById("runtime_period").textContent =
+    "current_period";
 }
 
 async function refreshRuntime() {
@@ -23,20 +37,12 @@ async function refreshRuntime() {
 }
 
 async function init() {
-
   try {
-
     await refreshRuntime();
-
     setInterval(refreshRuntime, REFRESH_INTERVAL);
-
   } catch (err) {
-
     console.error("Runtime load error:", err);
-    alert("Failed to load runtime diagnostics");
-
   }
-
 }
 
 init();
