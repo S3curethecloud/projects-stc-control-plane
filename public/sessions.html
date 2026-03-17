@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>SecureTheCloud Sessions</title>
-<link rel="stylesheet" href="assets/css/stc-control.css">
+<link rel="stylesheet" href="/assets/css/stc-control.css">
 </head>
 
 <body>
@@ -12,10 +12,10 @@
 
 <main class="container">
 
-<h1>Active Sessions</h1>
+<h1 id="sessions_header">Active Sessions</h1>
 
 <div class="toolbar">
-<button id="refresh_sessions_btn">Refresh</button>
+  <button id="refresh_sessions_btn" class="button" type="button">Refresh</button>
 </div>
 
 <table class="data-table">
@@ -32,9 +32,18 @@
 </tr>
 </thead>
 
-<tbody id="sessions_table"></tbody>
+<tbody id="sessions_table">
+  <tr id="sessions_empty">
+    <td colspan="7" class="empty">Awaiting session inventory...</td>
+  </tr>
+</tbody>
 
 </table>
+
+<section class="card">
+  <h2>Session Notes</h2>
+  <div id="sessions_notes" class="card-sub">Awaiting session telemetry...</div>
+</section>
 
 </main>
 

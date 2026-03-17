@@ -5,108 +5,183 @@ if (!localStorage.getItem("STC_ADMIN_SECRET")) {
 // FILE: public/assets/js/sessions.js
 
 const REFRESH_INTERVAL = 5000;
+let sessionsRefreshHandle = null;
+let sessionsLoading = false;
+
+function getTenantId() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("tenant");
+}
 
 function formatTime(ts) {
-  if (!ts) return "";
+  if (!ts) return "--";
   return new Date(ts * 1000).toISOString();
 }
 
-function attachSessionHandlers() {
-
-  document.querySelectorAll(".revoke-button").forEach((button) => {
-
-    button.addEventListener("click", async () => {
-
-      const sessionId = button.getAttribute("data-session-id");
-
-      try {
-        await STC_API.revokeSession(sessionId);
-        await loadSessions();
-
-      } catch (err) {
-        console.error("Revoke failed", err);
-      }
-
-    });
-
-  });
-
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = value;
 }
 
-function attachToolbarHandlers() {
+function setSessionsNotes(message) {
+  setText("sessions_notes", message);
+}
 
+function renderEmptySessions(message) {
+  const table = document.getElementById("sessions_table");
+  if (!table) return;
+
+  table.innerHTML = `
+    <tr id="sessions_empty">
+      <td colspan="7" class="empty">${message}</td>
+    </tr>
+  `;
+}
+
+async function copyText(value) {
+  try {
+    await navigator.clipboard.writeText(value);
+    setSessionsNotes(`Copied session ID: ${value}`);
+  } catch (err) {
+    console.error("Copy failed:", err);
+    setSessionsNotes(`Copy failed for session ID: ${value}`);
+  }
+}
+
+async function revokeSession(sessionId) {
+  if (!sessionId) return;
+
+  const approved = window.confirm(`Revoke session ${sessionId}?`);
+  if (!approved) {
+    setSessionsNotes(`Revoke cancelled for session ${sessionId}.`);
+    return;
+  }
+
+  try {
+    await STC_API.revokeSession(sessionId);
+    setSessionsNotes(`Session revoked: ${sessionId}`);
+    await loadSessions();
+  } catch (err) {
+    console.error("Revoke failed", err);
+    setSessionsNotes(`Revoke failed for session ${sessionId}.`);
+  }
+}
+
+function bindSessionTableActions() {
+  const table = document.getElementById("sessions_table");
+  if (!table) return;
+
+  table.addEventListener("click", async (event) => {
+    const copyBtn = event.target.closest(".copy-session-btn");
+    if (copyBtn) {
+      await copyText(copyBtn.dataset.sessionId || "");
+      return;
+    }
+
+    const revokeBtn = event.target.closest(".revoke-session-btn");
+    if (revokeBtn) {
+      await revokeSession(revokeBtn.dataset.sessionId || "");
+    }
+  });
+}
+
+function bindToolbarHandlers() {
   const btn = document.getElementById("refresh_sessions_btn");
-
   if (!btn) return;
 
   btn.addEventListener("click", async () => {
     await loadSessions();
   });
-
 }
 
 async function loadSessions() {
+  if (sessionsLoading) return;
+  sessionsLoading = true;
 
-  const tenant = localStorage.getItem("STC_TENANT_ID");
-  const res = await STC_API.getTenantSessions(tenant);
+  const tenantId = getTenantId();
   const table = document.getElementById("sessions_table");
 
-  table.innerHTML = "";
+  try {
+    if (!tenantId) {
+      renderEmptySessions("Tenant query parameter missing. Open Sessions from a tenant row.");
+      setSessionsNotes("No tenant selected for session inventory.");
+      sessionsLoading = false;
+      return;
+    }
 
-  const sessions = res.sessions || res.active_sessions || [];
+    setText("sessions_header", `Active Sessions — ${tenantId}`);
 
-  sessions.forEach((s) => {
+    const res = await STC_API.getTenantSessions(tenantId);
+    const sessions = Array.isArray(res.sessions) ? res.sessions : [];
 
-    const tr = document.createElement("tr");
+    table.innerHTML = "";
 
-    tr.innerHTML = `
-      <td>
-        ${s.session_id}
-        <button onclick="copy('${s.session_id}')">Copy</button>
-      </td>
+    if (!sessions.length) {
+      renderEmptySessions(`No active sessions for tenant ${tenantId}.`);
+      setSessionsNotes(`Loaded 0 sessions for ${tenantId}.`);
+      sessionsLoading = false;
+      return;
+    }
 
-      <td>${s.principal}</td>
+    sessions.forEach((s) => {
+      const tr = document.createElement("tr");
 
-      <td>${s.intent}</td>
+      tr.innerHTML = `
+        <td>
+          ${s.session_id || "--"}
+          <button
+            type="button"
+            class="button copy-session-btn"
+            data-session-id="${s.session_id || ""}"
+          >
+            Copy
+          </button>
+        </td>
+        <td>${s.principal || "--"}</td>
+        <td>${s.intent || "--"}</td>
+        <td>${Array.isArray(s.scopes) ? s.scopes.join(", ") : "--"}</td>
+        <td>${formatTime(s.issued_at)}</td>
+        <td>${s.ttl ?? "--"}</td>
+        <td>
+          <button
+            type="button"
+            class="button revoke-session-btn"
+            data-session-id="${s.session_id || ""}"
+          >
+            Revoke
+          </button>
+        </td>
+      `;
 
-      <td>${(s.scopes || []).join(", ")}</td>
+      table.appendChild(tr);
+    });
 
-      <td>${formatTime(s.issued_at)}</td>
+    setSessionsNotes(`Loaded ${sessions.length} active session(s) for ${tenantId}.`);
 
-      <td>${s.ttl}</td>
-
-      <td>
-        <button class="revoke-button" data-session-id="${s.session_id}">
-          Revoke
-        </button>
-      </td>
-    `;
-
-    table.appendChild(tr);
-
-  });
-
-  attachSessionHandlers();
-
+  } catch (err) {
+    console.error("Session load failed:", err);
+    renderEmptySessions("Session inventory unavailable.");
+    setSessionsNotes("Session load failed.");
+  } finally {
+    sessionsLoading = false;
+  }
 }
 
-function copy(value) {
-
-  navigator.clipboard.writeText(value)
-    .then(() => alert("Copied: " + value))
-    .catch(() => alert("Copy failed"));
-
-}
-
-async function refreshSessionsLoop() {
-  await loadSessions();
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-
-  attachToolbarHandlers();
+function init() {
+  bindToolbarHandlers();
+  bindSessionTableActions();
   loadSessions();
 
-  setInterval(refreshSessionsLoop, REFRESH_INTERVAL);
+  if (sessionsRefreshHandle) {
+    clearInterval(sessionsRefreshHandle);
+  }
 
-});
+  sessionsRefreshHandle = setInterval(loadSessions, REFRESH_INTERVAL);
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
+} else {
+  init();
+}
