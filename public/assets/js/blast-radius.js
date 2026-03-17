@@ -1,4 +1,6 @@
-(function(){
+if (!localStorage.getItem("STC_ADMIN_SECRET")) {
+  window.location.href = "index.html";
+}
 
 const BLAST_MAP = {
   "refund:create": ["payment_db", "audit_ledger", "ledger_backup"],
@@ -9,8 +11,28 @@ const BLAST_MAP = {
 
 const serviceHits = {};
 
-function drawMap() {
+function setBlastNotes(message) {
+  const el = document.getElementById("blast_radius_notes");
+  if (!el) return;
+  el.textContent = message;
+}
 
+function resetHits() {
+  Object.keys(serviceHits).forEach((key) => delete serviceHits[key]);
+}
+
+function registerImpact(event) {
+  const impacts = BLAST_MAP[event.intent] || BLAST_MAP.default;
+
+  impacts.forEach((service) => {
+    if (!serviceHits[service]) {
+      serviceHits[service] = 0;
+    }
+    serviceHits[service] += 1;
+  });
+}
+
+function drawMap() {
   const container = document.getElementById("blast_radius_map");
   if (!container) return;
 
@@ -20,32 +42,29 @@ function drawMap() {
 
   if (services.length === 0) {
     container.innerHTML =
-      "<div style='color:#8aa4d4'>Awaiting system impact data…</div>";
+      "<div class='empty'>No active blast radius data available.</div>";
     return;
   }
 
   const grid = document.createElement("div");
   grid.style.display = "grid";
-  grid.style.gridTemplateColumns = "repeat(auto-fill, minmax(180px,1fr))";
+  grid.style.gridTemplateColumns = "repeat(auto-fill, minmax(220px,1fr))";
   grid.style.gap = "16px";
 
-  services.forEach(service => {
+  services.forEach((service) => {
     const count = serviceHits[service];
-
-    const card = document.createElement("div");
-    card.style.background = "#0f223d";
-    card.style.borderRadius = "10px";
-    card.style.padding = "14px";
-    card.style.border = "1px solid rgba(85,183,255,0.15)";
 
     let color = "#2ecc71";
     if (count > 5) color = "#ffb84d";
     if (count > 10) color = "#ff6b6b";
 
+    const card = document.createElement("div");
+    card.className = "card";
     card.innerHTML = `
-      <div style="font-weight:700">${service}</div>
-      <div style="margin-top:6px;color:${color}">
-        impact events: ${count}
+      <h3>${service}</h3>
+      <div class="card-value">${count}</div>
+      <div class="card-sub" style="color:${color}">
+        impact events
       </div>
     `;
 
@@ -55,19 +74,25 @@ function drawMap() {
   container.appendChild(grid);
 }
 
-window.GlobalBlastRadius = {
-  register(event) {
-    const impacts = BLAST_MAP[event.intent] || BLAST_MAP.default;
+async function loadBlastRadius() {
+  try {
+    resetHits();
 
-    impacts.forEach(service => {
-      if (!serviceHits[service]) {
-        serviceHits[service] = 0;
-      }
-      serviceHits[service]++;
+    const res = await STC_API.getAdminSessions();
+    const sessions = Array.isArray(res.sessions) ? res.sessions : [];
+
+    sessions.forEach((session) => {
+      registerImpact({ intent: session.intent });
     });
 
     drawMap();
-  }
-};
+    setBlastNotes(`Mapped ${sessions.length} active session(s) into impacted services.`);
 
-})();
+  } catch (err) {
+    console.error("Blast radius load failed:", err);
+    drawMap();
+    setBlastNotes("Blast radius data unavailable.");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadBlastRadius);

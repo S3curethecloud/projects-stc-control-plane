@@ -12,16 +12,20 @@
 
 <main class="container">
 
-<h1>Authorization Blast Radius</h1>
+  <h1>Authorization Blast Radius</h1>
 
-<p class="subtitle">
-Visual representation of resources potentially impacted by an authorization request.
-</p>
+  <p class="subtitle">
+    Visual representation of resources potentially impacted by active authorization paths.
+  </p>
 
-<svg id="blast_radius_graph"
-     viewBox="0 0 1000 420"
-     style="width:100%;height:420px;background:#0b162b;border-radius:10px">
-</svg>
+  <section class="card">
+    <div id="blast_radius_map"></div>
+  </section>
+
+  <section class="card">
+    <h2>Blast Radius Notes</h2>
+    <div id="blast_radius_notes" class="card-sub">Awaiting impact data...</div>
+  </section>
 
 </main>
 
