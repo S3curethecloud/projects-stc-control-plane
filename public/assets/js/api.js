@@ -15,8 +15,21 @@ function stcFetch(url, options = {}) {
 }
 
 const STC_API = (() => {
+
+  /* ---------------------------------------------------
+     ENVIRONMENT DETECTION
+     Local development automatically targets local worker
+     Production automatically targets deployed control plane
+  --------------------------------------------------- */
+
+  const CONTROL_ORIGIN =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
+      ? window.location.origin
+      : "https://app.securethecloud.dev";
+
   const CONFIG = {
-    CONTROL_URL: "https://app.securethecloud.dev",
+    CONTROL_URL: CONTROL_ORIGIN,
     RUNTIME_URL: "https://ztr-runtime.fly.dev",
     TIMEOUT: 6000
   };
@@ -268,5 +281,3 @@ const STC_API = (() => {
     getRuntimeMetrics
   };
 })();
-
-
