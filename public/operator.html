@@ -17,21 +17,29 @@
 <section class="card">
 
 <label>API Key</label>
-<input id="api_key">
+<input id="api_key" type="text" placeholder="tenant API key">
 
 <label>Operator Principal</label>
-<input id="principal" value="admin">
+<input id="principal" type="text" value="admin">
 
 <label>Scopes</label>
-<input id="scopes" value="controlplane:access">
+<input id="scopes" type="text" value="controlplane:access">
 
 <label>TTL Seconds</label>
-<input id="ttl" value="3600">
+<input id="ttl" type="number" value="3600">
 
-<button id="issue_token">Generate Token</button>
+<button id="issue_token" class="button" type="button">Generate Token</button>
 
-<textarea id="token_output"></textarea>
+</section>
 
+<section class="card">
+  <h2>Operator Notes</h2>
+  <div id="operator_notes" class="card-sub">Awaiting operator action...</div>
+</section>
+
+<section class="card">
+  <h2>Token Output</h2>
+  <textarea id="token_output" rows="12" style="width:100%;"></textarea>
 </section>
 
 </main>
