@@ -1,242 +1,115 @@
 /* =========================================================
-   STC CONTROL PLANE — ENTERPRISE THEME VARIABLES
+   STC CONTROL PLANE — GOVERNED MASTER BUILD (NO DUPLICATES)
+   ========================================================= */
+
+/* =========================================================
+   ROOT DESIGN TOKENS (INJECTED — AUTHORITATIVE)
    ========================================================= */
 
 :root {
+  --bg-main: #0b162b;
+  --bg-card: #0f223d;
+  --bg-card-soft: #0c1a30;
 
-  --stc-bg: #0f172a;
-  --stc-panel: #1e293b;
-  --stc-accent: #3b82f6;
+  --border-subtle: rgba(85,183,255,0.12);
+  --border-focus: #55b7ff;
 
-  --stc-text: #e2e8f0;
-  --stc-muted: #94a3b8;
+  --text-primary: #d6e2ff;
+  --text-secondary: #8aa4d4;
 
-  --stc-allow: #22c55e;
-  --stc-deny: #ef4444;
+  --accent: #55b7ff;
+  --accent-strong: #3a7bd5;
 
-}
-
-body {
-  background: var(--stc-bg);
-  color: var(--stc-text);
-  font-family: system-ui, sans-serif;
-}
-
-.card {
-  background: var(--stc-panel);
-  border-radius: 8px;
-  padding: 20px;
-}
-
-.stc-nav {
-  background: #020617;
+  --success: #2ecc71;
+  --warning: #ffb84d;
+  --danger: #ff6b6b;
 }
 
 /* =========================================================
-   STC CONTROL PLANE — ENTERPRISE DARK
-   Azure x AWS Hybrid Minimal
+   BASE LAYOUT
    ========================================================= */
-
-:root{
-  --bg: #060B14;
-  --bg-soft: #0B1220;
-  --panel: #0F1A2B;
-  --panel-2: #111E32;
-
-  --text: #E6EDF5;
-  --muted: #9FB3C8;
-
-  --azure: #1F6FEB;
-  --azure-soft: #2F81F7;
-
-  --gold: #D4AF37;
-  --gold-soft: #F0C75E;
-
-  --danger: #E5484D;
-  --line: #1C2B40;
-
-  --radius: 14px;
-  --shadow: 0 18px 60px rgba(0,0,0,.6);
-}
 
 * { box-sizing: border-box; }
 
-html,body{
+html, body {
   margin:0;
   padding:0;
-  background: linear-gradient(180deg, var(--bg), #050913);
-  color: var(--text);
+  background: linear-gradient(180deg, var(--bg-main), #050913);
+  color: var(--text-primary);
   font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
 }
 
-/* Layout */
 .container{
   width: min(1100px, calc(100% - 40px));
   margin: 0 auto;
   padding: 40px 0;
 }
 
-/* Header */
-header{
-  border-bottom:1px solid var(--line);
-  padding: 20px 0;
+/* =========================================================
+   NAV SYSTEM — PRODUCT GRADE
+   ========================================================= */
+
+.stc-nav {
+  background: rgba(11, 22, 43, 0.95);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
-h1{
-  margin:0;
-  font-size:28px;
-  font-weight:700;
-  letter-spacing:.3px;
+.nav-links a {
+  color: var(--text-secondary);
+  margin-right:16px;
+  text-decoration:none;
+  position: relative;
+  padding-bottom: 6px;
 }
 
-/* Panels */
+.nav-links a:hover {
+  color: var(--accent);
+}
+
+.nav-links a.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--accent);
+}
+
+/* =========================================================
+   CARD SYSTEM — UNIFIED (DEDUPED)
+   ========================================================= */
+
+.card {
+  background: linear-gradient(180deg, var(--bg-card), var(--bg-card-soft));
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 20px;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  border-color: rgba(85,183,255,0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+.card h3 {
+  color: var(--accent);
+}
+
+/* =========================================================
+   PANEL SYSTEM (RETAINED — NON-CONFLICT)
+   ========================================================= */
+
 .panel{
-  background: var(--panel);
-  border:1px solid var(--line);
-  border-radius: var(--radius);
+  background: #0F1A2B;
+  border:1px solid #1C2B40;
+  border-radius: 14px;
   padding: 24px;
-  box-shadow: var(--shadow);
-}
-
-/* Buttons */
-.btn{
-  padding:10px 16px;
-  border-radius:10px;
-  border:1px solid var(--line);
-  background: var(--panel-2);
-  color: var(--text);
-  font-weight:600;
-  cursor:pointer;
-}
-
-.btn-primary{
-  background: linear-gradient(180deg,var(--azure),var(--azure-soft));
-  border:none;
-}
-
-.btn-gold{
-  background: linear-gradient(180deg,var(--gold),var(--gold-soft));
-  border:none;
-  color:#111;
-}
-
-/* Inputs */
-input{
-  padding:12px;
-  border-radius:8px;
-  border:1px solid var(--line);
-  background: var(--bg-soft);
-  color: var(--text);
-  width:100%;
-}
-
-/* =========================================================
-   STATUS COLOR SYSTEM
-   ========================================================= */
-
-.status-ok{
-  color:#22c55e;
-}
-
-.status-deny{
-  color:#e74c3c;
-}
-
-.status-revoked{
-  color:#e67e22;
-}
-
-.status-expired{
-  color:#7f8c8d;
-}
-
-/* =========================================================
-   Runtime Activity Indicator
-   ========================================================= */
-
-.activity-idle{
-  color:#9ca3af;
-}
-
-.activity-live{
-  color:#22c55e;
-}
-
-.activity-pulse{
-  animation: activityPulse .6s ease;
-}
-
-@keyframes activityPulse{
-
-  0%{
-    transform:scale(1);
-    text-shadow:none;
-  }
-
-  40%{
-    transform:scale(1.08);
-    text-shadow:0 0 10px rgba(34,197,94,.6);
-  }
-
-  100%{
-    transform:scale(1);
-    text-shadow:none;
-  }
-
-}
-
-/* =========================================================
-   RUNTIME HEADER BAR
-   ========================================================= */
-
-.runtime-bar {
-  display:flex;
-  gap:40px;
-  padding:16px 24px;
-  background:#111827;
-  border-bottom:1px solid #1f2937;
-}
-
-.runtime-metric {
-  display:flex;
-  flex-direction:column;
-  font-size:14px;
-}
-
-.metric-label {
-  color:#9ca3af;
-  font-size:12px;
-}
-
-.metric-value {
-  font-size:18px;
-  font-weight:600;
-  color:#e5e7eb;
-}
-
-.status-ok {
-  color:#22c55e;
-}
-
-/* Responsive */
-@media (max-width: 980px){
-  .container{
-    width: calc(100% - 24px);
-    padding: 24px 0;
-  }
-}
-
-@media (max-width: 640px){
-  h1{
-    font-size:22px;
-  }
-}
-
-/* =========================================================
-   ENTERPRISE DASHBOARD ENHANCEMENTS
-   ========================================================= */
-
-.panel{
+  box-shadow: 0 18px 60px rgba(0,0,0,.6);
   position:relative;
   transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
@@ -247,252 +120,128 @@ input{
   border-color: rgba(47,129,247,.35);
 }
 
-.panel::before{
-  content:"";
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  height:1px;
+/* =========================================================
+   INPUT + TEXTAREA — CONTROL SURFACE
+   ========================================================= */
 
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255,255,255,.08),
-    transparent
-  );
+input, textarea {
+  background: var(--bg-main);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 12px;
+  width: 100%;
+  transition: border 0.2s ease;
 }
 
-.status-stream-live{
-  color:#22c55e;
-  font-weight:600;
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--border-focus);
 }
 
-.status-stream-wait{
-  color:#f59e0b;
-  font-weight:600;
+textarea {
+  height: 120px;
+  resize: vertical;
+  font-family: monospace;
 }
 
-.status-stream-down{
-  color:#ef4444;
-  font-weight:600;
+/* =========================================================
+   BUTTON SYSTEM — UNIFIED
+   ========================================================= */
+
+button {
+  background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.panel + .panel{
-  margin-top:24px;
+button:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
 }
 
-table{
-  width:100%;
-  border-collapse:collapse;
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-th{
-  text-align:left;
-  font-size:12px;
-  color:var(--muted);
-  font-weight:600;
-  padding:10px 8px;
-  border-bottom:1px solid var(--line);
+/* =========================================================
+   LOADING STATE (NEW — GOVERNED INSERT)
+   ========================================================= */
+
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
 }
 
-td{
-  padding:10px 8px;
-  border-bottom:1px solid rgba(255,255,255,.04);
+/* =========================================================
+   EMPTY STATE (NEW — GOVERNED INSERT)
+   ========================================================= */
+
+.empty {
+  color: var(--text-secondary);
+  font-style: italic;
 }
 
-tr:hover{
-  background:rgba(255,255,255,.02);
+/* =========================================================
+   STATUS / NOTE SYSTEM — SIGNAL PANELS
+   ========================================================= */
+
+.note {
+  padding: 12px 14px;
+  border-radius: 8px;
+  margin-top: 10px;
+  font-size: 14px;
 }
 
-.decision-row{
-  animation: decisionFade .25s ease;
+.note.success {
+  background: rgba(46,204,113,0.1);
+  color: var(--success);
 }
 
-@keyframes decisionFade{
-  from{
-    opacity:0;
-    transform:translateY(-4px);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
+.note.warning {
+  background: rgba(255,184,77,0.1);
+  color: var(--warning);
 }
 
-/* --- SecureTheCloud Dark SOC Theme --- */
-
-body {
-  background:#0f172a;
-  color:#e5e7eb;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+.note.error {
+  background: rgba(255,107,107,0.1);
+  color: var(--danger);
 }
 
-.stc-nav {
-  background:#020617;
-  border-bottom:1px solid #1f2937;
+.note.info {
+  background: rgba(85,183,255,0.1);
+  color: var(--accent);
 }
 
-.logo {
-  font-weight:600;
-  color:#38bdf8;
-}
+/* =========================================================
+   STATUS COLORS (DEDUPED)
+   ========================================================= */
 
-.nav-links a {
-  color:#cbd5f5;
-  margin-right:16px;
-  text-decoration:none;
-}
-
-.nav-links a:hover {
-  color:#38bdf8;
-}
-
-.card {
-  background:#111827;
-  border:1px solid #1f2937;
-  border-radius:8px;
-  padding:16px;
-  box-shadow:0 0 8px rgba(56,189,248,0.05);
-}
-
-.card h3 {
-  color:#38bdf8;
-}
-
-.data-table {
-  width:100%;
-  border-collapse:collapse;
-}
-
-.data-table th {
-  background:#020617;
-  color:#38bdf8;
-}
-
-.data-table td,
-.data-table th {
-  border:1px solid #1f2937;
-  padding:8px;
-}
-
-.heat-low {
-  background:#022c22;
-}
-
-.heat-medium {
-  background:#78350f;
-}
-
-.heat-high {
-  background:#7f1d1d;
-}
-
-.heat-critical {
-  background:#b91c1c;
-  color:white;
-  font-weight:600;
-}
-
-.status-allow {
-  color: #22c55e;
+.status-allow,
+.status-ok {
+  color: var(--success);
   font-weight: 600;
 }
 
 .status-deny {
-  color: #ef4444;
-  font-weight: 600;
-}
-
-.login-container {
-  max-width: 500px;
-  margin: 120px auto;
-  text-align: center;
-}
-
-textarea {
-  width: 100%;
-  height: 120px;
-  margin: 20px 0;
-}
-
-button {
-  background: #3b82f6;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 6px;
-  border: none;
-}
-
-/* Risk status colors */
-
-.status-ok {
-  color: #10b981;
+  color: var(--danger);
   font-weight: 600;
 }
 
 .status-warning {
-  color: #f59e0b;
+  color: var(--warning);
   font-weight: 600;
 }
 
-.status-deny {
-  color: #ef4444;
-  font-weight: 700;
-}
-
-/* Optional colored dot */
-
-.status-ok::before {
-  content: "● ";
-  color: #10b981;
-}
-
-.status-warning::before {
-  content: "● ";
-  color: #f59e0b;
-}
-
-.status-deny::before {
-  content: "● ";
-  color: #ef4444;
-}
-
-/* =========================
-   SaaS Dashboard Polish
-   ========================= */
-
-.container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 40px 24px;
-}
-
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 18px;
-  margin-bottom: 30px;
-}
-
-.card {
-  background: linear-gradient(180deg, #0f1c33 0%, #0b1628 100%);
-  border-radius: 10px;
-  border: 1px solid #1c2a45;
-  padding: 22px;
-  transition: all 0.15s ease;
-}
-
-.card:hover {
-  border-color: #2f4f8f;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-}
-
-.card h3 {
-  color: #4cc2ff;
-  margin-bottom: 10px;
-}
+/* =========================================================
+   DATA TABLE
+   ========================================================= */
 
 .data-table {
   width: 100%;
@@ -508,7 +257,7 @@ button {
   text-align: left;
   padding: 12px;
   font-weight: 600;
-  color: #5cc8ff;
+  color: var(--accent);
   border-bottom: 1px solid #1d2b48;
 }
 
@@ -521,121 +270,61 @@ button {
   background: rgba(76, 194, 255, 0.05);
 }
 
-h1 {
-  margin-bottom: 8px;
-}
+/* =========================================================
+   DASHBOARD STRUCTURE
+   ========================================================= */
 
-p {
-  opacity: 0.7;
-  margin-bottom: 24px;
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+  margin-bottom: 30px;
 }
 
 .summary-grid{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:20px;
-margin-bottom:30px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:20px;
+  margin-bottom:30px;
 }
 
 .summary-card{
-background:#0f1b2b;
-border:1px solid #1e3a5c;
-padding:20px;
-border-radius:10px;
+  background:#0f1b2b;
+  border:1px solid #1e3a5c;
+  padding:20px;
+  border-radius:10px;
 }
 
 .summary-card h3{
-font-size:14px;
-color:#7aa8d8;
-margin-bottom:10px;
+  font-size:14px;
+  color:#7aa8d8;
+  margin-bottom:10px;
 }
 
 .summary-card span{
-font-size:34px;
-font-weight:bold;
-color:#4db3ff;
+  font-size:34px;
+  font-weight:bold;
+  color:#4db3ff;
 }
 
+/* =========================================================
+   GRAPH + VISUALS
+   ========================================================= */
+
 .graph-container{
-margin-bottom:30px;
-background:#0f1b2b;
-border:1px solid #1e3a5c;
-border-radius:10px;
-padding:20px;
+  margin-bottom:30px;
+  background:#0f1b2b;
+  border:1px solid #1e3a5c;
+  border-radius:10px;
+  padding:20px;
+  overflow:hidden;
 }
 
 #blast_graph{
-height:300px;
-}
-
-#blast_graph{
-height:420px;
-width:100%;
-background:#0a1524;
-border-radius:6px;
-}
-
-.graph-container{
-margin-bottom:30px;
-background:#0f1b2b;
-border:1px solid #1e3a5c;
-border-radius:10px;
-padding:20px;
-overflow:hidden;
-}
-
-.graph-container{
-overflow:hidden;
-}
-
-#redis_status {
-color:#6ee7b7;
-font-weight:600;
-}
-
-#audit_chain {
-color:#60a5fa;
-font-weight:600;
-}
-
-.status-allow {
-  color: #2ecc71;
-  font-weight: 600;
-}
-
-.status-deny {
-  color: #e74c3c;
-  font-weight: 600;
-}
-
-.soc-status {
-display:grid;
-grid-template-columns: repeat(4,1fr);
-gap:20px;
-margin-bottom:30px;
-}
-
-.soc-card {
-background:#0f1c33;
-padding:20px;
-border-radius:8px;
-text-align:center;
-}
-
-.status-allow {
-color:#2ecc71;
-font-weight:600;
-}
-
-.status-deny {
-color:#e74c3c;
-font-weight:600;
-}
-
-#riskdna-graph {
-    height: 400px;
-    background: #0f1b2d;
-    border-radius: 12px;
+  height:420px;
+  width:100%;
+  background:#0a1524;
+  border-radius:6px;
 }
 
 #riskdna_graph{
@@ -643,76 +332,26 @@ font-weight:600;
   height:360px;
 }
 
-#blast_radius_map {
-  width: 100%;
-  height: 320px;
-  border-radius: 12px;
-  background: #0b162b;
-  padding: 20px;
-}
-
 #riskdna_universe {
   width: 100%;
   height: 380px;
   background: #071126;
   border-radius: 12px;
-  display: block;
 }
 
-button {
-  background: linear-gradient(135deg, #3a7bd5, #5fa8ff);
-  border: none;
-  border-radius: 6px;
-  padding: 10px 16px;
-  color: white;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 980px){
+  .container{
+    width: calc(100% - 24px);
+    padding: 24px 0;
+  }
 }
 
-button:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
+@media (max-width: 640px){
+  h1{
+    font-size:22px;
+  }
 }
-
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-textarea {
-  background: #0b162b;
-  color: #d6e2ff;
-  border: 1px solid rgba(85,183,255,0.2);
-  border-radius: 8px;
-  padding: 12px;
-  font-family: monospace;
-  resize: vertical;
-}
-
-input {
-  background: #0b162b;
-  color: #d6e2ff;
-  border: 1px solid rgba(85,183,255,0.2);
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 12px;
-}
-
-input:focus {
-  outline: none;
-  border-color: #55b7ff;
-}
-
-.card {
-  background: linear-gradient(180deg, #0f223d, #0b162b);
-  border-radius: 12px;
-  padding: 20px;
-  border: 1px solid rgba(85,183,255,0.12);
-}
-
-.subtitle {
-  color: #8aa4d4;
-  margin-bottom: 20px;
-}
-
