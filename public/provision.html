@@ -12,30 +12,37 @@
 
 <main class="container">
 
-<h1>Provision Tenant</h1>
+  <h1>Provision Tenant</h1>
 
-<section class="card">
+  <section class="card">
+    <div class="form-stack">
 
-<label>Tenant ID</label>
-<input id="tenant_id" type="text" placeholder="tenant-123"/>
+      <label for="tenant_id">Tenant ID</label>
+      <input id="tenant_id" type="text" placeholder="tenant-123" />
 
-<label>Label</label>
-<input id="label" type="text" placeholder="Example tenant"/>
+      <label for="label">Label</label>
+      <input id="label" type="text" placeholder="Example tenant" />
 
-<label>Key Label</label>
-<input id="key_label" type="text" placeholder="initial key"/>
+      <label for="key_label">Key Label</label>
+      <input id="key_label" type="text" placeholder="initial key" />
 
-<button onclick="provisionTenant()">Provision Tenant</button>
+      <div class="toolbar">
+        <button id="provision_btn" type="button">Provision Tenant</button>
+        <a class="button" href="tenants.html">Back to Tenants</a>
+      </div>
 
-</section>
+    </div>
+  </section>
 
-<h2>Provision Result</h2>
+  <section class="card">
+    <h2>Provision Notes</h2>
+    <div id="provision_notes" class="card-sub">Ready to provision a tenant.</div>
+  </section>
 
-<section class="card">
-
-<pre id="provision_result"></pre>
-
-</section>
+  <section class="card">
+    <h2>Provision Result</h2>
+    <pre id="provision_result"></pre>
+  </section>
 
 </main>
 
