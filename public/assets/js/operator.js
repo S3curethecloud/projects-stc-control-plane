@@ -103,7 +103,11 @@ async function issueToken() {
     }
 
     renderOutput(data.token || JSON.stringify(data, null, 2));
-    setNotes(`Operator token issued for principal ${principal}.`);
+
+    if (notes) {
+      notes.className = "note success";
+      notes.textContent = "Operator token issued successfully.";
+    }
 
   } catch (err) {
     console.error("Operator token issuance failed:", err);
