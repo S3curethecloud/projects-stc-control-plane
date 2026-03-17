@@ -12,7 +12,7 @@
 
 <main class="container">
 
-<h1 id="sessions_header">Active Sessions</h1>
+<h1>Active Sessions</h1>
 
 <div class="toolbar">
   <button id="refresh_sessions_btn" class="button" type="button">Refresh</button>
@@ -22,6 +22,7 @@
 
 <thead>
 <tr>
+<th>Tenant</th>
 <th>Session ID</th>
 <th>Principal</th>
 <th>Intent</th>
@@ -34,7 +35,7 @@
 
 <tbody id="sessions_table">
   <tr id="sessions_empty">
-    <td colspan="7" class="empty">Awaiting session inventory...</td>
+    <td colspan="8" class="empty">Awaiting platform session inventory...</td>
   </tr>
 </tbody>
 

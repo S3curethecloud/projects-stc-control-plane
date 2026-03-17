@@ -1,16 +1,13 @@
 // FILE: worker/auth-gate.js
 
-// Optional: operator IP allowlist (SOC / admin access)
-// Enable later when needed
-
 const ALLOWED_IPS = [
-  "203.0.113.10",   // office
-  "198.51.100.25",  // VPN gateway
-  "192.0.2.44"      // admin workstation
+  "203.0.113.10",
+  "198.51.100.25",
+  "192.0.2.44"
 ];
 
-const RATE_LIMIT = 60;        // requests
-const RATE_WINDOW = 60_000;   // 1 minute
+const RATE_LIMIT = 60;
+const RATE_WINDOW = 60_000;
 
 const rateMap = new Map();
 
@@ -62,13 +59,6 @@ export default {
     const ip = request.headers.get("CF-Connecting-IP") || "unknown";
     const url = new URL(request.url);
 
-    // Optional SOC IP restriction
-    /*
-    if (!isAllowedOperatorIP(ip)) {
-      return new Response("Operator access restricted", { status: 403 });
-    }
-    */
-
     if (isRateLimited(ip)) {
       return new Response("Rate limit exceeded", { status: 429 });
     }
@@ -76,8 +66,6 @@ export default {
     if (url.pathname === "/") {
       return Response.redirect(url.origin + "/index.html", 302);
     }
-
-    // observability endpoints
 
     if (url.pathname === "/v1/admin/metrics") {
       return new Response(JSON.stringify({
@@ -95,9 +83,7 @@ export default {
     }
 
     if (url.pathname === "/v1/runtime/activity") {
-      return new Response(JSON.stringify({
-        events: []
-      }), {
+      return new Response(JSON.stringify({ events: [] }), {
         headers: { "Content-Type": "application/json" }
       });
     }
@@ -113,10 +99,7 @@ export default {
       });
     }
 
-    // tenant provisioning endpoint
-
     if (url.pathname === "/v1/admin/provision" && request.method === "POST") {
-
       const payload = await request.json();
       const tenantId = payload?.tenant_id || "tenant-new";
 
@@ -127,10 +110,7 @@ export default {
       }), {
         headers: { "Content-Type": "application/json" }
       });
-
     }
-
-    // tenant administration endpoints
 
     if (url.pathname === "/v1/admin/tenants") {
       return new Response(JSON.stringify({
@@ -146,199 +126,40 @@ export default {
       });
     }
 
-    const summaryMatch = url.pathname.match(/^\/v1\/admin\/tenants\/([^/]+)\/summary$/);
-
-    if (summaryMatch) {
-      const tenantId = decodeURIComponent(summaryMatch[1]);
-
-      const summaryByTenant = {
-        "tenant-abc": {
-          status: "active",
-          policy_version: "v1",
-          policy_digest: "sha256-abc123"
-        },
-        "tenant-75": {
-          status: "active",
-          policy_version: "v1",
-          policy_digest: "sha256-75"
-        },
-        "tenant-75a": {
-          status: "active",
-          policy_version: "v1",
-          policy_digest: "sha256-75a"
-        },
-        "tenant-xyz": {
-          status: "active",
-          policy_version: "v1",
-          policy_digest: "sha256-xyz"
-        },
-        "tenant-launch": {
-          status: "active",
-          policy_version: "v1",
-          policy_digest: "sha256-launch"
-        }
-      };
-
-      return new Response(JSON.stringify(
-        summaryByTenant[tenantId] || {
-          status: "unknown",
-          policy_version: "none",
-          policy_digest: "none"
-        }
-      ), {
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-
-    const usageMatch = url.pathname.match(/^\/v1\/admin\/tenants\/([^/]+)\/usage$/);
-
-    if (usageMatch) {
-      const tenantId = decodeURIComponent(usageMatch[1]);
-
-      const usageByTenant = {
-        "tenant-abc": {
-          tokens_issued: 12,
-          policy_denied: 1,
-          sessions_revoked: 0,
-          risk_score: 5
-        },
-        "tenant-75": {
-          tokens_issued: 18,
-          policy_denied: 2,
-          sessions_revoked: 1,
-          risk_score: 9
-        },
-        "tenant-75a": {
-          tokens_issued: 20,
-          policy_denied: 3,
-          sessions_revoked: 0,
-          risk_score: 12
-        },
-        "tenant-xyz": {
-          tokens_issued: 24,
-          policy_denied: 4,
-          sessions_revoked: 0,
-          risk_score: 15
-        },
-        "tenant-launch": {
-          tokens_issued: 30,
-          policy_denied: 10,
-          sessions_revoked: 2,
-          risk_score: 20
-        }
-      };
-
-      return new Response(JSON.stringify(
-        usageByTenant[tenantId] || {
-          tokens_issued: 0,
-          policy_denied: 0,
-          sessions_revoked: 0,
-          risk_score: 0
-        }
-      ), {
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-
-    const billingMatch = url.pathname.match(/^\/v1\/admin\/tenants\/([^/]+)\/billing$/);
-
-    if (billingMatch) {
-      const tenantId = decodeURIComponent(billingMatch[1]);
-
-      const usageByTenant = {
-        "tenant-abc": { tokens_issued: 12 },
-        "tenant-75": { tokens_issued: 18 },
-        "tenant-75a": { tokens_issued: 20 },
-        "tenant-xyz": { tokens_issued: 24 },
-        "tenant-launch": { tokens_issued: 30 }
-      };
-
-      const quantity = usageByTenant[tenantId]?.tokens_issued ?? 0;
-      const unitPriceCents = 5;
-
+    if (url.pathname === "/v1/admin/sessions") {
       return new Response(JSON.stringify({
-        tenant_id: tenantId,
-        billable_metric: "tokens_issued",
-        unit_price_cents: unitPriceCents,
-        quantity,
-        amount_cents: quantity * unitPriceCents
-      }), {
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-
-    const sessionsMatch = url.pathname.match(/^\/v1\/admin\/tenants\/([^/]+)\/sessions$/);
-
-    if (sessionsMatch) {
-      const tenantId = decodeURIComponent(sessionsMatch[1]);
-
-      const sessionsByTenant = {
-        "tenant-abc": [
+        sessions: [
           {
-            session_id: "sess-abc-1",
-            principal: "agent-demo",
-            intent: "refund:create",
-            scopes: ["refund:create"],
-            issued_at: Math.floor(Date.now()/1000) - 300,
-            ttl: 300
-          }
-        ],
-        "tenant-75": [],
-        "tenant-75a": [],
-        "tenant-xyz": [],
-        "tenant-launch": [
-          {
+            tenant_id: "tenant-launch",
             session_id: "sess-launch-1",
             principal: "agent_refund",
             intent: "refund:create",
             scopes: ["refund:create"],
-            issued_at: Math.floor(Date.now()/1000) - 120,
+            issued_at: Math.floor(Date.now() / 1000) - 180,
+            ttl: 300
+          },
+          {
+            tenant_id: "tenant-abc",
+            session_id: "sess-abc-1",
+            principal: "agent-demo",
+            intent: "refund:create",
+            scopes: ["refund:create"],
+            issued_at: Math.floor(Date.now() / 1000) - 300,
             ttl: 300
           }
         ]
-      };
-
-      return new Response(JSON.stringify({
-        sessions: sessionsByTenant[tenantId] || []
       }), {
         headers: { "Content-Type": "application/json" }
       });
     }
 
-    const revokeMatch = url.pathname.match(/^\/v1\/admin\/sessions\/([^/]+)\/revoke$/);
-
-    if (revokeMatch) {
-      const sessionId = decodeURIComponent(revokeMatch[1]);
+    if (url.pathname === "/v1/admin/sessions/revoke" && request.method === "POST") {
+      const body = await request.json();
+      const sessionId = body?.session_id || "unknown";
 
       return new Response(JSON.stringify({
-        revoked: true,
-        session_id: sessionId,
-        revoked_at: Math.floor(Date.now() / 1000)
-      }), {
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-
-    if (url.pathname === "/v1/intelligence/risk") {
-      return new Response(JSON.stringify({
-        top_risky_tenants: [
-          { tenant: "tenant-launch", risk: 20 },
-          { tenant: "tenant-xyz", risk: 15 },
-          { tenant: "tenant-75a", risk: 12 },
-          { tenant: "tenant-75", risk: 9 },
-          { tenant: "tenant-abc", risk: 5 }
-        ],
-        suspicious_principals: [
-          { principal: "agent-demo", events: 14 },
-          { principal: "agent_refund", events: 9 },
-          { principal: "agent-ops", events: 4 }
-        ],
-        deny_spike: {
-          detected: true,
-          current: 20
-        },
-        policy_drift: false,
-        timestamp: Math.floor(Date.now() / 1000)
+        status: "revoked",
+        session_id: sessionId
       }), {
         headers: { "Content-Type": "application/json" }
       });

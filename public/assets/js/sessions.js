@@ -8,11 +8,6 @@ const REFRESH_INTERVAL = 5000;
 let sessionsRefreshHandle = null;
 let sessionsLoading = false;
 
-function getTenantId() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get("tenant");
-}
-
 function formatTime(ts) {
   if (!ts) return "--";
   return new Date(ts * 1000).toISOString();
@@ -34,7 +29,7 @@ function renderEmptySessions(message) {
 
   table.innerHTML = `
     <tr id="sessions_empty">
-      <td colspan="7" class="empty">${message}</td>
+      <td colspan="8" class="empty">${message}</td>
     </tr>
   `;
 }
@@ -59,11 +54,11 @@ async function revokeSession(sessionId) {
   }
 
   try {
-    await STC_API.revokeSession(sessionId);
+    await STC_API.revokeAdminSession(sessionId);
     setSessionsNotes(`Session revoked: ${sessionId}`);
     await loadSessions();
   } catch (err) {
-    console.error("Revoke failed", err);
+    console.error("Revoke failed:", err);
     setSessionsNotes(`Revoke failed for session ${sessionId}.`);
   }
 }
@@ -99,27 +94,16 @@ async function loadSessions() {
   if (sessionsLoading) return;
   sessionsLoading = true;
 
-  const tenantId = getTenantId();
-  const table = document.getElementById("sessions_table");
-
   try {
-    if (!tenantId) {
-      renderEmptySessions("Tenant query parameter missing. Open Sessions from a tenant row.");
-      setSessionsNotes("No tenant selected for session inventory.");
-      sessionsLoading = false;
-      return;
-    }
-
-    setText("sessions_header", `Active Sessions — ${tenantId}`);
-
-    const res = await STC_API.getTenantSessions(tenantId);
+    const res = await STC_API.getAdminSessions();
+    const table = document.getElementById("sessions_table");
     const sessions = Array.isArray(res.sessions) ? res.sessions : [];
 
     table.innerHTML = "";
 
     if (!sessions.length) {
-      renderEmptySessions(`No active sessions for tenant ${tenantId}.`);
-      setSessionsNotes(`Loaded 0 sessions for ${tenantId}.`);
+      renderEmptySessions("No active sessions across the platform.");
+      setSessionsNotes("Loaded 0 active sessions.");
       sessionsLoading = false;
       return;
     }
@@ -128,6 +112,7 @@ async function loadSessions() {
       const tr = document.createElement("tr");
 
       tr.innerHTML = `
+        <td>${s.tenant_id || "--"}</td>
         <td>
           ${s.session_id || "--"}
           <button
@@ -157,11 +142,11 @@ async function loadSessions() {
       table.appendChild(tr);
     });
 
-    setSessionsNotes(`Loaded ${sessions.length} active session(s) for ${tenantId}.`);
+    setSessionsNotes(`Loaded ${sessions.length} active session(s) across the platform.`);
 
   } catch (err) {
     console.error("Session load failed:", err);
-    renderEmptySessions("Session inventory unavailable.");
+    renderEmptySessions("Platform session inventory unavailable.");
     setSessionsNotes("Session load failed.");
   } finally {
     sessionsLoading = false;

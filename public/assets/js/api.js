@@ -16,12 +16,6 @@ function stcFetch(url, options = {}) {
 
 const STC_API = (() => {
 
-  /* ---------------------------------------------------
-     ENVIRONMENT DETECTION
-     Local development automatically targets local worker
-     Production automatically targets deployed control plane
-  --------------------------------------------------- */
-
   const CONTROL_ORIGIN =
     window.location.hostname === "localhost" ||
     window.location.hostname === "127.0.0.1"
@@ -34,10 +28,6 @@ const STC_API = (() => {
     TIMEOUT: 6000
   };
 
-  /* ---------------------------------------------------
-     Credential Retrieval
-  --------------------------------------------------- */
-
   function getAdminSecret() {
     const value = localStorage.getItem("STC_ADMIN_SECRET");
     if (!value) throw new Error("Missing admin secret");
@@ -49,10 +39,6 @@ const STC_API = (() => {
     if (!value) throw new Error("Missing tenant API key");
     return value;
   }
-
-  /* ---------------------------------------------------
-     Core Request
-  --------------------------------------------------- */
 
   async function request(url, options = {}) {
     const controller = new AbortController();
@@ -80,10 +66,6 @@ const STC_API = (() => {
     }
   }
 
-  /* ---------------------------------------------------
-     Control Plane Requests
-  --------------------------------------------------- */
-
   function adminGet(path) {
     return request(`${CONFIG.CONTROL_URL}${path}`, {
       method: "GET",
@@ -103,10 +85,6 @@ const STC_API = (() => {
       body: JSON.stringify(body),
     });
   }
-
-  /* ---------------------------------------------------
-     Runtime Requests
-  --------------------------------------------------- */
 
   function runtimeGet(path) {
     return request(`${CONFIG.RUNTIME_URL}${path}`, {
@@ -128,10 +106,6 @@ const STC_API = (() => {
     });
   }
 
-  /* ---------------------------------------------------
-     DASHBOARD API
-  --------------------------------------------------- */
-
   function getDashboardDecisions() {
     return adminGet("/v1/dashboard/decisions");
   }
@@ -144,10 +118,6 @@ const STC_API = (() => {
     return adminGet("/v1/dashboard/intelligence");
   }
 
-  /* ---------------------------------------------------
-     Control Plane API
-  --------------------------------------------------- */
-
   function getAdminRuntime() {
     return adminGet("/v1/runtime/integrity").then(r => ({
       status: "healthy",
@@ -159,6 +129,16 @@ const STC_API = (() => {
 
   function getAdminMetrics() {
     return adminGet("/v1/admin/metrics");
+  }
+
+  function getAdminSessions() {
+    return adminGet("/v1/admin/sessions");
+  }
+
+  function revokeAdminSession(sessionId) {
+    return adminPost("/v1/admin/sessions/revoke", {
+      session_id: sessionId
+    });
   }
 
   function getTenants() {
@@ -185,10 +165,6 @@ const STC_API = (() => {
     return adminPost("/v1/admin/provision", payload);
   }
 
-  /* ---------------------------------------------------
-     Runtime API
-  --------------------------------------------------- */
-
   function issueToken(payload) {
     return runtimePost("/v1/tokens/issue", payload);
   }
@@ -203,16 +179,9 @@ const STC_API = (() => {
     });
   }
 
-  /* ---------------------------------------------------
-     SSE DECISION STREAM
-  --------------------------------------------------- */
-
   function subscribeDecisionStream(onEvent) {
-
     const apiKey = getApiKey()
-
     const url = `${CONFIG.RUNTIME_URL}/v1/decisions/stream?api_key=${apiKey}`
-
     const stream = new EventSource(url)
 
     stream.onmessage = (event) => {
@@ -233,10 +202,6 @@ const STC_API = (() => {
     return stream
   }
 
-  /* ---------------------------------------------------
-     PHASE 9 OBSERVABILITY
-  --------------------------------------------------- */
-
   function getRuntimeActivity() {
     return adminGet("/v1/runtime/activity");
   }
@@ -249,10 +214,6 @@ const STC_API = (() => {
     return adminGet("/v1/metrics");
   }
 
-  /* ---------------------------------------------------
-     Public API Surface
-  --------------------------------------------------- */
-
   return {
     getDashboardDecisions,
     getDashboardSessions,
@@ -260,6 +221,8 @@ const STC_API = (() => {
 
     getAdminRuntime,
     getAdminMetrics,
+    getAdminSessions,
+    revokeAdminSession,
     getTenants,
     getTenantSummary,
     getTenantUsage,
