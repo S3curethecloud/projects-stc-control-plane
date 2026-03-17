@@ -58,6 +58,7 @@ function applySecurityHeaders(response) {
 
 export default {
   async fetch(request, env) {
+
     const ip = request.headers.get("CF-Connecting-IP") || "unknown";
     const url = new URL(request.url);
 
@@ -125,6 +126,50 @@ export default {
           { tenant_id: "tenant-launch", label: "Launch Tenant" }
         ]
       }), {
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
+    const summaryMatch = url.pathname.match(/^\/v1\/admin\/tenants\/([^/]+)\/summary$/);
+
+    if (summaryMatch) {
+      const tenantId = decodeURIComponent(summaryMatch[1]);
+
+      const summaryByTenant = {
+        "tenant-abc": {
+          status: "active",
+          policy_version: "v1",
+          policy_digest: "sha256-abc123"
+        },
+        "tenant-75": {
+          status: "active",
+          policy_version: "v1",
+          policy_digest: "sha256-75"
+        },
+        "tenant-75a": {
+          status: "active",
+          policy_version: "v1",
+          policy_digest: "sha256-75a"
+        },
+        "tenant-xyz": {
+          status: "active",
+          policy_version: "v1",
+          policy_digest: "sha256-xyz"
+        },
+        "tenant-launch": {
+          status: "active",
+          policy_version: "v1",
+          policy_digest: "sha256-launch"
+        }
+      };
+
+      return new Response(JSON.stringify(
+        summaryByTenant[tenantId] || {
+          status: "unknown",
+          policy_version: "none",
+          policy_digest: "none"
+        }
+      ), {
         headers: { "Content-Type": "application/json" }
       });
     }
@@ -201,6 +246,58 @@ export default {
         unit_price_cents: unitPriceCents,
         quantity,
         amount_cents: quantity * unitPriceCents
+      }), {
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
+    const sessionsMatch = url.pathname.match(/^\/v1\/admin\/tenants\/([^/]+)\/sessions$/);
+
+    if (sessionsMatch) {
+      const tenantId = decodeURIComponent(sessionsMatch[1]);
+
+      const sessionsByTenant = {
+        "tenant-abc": [
+          {
+            session_id: "sess-abc-1",
+            principal: "agent-demo",
+            intent: "refund:create",
+            scopes: ["refund:create"],
+            issued_at: Math.floor(Date.now()/1000) - 300,
+            ttl: 300
+          }
+        ],
+        "tenant-75": [],
+        "tenant-75a": [],
+        "tenant-xyz": [],
+        "tenant-launch": [
+          {
+            session_id: "sess-launch-1",
+            principal: "agent_refund",
+            intent: "refund:create",
+            scopes: ["refund:create"],
+            issued_at: Math.floor(Date.now()/1000) - 120,
+            ttl: 300
+          }
+        ]
+      };
+
+      return new Response(JSON.stringify({
+        sessions: sessionsByTenant[tenantId] || []
+      }), {
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
+    const revokeMatch = url.pathname.match(/^\/v1\/admin\/sessions\/([^/]+)\/revoke$/);
+
+    if (revokeMatch) {
+      const sessionId = decodeURIComponent(revokeMatch[1]);
+
+      return new Response(JSON.stringify({
+        revoked: true,
+        session_id: sessionId,
+        revoked_at: Math.floor(Date.now() / 1000)
       }), {
         headers: { "Content-Type": "application/json" }
       });

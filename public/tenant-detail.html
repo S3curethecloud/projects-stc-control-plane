@@ -12,110 +12,122 @@
 
 <main class="container">
 
-<h1 id="tenant_header">Tenant Detail</h1>
+  <h1 id="tenant_header">Tenant Detail</h1>
 
-<section class="card-grid">
+  <div class="toolbar">
+    <a class="button" href="tenants.html">Back to Tenants</a>
+    <button id="refresh-tenant-btn" class="button" type="button">Refresh Tenant</button>
+  </div>
 
-<div class="card">
-<h3>Tenant ID</h3>
-<div id="tenant_id"></div>
-</div>
+  <section class="card-grid">
 
-<div class="card">
-<h3>Status</h3>
-<div id="tenant_status"></div>
-</div>
+    <div class="card">
+      <h3>Tenant ID</h3>
+      <div id="tenant_id">--</div>
+    </div>
 
-<div class="card">
-<h3>Policy Version</h3>
-<div id="policy_version"></div>
-</div>
+    <div class="card">
+      <h3>Status</h3>
+      <div id="tenant_status">--</div>
+    </div>
 
-<div class="card">
-<h3>Policy Digest</h3>
-<div id="policy_digest"></div>
-</div>
+    <div class="card">
+      <h3>Policy Version</h3>
+      <div id="policy_version">--</div>
+    </div>
 
-</section>
+    <div class="card">
+      <h3>Policy Digest</h3>
+      <div id="policy_digest">--</div>
+    </div>
 
-<h2>Usage</h2>
+  </section>
 
-<section class="card-grid">
+  <h2>Usage</h2>
 
-<div class="card">
-<h3>Tokens Issued</h3>
-<div id="usage_tokens"></div>
-</div>
+  <section class="card-grid">
 
-<div class="card">
-<h3>Policy Denied</h3>
-<div id="usage_denied"></div>
-</div>
+    <div class="card">
+      <h3>Tokens Issued</h3>
+      <div id="usage_tokens">--</div>
+    </div>
 
-<div class="card">
-<h3>Sessions Revoked</h3>
-<div id="usage_revoked"></div>
-</div>
+    <div class="card">
+      <h3>Policy Denied</h3>
+      <div id="usage_denied">--</div>
+    </div>
 
-<div class="card">
-<h3>Period</h3>
-<div id="usage_period"></div>
-</div>
+    <div class="card">
+      <h3>Sessions Revoked</h3>
+      <div id="usage_revoked">--</div>
+    </div>
 
-</section>
+    <div class="card">
+      <h3>Period</h3>
+      <div id="usage_period">--</div>
+    </div>
 
-<h2>Billing Preview</h2>
+  </section>
 
-<section class="card-grid">
+  <h2>Billing Preview</h2>
 
-<div class="card">
-<h3>Billable Metric</h3>
-<div id="billing_metric"></div>
-</div>
+  <section class="card-grid">
 
-<div class="card">
-<h3>Unit Price (cents)</h3>
-<div id="billing_price"></div>
-</div>
+    <div class="card">
+      <h3>Billable Metric</h3>
+      <div id="billing_metric">--</div>
+    </div>
 
-<div class="card">
-<h3>Quantity</h3>
-<div id="billing_quantity"></div>
-</div>
+    <div class="card">
+      <h3>Unit Price (cents)</h3>
+      <div id="billing_price">--</div>
+    </div>
 
-<div class="card">
-<h3>Amount (cents)</h3>
-<div id="billing_amount"></div>
-</div>
+    <div class="card">
+      <h3>Quantity</h3>
+      <div id="billing_quantity">--</div>
+    </div>
 
-</section>
+    <div class="card">
+      <h3>Amount (cents)</h3>
+      <div id="billing_amount">--</div>
+    </div>
 
-<h2>Active Sessions</h2>
+  </section>
 
-<table class="data-table">
+  <h2>Active Sessions</h2>
 
-<thead>
-<tr>
-<th>Session ID</th>
-<th>Principal</th>
-<th>Intent</th>
-<th>Scopes</th>
-<th>Issued</th>
-<th>TTL</th>
-<th>Action</th>
-</tr>
-</thead>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Session ID</th>
+        <th>Principal</th>
+        <th>Intent</th>
+        <th>Scopes</th>
+        <th>Issued</th>
+        <th>TTL</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="session_table">
+      <tr id="session_empty">
+        <td colspan="7" class="empty">Awaiting session inventory...</td>
+      </tr>
+    </tbody>
+  </table>
 
-<tbody id="session_table"></tbody>
+  <section class="card">
+    <h2>Raw Summary JSON</h2>
+    <details>
+      <summary>View Raw Response</summary>
+      <pre id="raw_summary">{}</pre>
+    </details>
+  </section>
 
-</table>
-
-<h2>Raw Summary JSON</h2>
-
-<details>
-<summary>View Raw Response</summary>
-<pre id="raw_summary"></pre>
-</details>
+  <section class="card">
+    <h2>Tenant Detail Notes</h2>
+    <div id="tenant_detail_notes" class="card-sub">Awaiting tenant detail telemetry...</div>
+  </section>
 
 </main>
 
