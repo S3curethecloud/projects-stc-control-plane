@@ -26,10 +26,35 @@ async function loadNav() {
     const html = await res.text();
     container.innerHTML = html;
 
+    // Ensure active nav is applied AFTER nav is injected
+    highlightActiveNav();
+
   } catch (err) {
     console.error("Failed to load navigation", err);
   }
 }
+
+
+// ------------------------------------------------------
+// Active Navigation Highlight
+// ------------------------------------------------------
+
+function highlightActiveNav() {
+  const path = window.location.pathname;
+
+  document.querySelectorAll("[data-route]").forEach(link => {
+    if (link.getAttribute("data-route") === path) {
+      link.classList.add("active");
+    } else {
+      link.classList.remove("active");
+    }
+  });
+}
+
+
+// ------------------------------------------------------
+// Initialization
+// ------------------------------------------------------
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", loadNav);
