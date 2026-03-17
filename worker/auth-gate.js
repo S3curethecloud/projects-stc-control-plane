@@ -63,7 +63,6 @@ export default {
     const url = new URL(request.url);
 
     // Optional SOC IP restriction
-    // Uncomment when needed
     /*
     if (!isAllowedOperatorIP(ip)) {
       return new Response("Operator access restricted", { status: 403 });
@@ -112,6 +111,23 @@ export default {
       }), {
         headers: { "Content-Type": "application/json" }
       });
+    }
+
+    // tenant provisioning endpoint
+
+    if (url.pathname === "/v1/admin/provision" && request.method === "POST") {
+
+      const payload = await request.json();
+      const tenantId = payload?.tenant_id || "tenant-new";
+
+      return new Response(JSON.stringify({
+        provisioned: true,
+        tenant_id: tenantId,
+        created_at: Math.floor(Date.now() / 1000)
+      }), {
+        headers: { "Content-Type": "application/json" }
+      });
+
     }
 
     // tenant administration endpoints
