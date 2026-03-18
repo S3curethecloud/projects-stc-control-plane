@@ -1,101 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>SecureTheCloud Runtime</title>
-<link rel="stylesheet" href="assets/css/stc-control.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureTheCloud Runtime</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/assets/css/stc-control.css">
 </head>
 
 <body>
 
-<div id="nav-container"></div>
+  <div id="nav-container"></div>
 
-<div class="stc-container">
+  <main class="container">
 
-<h1>Runtime Diagnostics</h1>
+    <h1>Runtime Diagnostics</h1>
 
-<p class="subtitle">
-Control plane health and runtime integrity verification.
-</p>
+    <p class="card-sub">
+      Control plane health and runtime integrity verification.
+    </p>
 
-<section class="card-grid">
+    <section class="card-grid">
 
-<div class="card">
-<h3>Status</h3>
-<div id="runtime_status">--</div>
-</div>
+      <div class="card">
+        <h3>Status</h3>
+        <div id="runtime_status" class="card-value">--</div>
+      </div>
 
-<div class="card">
-<h3>Redis</h3>
-<div id="redis_status">--</div>
-</div>
+      <div class="card">
+        <h3>Redis</h3>
+        <div id="redis_status" class="card-value">--</div>
+      </div>
 
-<div class="card">
-<h3>Policy Revision</h3>
-<div id="policy_revision">--</div>
-</div>
+      <div class="card">
+        <h3>Policy Revision</h3>
+        <div id="policy_revision" class="card-value">--</div>
+      </div>
 
-<div class="card">
-<h3>Tenant Count</h3>
-<div id="tenant_count">--</div>
-</div>
+      <div class="card">
+        <h3>Tenant Count</h3>
+        <div id="tenant_count" class="card-value">--</div>
+      </div>
 
-<div class="card">
-<h3>Active Sessions</h3>
-<div id="active_sessions">--</div>
-</div>
+      <div class="card">
+        <h3>Active Sessions</h3>
+        <div id="active_sessions" class="card-value">--</div>
+      </div>
 
-<div class="card">
-<h3>Current Period</h3>
-<div id="runtime_period">--</div>
-</div>
+      <div class="card">
+        <h3>Current Period</h3>
+        <div id="runtime_period" class="card-value">--</div>
+      </div>
 
-</section>
+    </section>
 
-<div class="note success">
-System integrity verified. All dependencies reachable.
-</div>
+    <section class="card">
+      <div class="note success">
+        System integrity verified. All dependencies reachable.
+      </div>
+    </section>
 
-<section class="card">
+    <section class="card">
 
-<h2>Runtime Interpretation</h2>
+      <h2>Runtime Interpretation</h2>
 
-<p>
-<b>Status</b> indicates whether the control plane can reach Redis and runtime dependencies.
-</p>
+      <p>
+        <b>Status</b> indicates whether the control plane can reach Redis and runtime dependencies.
+      </p>
 
-<p>
-<b>Active Sessions</b> represents total live agent sessions across all tenants.
-</p>
+      <p>
+        <b>Active Sessions</b> represents total live agent sessions across all tenants.
+      </p>
 
-<p>
-<b>Policy Revision</b> is the environment identifier for the active OPA policy bundle.
-</p>
+      <p>
+        <b>Policy Revision</b> is the environment identifier for the active OPA policy bundle.
+      </p>
 
-</section>
+    </section>
 
-<section class="card">
+    <section class="card">
 
-<h2>Future Diagnostics (Reserved)</h2>
+      <h2>Future Diagnostics (Reserved)</h2>
 
-<ul>
-<li>OPA latency</li>
-<li>Redis latency</li>
-<li>Integrity verification</li>
-<li>Decision stream health</li>
-</ul>
+      <ul>
+        <li>OPA latency</li>
+        <li>Redis latency</li>
+        <li>Integrity verification</li>
+        <li>Decision stream health</li>
+      </ul>
 
-<p class="muted">
-Reserved for Phase 9 observability endpoints. No telemetry is fabricated here.
-</p>
+      <p class="card-sub">
+        Reserved for Phase 9 observability endpoints. No telemetry is fabricated here.
+      </p>
 
-</section>
+    </section>
 
-</div>
+  </main>
 
-<script src="assets/js/layout.js"></script>
-<script src="assets/js/api.js"></script>
-<script src="assets/js/runtime.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/runtime.js"></script>
 
 </body>
 </html>

@@ -1,62 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>SecureTheCloud Heatmap</title>
-<link rel="icon" href="data:,">
-<link rel="stylesheet" href="assets/css/stc-control.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureTheCloud Heatmap</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/assets/css/stc-control.css">
 </head>
 
 <body>
 
-<div id="nav-container"></div>
+  <div id="nav-container"></div>
 
-<main class="container">
+  <main class="container">
 
-<h1>Tenant Activity Heatmap</h1>
+    <h1>Tenant Activity Heatmap</h1>
+    <p class="card-sub">
+      Tenant-level concentration of token issuance, denied actions, revoked sessions, and risk pressure.
+    </p>
 
-<section class="card-grid">
+    <section class="card-grid">
 
-<div class="card">
-<h3>Total Tokens Issued</h3>
-<div id="total_tokens_issued">--</div>
-</div>
+      <div class="card">
+        <h3>Total Tokens Issued</h3>
+        <div id="total_tokens_issued" class="card-value">--</div>
+      </div>
 
-<div class="card">
-<h3>Total Policy Denied</h3>
-<div id="total_policy_denied">--</div>
-</div>
+      <div class="card">
+        <h3>Total Policy Denied</h3>
+        <div id="total_policy_denied" class="card-value">--</div>
+      </div>
 
-<div class="card">
-<h3>Total Sessions Revoked</h3>
-<div id="total_sessions_revoked">--</div>
-</div>
+      <div class="card">
+        <h3>Total Sessions Revoked</h3>
+        <div id="total_sessions_revoked" class="card-value">--</div>
+      </div>
 
-</section>
+    </section>
 
-<h2>Tenant Activity</h2>
+    <section class="card">
+      <h2>Tenant Activity</h2>
 
-<table class="data-table">
+      <div class="table-shell">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Tenant</th>
+              <th>Tokens Issued</th>
+              <th>Policy Denied</th>
+              <th>Sessions Revoked</th>
+              <th>Risk</th>
+            </tr>
+          </thead>
+          <tbody id="heatmap_table_body">
+            <tr>
+              <td colspan="5" class="empty">Awaiting tenant activity data...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-<thead>
-<tr>
-<th>Tenant</th>
-<th>Tokens Issued</th>
-<th>Policy Denied</th>
-<th>Sessions Revoked</th>
-<th>Risk</th>
-</tr>
-</thead>
+    <section class="card">
+      <h2>Heatmap Notes</h2>
+      <div id="heatmap_notes" class="card-sub">
+        Awaiting tenant activity data...
+      </div>
+    </section>
 
-<tbody id="heatmap_table_body"></tbody>
+  </main>
 
-</table>
-
-</main>
-
-<script src="assets/js/layout.js"></script>
-<script src="assets/js/api.js"></script>
-<script src="assets/js/heatmap.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/heatmap.js"></script>
 
 </body>
 </html>

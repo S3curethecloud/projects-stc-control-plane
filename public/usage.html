@@ -1,151 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SecureTheCloud Usage & Billing</title>
-<link rel="icon" href="data:,">
-<link rel="stylesheet" href="/assets/css/stc-control.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureTheCloud Usage & Billing</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/assets/css/stc-control.css">
 </head>
 
 <body>
 
-<div id="nav-container"></div>
+  <div id="nav-container"></div>
 
-<main class="container">
+  <main class="container">
 
-  <h1>Usage & Billing</h1>
-  <p class="card-sub">
-    Platform consumption visibility and deterministic billing preview derived from tenant usage.
-  </p>
-
-  <h2>Platform Metrics</h2>
-
-  <section class="card-grid">
-
-    <div class="card">
-      <h3>Tokens Issued</h3>
-      <div id="platform_tokens" class="card-value">--</div>
-      <div class="card-sub">Platform-wide issued access tokens</div>
-    </div>
-
-    <div class="card">
-      <h3>Policy Denied</h3>
-      <div id="platform_denied" class="card-value">--</div>
-      <div class="card-sub">Denied policy decisions</div>
-    </div>
-
-    <div class="card">
-      <h3>Sessions Revoked</h3>
-      <div id="platform_revoked" class="card-value">--</div>
-      <div class="card-sub">Revoked live sessions</div>
-    </div>
-
-    <div class="card">
-      <h3>Tenant Count</h3>
-      <div id="platform_tenants" class="card-value">--</div>
-      <div class="card-sub">Registered tenants</div>
-    </div>
-
-    <div class="card">
-      <h3>Active Sessions</h3>
-      <div id="platform_sessions" class="card-value">--</div>
-      <div class="card-sub">Current live sessions</div>
-    </div>
-
-    <div class="card">
-      <h3>Last Checked</h3>
-      <div id="usage_last_checked" class="card-value">--</div>
-      <div class="card-sub">Most recent billing refresh</div>
-    </div>
-
-  </section>
-
-  <h2>Tenant Usage</h2>
-
-  <section class="card">
-    <div class="toolbar">
-      <select id="tenant_selector"></select>
-      <button id="load_usage_btn" class="button" type="button">Load Usage</button>
-    </div>
-  </section>
-
-  <section class="card-grid">
-
-    <div class="card">
-      <h3>Tokens Issued</h3>
-      <div id="tenant_tokens" class="card-value">--</div>
-      <div class="card-sub">Tenant issued tokens</div>
-    </div>
-
-    <div class="card">
-      <h3>Policy Denied</h3>
-      <div id="tenant_denied" class="card-value">--</div>
-      <div class="card-sub">Tenant denied decisions</div>
-    </div>
-
-    <div class="card">
-      <h3>Sessions Revoked</h3>
-      <div id="tenant_revoked" class="card-value">--</div>
-      <div class="card-sub">Tenant revoked sessions</div>
-    </div>
-
-    <div class="card">
-      <h3>Period</h3>
-      <div id="tenant_period" class="card-value">--</div>
-      <div class="card-sub">Usage accounting window</div>
-    </div>
-
-  </section>
-
-  <h2>Billing Preview</h2>
-
-  <section class="card-grid">
-
-    <div class="card">
-      <h3>Billable Metric</h3>
-      <div id="billing_metric" class="card-value">--</div>
-      <div class="card-sub">Phase 8.6 billable dimension</div>
-    </div>
-
-    <div class="card">
-      <h3>Unit Price (cents)</h3>
-      <div id="billing_price" class="card-value">--</div>
-      <div class="card-sub">Configured billing price</div>
-    </div>
-
-    <div class="card">
-      <h3>Quantity</h3>
-      <div id="billing_quantity" class="card-value">--</div>
-      <div class="card-sub">Billable quantity</div>
-    </div>
-
-    <div class="card">
-      <h3>Amount (cents)</h3>
-      <div id="billing_amount" class="card-value">--</div>
-      <div class="card-sub">Deterministic preview amount</div>
-    </div>
-
-  </section>
-
-  <section class="card">
-    <h2>Billing Model</h2>
-    <p>
-      <b>Billing Model:</b> Only <code>tokens_issued</code> is billable in Phase 8.6.
-      Policy denials and session revocations are security signals, not charges.
+    <h1>Usage & Billing</h1>
+    <p class="card-sub">
+      Platform consumption visibility and deterministic billing preview derived from tenant usage.
     </p>
-  </section>
 
-  <section class="card">
-    <h2>Usage Notes</h2>
-    <div id="usage_notes" class="card-sub">Awaiting usage refresh...</div>
-  </section>
+    <section class="card">
+      <h2>Platform Metrics</h2>
 
-</main>
+      <section class="card-grid">
 
-<script src="/assets/js/layout.js"></script>
-<script src="/assets/js/api.js"></script>
-<script src="/assets/js/usage.js"></script>
+        <div class="card">
+          <h3>Tokens Issued</h3>
+          <div id="platform_tokens" class="card-value">--</div>
+          <div class="card-sub">Platform-wide issued access tokens</div>
+        </div>
+
+        <div class="card">
+          <h3>Policy Denied</h3>
+          <div id="platform_denied" class="card-value">--</div>
+          <div class="card-sub">Denied policy decisions</div>
+        </div>
+
+        <div class="card">
+          <h3>Sessions Revoked</h3>
+          <div id="platform_revoked" class="card-value">--</div>
+          <div class="card-sub">Revoked live sessions</div>
+        </div>
+
+        <div class="card">
+          <h3>Tenant Count</h3>
+          <div id="platform_tenants" class="card-value">--</div>
+          <div class="card-sub">Registered tenants</div>
+        </div>
+
+        <div class="card">
+          <h3>Active Sessions</h3>
+          <div id="platform_sessions" class="card-value">--</div>
+          <div class="card-sub">Current live sessions</div>
+        </div>
+
+        <div class="card">
+          <h3>Last Checked</h3>
+          <div id="usage_last_checked" class="card-value">--</div>
+          <div class="card-sub">Most recent billing refresh</div>
+        </div>
+
+      </section>
+    </section>
+
+    <section class="card">
+      <h2>Tenant Usage</h2>
+
+      <div class="toolbar usage-toolbar">
+        <select id="tenant_selector"></select>
+        <button id="load_usage_btn" class="button" type="button">Load Usage</button>
+      </div>
+    </section>
+
+    <section class="card-grid">
+
+      <div class="card">
+        <h3>Tokens Issued</h3>
+        <div id="tenant_tokens" class="card-value">--</div>
+        <div class="card-sub">Tenant issued tokens</div>
+      </div>
+
+      <div class="card">
+        <h3>Policy Denied</h3>
+        <div id="tenant_denied" class="card-value">--</div>
+        <div class="card-sub">Tenant denied decisions</div>
+      </div>
+
+      <div class="card">
+        <h3>Sessions Revoked</h3>
+        <div id="tenant_revoked" class="card-value">--</div>
+        <div class="card-sub">Tenant revoked sessions</div>
+      </div>
+
+      <div class="card">
+        <h3>Period</h3>
+        <div id="tenant_period" class="card-value">--</div>
+        <div class="card-sub">Usage accounting window</div>
+      </div>
+
+    </section>
+
+    <section class="card">
+      <h2>Billing Preview</h2>
+
+      <section class="card-grid">
+
+        <div class="card">
+          <h3>Billable Metric</h3>
+          <div id="billing_metric" class="card-value">--</div>
+          <div class="card-sub">Phase 8.6 billable dimension</div>
+        </div>
+
+        <div class="card">
+          <h3>Unit Price (cents)</h3>
+          <div id="billing_price" class="card-value">--</div>
+          <div class="card-sub">Configured billing price</div>
+        </div>
+
+        <div class="card">
+          <h3>Quantity</h3>
+          <div id="billing_quantity" class="card-value">--</div>
+          <div class="card-sub">Billable quantity</div>
+        </div>
+
+        <div class="card">
+          <h3>Amount (cents)</h3>
+          <div id="billing_amount" class="card-value">--</div>
+          <div class="card-sub">Deterministic preview amount</div>
+        </div>
+
+      </section>
+    </section>
+
+    <section class="card">
+      <h2>Billing Model</h2>
+      <p>
+        <b>Billing Model:</b> Only <code>tokens_issued</code> is billable in Phase 8.6.
+        Policy denials and session revocations are security signals, not charges.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Usage Notes</h2>
+      <div id="usage_notes" class="card-sub">Awaiting usage refresh...</div>
+    </section>
+
+  </main>
+
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/usage.js"></script>
 
 </body>
 </html>

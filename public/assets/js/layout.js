@@ -1,29 +1,51 @@
 // SecureTheCloud layout loader
 
-// ------------------------------------------------------
-// Global Runtime Configuration
-// ------------------------------------------------------
+(function () {
+  const DEMO_BANNER_ID = "stc-demo-banner";
 
-window.STC_API_KEY = "FCn017yGzG5Y7zv3HcZUg03vcNYfHNCXpnEWBOMPXr0";
+  function getStoredApiKey() {
+    try {
+      return localStorage.getItem("STC_API_KEY") || "";
+    } catch {
+      return "";
+    }
+  }
 
+  // Keep backward compatibility for any page still reading window.STC_API_KEY
+  window.STC_API_KEY = window.STC_API_KEY || getStoredApiKey();
 
-// ------------------------------------------------------
-// Navigation Injection (REPLACED - NO PARTIAL FETCH)
-// ------------------------------------------------------
+  function normalizePath(path) {
+    if (!path) return "/";
+    if (path === "/index.html") return "/";
+    return path;
+  }
 
-function loadNav() {
-  const container = document.getElementById("nav-container");
+  function currentPath() {
+    return normalizePath(window.location.pathname);
+  }
 
-  if (!container) return;
+  function buildNav() {
+    return `
+<nav class="stc-nav" role="navigation" aria-label="SecureTheCloud Navigation">
 
-  container.innerHTML = `
-<nav class="stc-nav" role="navigation">
-
-  <div class="nav-left">
-
+  <div class="nav-brand-row">
     <div class="logo">
       <a href="/">SecureTheCloud</a>
     </div>
+
+    <button
+      id="stc-nav-toggle"
+      class="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="stc-nav-groups"
+      aria-label="Toggle navigation"
+    >
+      ☰
+    </button>
+  </div>
+
+  <div id="stc-nav-groups" class="stc-nav-groups">
 
     <div class="nav-group">
       <span class="nav-label">Control</span>
@@ -36,6 +58,7 @@ function loadNav() {
     <div class="nav-group">
       <span class="nav-label">Tenancy</span>
       <a href="/tenants.html" data-route="/tenants.html">Tenants</a>
+      <a href="/provision.html" data-route="/provision.html">Provision</a>
       <a href="/usage.html" data-route="/usage.html">Billing</a>
     </div>
 
@@ -43,79 +66,88 @@ function loadNav() {
       <span class="nav-label">Analysis</span>
       <a href="/blast-radius.html" data-route="/blast-radius.html">Blast</a>
       <a href="/heatmap.html" data-route="/heatmap.html">Heatmap</a>
+      <a href="/integrity.html" data-route="/integrity.html">Integrity</a>
       <a href="/intelligence.html" data-route="/intelligence.html">Intel</a>
+      <a href="/copilot.html" data-route="/copilot.html">Copilot</a>
     </div>
 
-  </div>
+    <div class="nav-group nav-group-support">
+      <span class="nav-label">Support</span>
+      <a href="/observability.html" data-route="/observability.html">Observability</a>
+      <a href="/activity.html" data-route="/activity.html">Activity</a>
+      <a href="/docs.html" data-route="/docs.html">Help</a>
+    </div>
 
-  <div class="nav-right">
-    <a href="/observability.html" data-route="/observability.html">Observability</a>
-    <a href="/activity.html" data-route="/activity.html">Activity</a>
-    <a href="/copilot.html" data-route="/copilot.html">Copilot</a>
-    <a href="/docs.html" data-route="/docs.html">Help</a>
   </div>
 
 </nav>
 `;
+  }
 
-  // Apply active highlighting AFTER injection
-  highlightActiveNav();
+  function highlightActiveNav() {
+    const path = currentPath();
 
-  // Demo highlight
-  document.querySelector('[data-route="/runtime.html"]')
-    ?.classList.add("demo-highlight");
-}
+    document.querySelectorAll("[data-route]").forEach((link) => {
+      const route = normalizePath(link.getAttribute("data-route"));
+      const active = route === path;
+      link.classList.toggle("active", active);
+      if (active) {
+        link.setAttribute("aria-current", "page");
+      } else {
+        link.removeAttribute("aria-current");
+      }
+    });
+  }
 
+  function bindNavToggle() {
+    const toggle = document.getElementById("stc-nav-toggle");
+    const groups = document.getElementById("stc-nav-groups");
 
-// ------------------------------------------------------
-// Active Navigation Highlight
-// ------------------------------------------------------
+    if (!toggle || !groups) return;
 
-function highlightActiveNav() {
-  const path = window.location.pathname;
+    toggle.addEventListener("click", () => {
+      const open = groups.classList.toggle("open");
+      toggle.setAttribute("aria-expanded", String(open));
+    });
 
-  document.querySelectorAll("[data-route]").forEach(link => {
-    if (link.getAttribute("data-route") === path) {
-      link.classList.add("active");
-    } else {
-      link.classList.remove("active");
-    }
-  });
-}
+    groups.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        groups.classList.remove("open");
+        toggle.setAttribute("aria-expanded", "false");
+      });
+    });
+  }
 
+  function injectDemoBanner() {
+    if (!document.getElementById("nav-container")) return;
+    if (document.getElementById(DEMO_BANNER_ID)) return;
 
-// ------------------------------------------------------
-// Demo Mode Banner
-// ------------------------------------------------------
+    const banner = document.createElement("div");
+    banner.id = DEMO_BANNER_ID;
+    banner.className = "demo-banner";
+    banner.textContent =
+      "Demo Mode — Follow: Runtime → Shield → Tenants → Sessions → Blast Radius → Operator";
 
-function injectDemoBanner() {
+    document.body.prepend(banner);
+  }
 
-  const banner = document.createElement("div");
+  function loadNav() {
+    const container = document.getElementById("nav-container");
+    if (!container) return;
 
-  banner.innerHTML = `
-    <div style="
-      background:#0f223d;
-      border-bottom:1px solid rgba(85,183,255,0.2);
-      padding:8px 16px;
-      font-size:13px;
-      color:#8aa4d4;
-    ">
-      Demo Mode — Follow: Runtime → Shield → Tenants → Sessions → Blast Radius → Operator
-    </div>
-  `;
+    container.innerHTML = buildNav();
+    highlightActiveNav();
+    bindNavToggle();
+  }
 
-  document.body.prepend(banner);
-}
+  function initLayout() {
+    injectDemoBanner();
+    loadNav();
+  }
 
-document.addEventListener("DOMContentLoaded", injectDemoBanner);
-
-
-// ------------------------------------------------------
-// Initialization
-// ------------------------------------------------------
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", loadNav);
-} else {
-  loadNav();
-}
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initLayout);
+  } else {
+    initLayout();
+  }
+})();

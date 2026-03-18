@@ -1,57 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>SecureTheCloud Tenants</title>
-<link rel="icon" href="data:,">
-<link rel="stylesheet" href="assets/css/stc-control.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureTheCloud Tenants</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/assets/css/stc-control.css">
 </head>
 
 <body>
 
-<div id="nav-container"></div>
+  <div id="nav-container"></div>
 
-<main class="container">
+  <main class="container">
 
-  <h1>Tenant Inventory</h1>
+    <h1>Tenant Inventory</h1>
 
-  <p class="subtitle">
-  Multi-tenant isolation and identity boundary management.
-  </p>
+    <p class="card-sub">
+      Multi-tenant isolation and identity boundary management.
+    </p>
 
-  <div class="toolbar">
-    <button id="refresh-tenants-btn" class="button" type="button">Refresh</button>
-    <a class="button" href="provision.html">Provision Tenant</a>
-  </div>
+    <div class="toolbar">
+      <button id="refresh-tenants-btn" class="button" type="button">Refresh</button>
+      <a class="button" href="provision.html">Provision Tenant</a>
+    </div>
 
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th>Tenant ID</th>
-        <th>Label</th>
-        <th>Status</th>
-        <th>Policy Version</th>
-        <th>Created</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="tenant_table">
-      <tr id="tenant_empty">
-        <td colspan="6" class="empty">Awaiting tenant inventory...</td>
-      </tr>
-    </tbody>
-  </table>
+    <section class="card">
+      <div class="table-shell">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Tenant ID</th>
+              <th>Label</th>
+              <th>Status</th>
+              <th>Policy Version</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tenant_table">
+            <tr id="tenant_empty">
+              <td colspan="6" class="empty">Awaiting tenant inventory...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-  <section class="card">
-    <h2>Tenant Notes</h2>
-    <div id="tenant_notes" class="card-sub">Awaiting tenant inventory...</div>
-  </section>
+    <section class="card">
+      <h2>Tenant Notes</h2>
+      <div id="tenant_notes" class="card-sub">Awaiting tenant inventory...</div>
+    </section>
 
-</main>
+  </main>
 
-<script src="assets/js/layout.js"></script>
-<script src="assets/js/api.js"></script>
-<script src="assets/js/tenants.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/tenants.js"></script>
 
 </body>
 </html>

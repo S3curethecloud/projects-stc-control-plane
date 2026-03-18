@@ -1,59 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Operator Token | SecureTheCloud</title>
-<link rel="icon" href="data:,">
-<link rel="stylesheet" href="assets/css/stc-control.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Operator Token | SecureTheCloud</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/assets/css/stc-control.css">
 </head>
 
 <body>
 
-<div id="nav-container"></div>
+  <div id="nav-container"></div>
 
-<main class="container">
+  <main class="container">
 
-  <h1>Operator Token Issuer</h1>
+    <h1>Operator Token Issuer</h1>
 
-  <p class="subtitle">
-  Direct control-plane access via scoped token issuance.
-  </p>
+    <p class="card-sub">
+      Direct control-plane access via scoped token issuance.
+    </p>
 
-  <section class="card">
+    <section class="card">
 
-    <label for="api_key">API Key</label>
-    <input id="api_key" type="password" placeholder="tenant API key" />
+      <label for="api_key">API Key</label>
+      <input id="api_key" type="password" placeholder="tenant API key">
 
-    <label for="principal">Operator Principal</label>
-    <input id="principal" type="text" value="admin" />
+      <label for="principal">Operator Principal</label>
+      <input id="principal" type="text" value="admin">
 
-    <label for="scopes">Scopes</label>
-    <input id="scopes" type="text" value="controlplane:access" />
+      <label for="scopes">Scopes</label>
+      <input id="scopes" type="text" value="controlplane:access">
 
-    <label for="ttl">TTL Seconds</label>
-    <input id="ttl" type="number" value="3600" min="60" step="60" />
+      <label for="ttl">TTL Seconds</label>
+      <input id="ttl" type="number" value="3600" min="60" step="60">
 
-    <div class="toolbar">
-      <button id="issue_token" class="button" type="button">Generate Token</button>
-      <button id="save_api_key" class="button" type="button">Save API Key</button>
-    </div>
+      <div class="toolbar">
+        <button id="issue_token" class="button" type="button">Generate Token</button>
+        <button id="save_api_key" class="button" type="button">Save API Key</button>
+      </div>
 
-  </section>
+    </section>
 
-  <section class="card">
-    <h2>Operator Notes</h2>
-    <div id="operator_notes" class="card-sub">Ready to issue operator token.</div>
-  </section>
+    <section class="card">
+      <h2>Operator Notes</h2>
+      <div id="operator_notes" class="card-sub">Ready to issue operator token.</div>
+    </section>
 
-  <section class="card">
-    <h2>Token Output</h2>
-    <textarea id="token_output" rows="14" style="width:100%"></textarea>
-  </section>
+    <section class="card">
+      <h2>Token Output</h2>
+      <textarea id="token_output" class="token-output" rows="14"></textarea>
+    </section>
 
-</main>
+  </main>
 
-<script src="assets/js/layout.js"></script>
-<script src="assets/js/operator.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/operator.js"></script>
 
 </body>
 </html>

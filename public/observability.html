@@ -1,135 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Runtime Observability</title>
-<link rel="icon" href="data:,">
-<link rel="stylesheet" href="/assets/css/stc-control.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Runtime Observability</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/assets/css/stc-control.css">
 </head>
 
 <body>
 
-<div id="nav-container"></div>
+  <div id="nav-container"></div>
 
-<main class="container">
+  <main class="container">
 
-  <h1>Runtime Observability</h1>
-  <p class="card-sub">Operational visibility for runtime health, latency, event flow, and control-plane telemetry.</p>
+    <h1>Runtime Observability</h1>
+    <p class="card-sub">
+      Operational visibility for runtime health, latency, event flow, and control-plane telemetry.
+    </p>
 
-  <section class="card-grid">
+    <section class="card-grid">
 
-    <div class="card">
-      <h3>Runtime Status</h3>
-      <div id="runtime_status" class="card-value">--</div>
-      <div class="card-sub">Overall runtime signal</div>
-    </div>
+      <div class="card">
+        <h3>Runtime Status</h3>
+        <div id="runtime_status" class="card-value">--</div>
+        <div class="card-sub">Overall runtime signal</div>
+      </div>
 
-    <div class="card">
-      <h3>Redis Status</h3>
-      <div id="redis_status" class="card-value">--</div>
-      <div class="card-sub">Datastore availability</div>
-    </div>
+      <div class="card">
+        <h3>Redis Status</h3>
+        <div id="redis_status" class="card-value">--</div>
+        <div class="card-sub">Datastore availability</div>
+      </div>
 
-    <div class="card">
-      <h3>Tokens Issued</h3>
-      <div id="tokens_issued" class="card-value">--</div>
-      <div class="card-sub">Issued access tokens</div>
-    </div>
+      <div class="card">
+        <h3>Tokens Issued</h3>
+        <div id="tokens_issued" class="card-value">--</div>
+        <div class="card-sub">Issued access tokens</div>
+      </div>
 
-    <div class="card">
-      <h3>Sessions Revoked</h3>
-      <div id="sessions_revoked" class="card-value">--</div>
-      <div class="card-sub">Revoked live sessions</div>
-    </div>
+      <div class="card">
+        <h3>Sessions Revoked</h3>
+        <div id="sessions_revoked" class="card-value">--</div>
+        <div class="card-sub">Revoked live sessions</div>
+      </div>
 
-  </section>
+    </section>
 
-  <section class="card-grid">
+    <section class="card-grid">
 
-    <div class="card">
-      <h3>Policy Allowed</h3>
-      <div id="policy_allowed" class="card-value">--</div>
-      <div class="card-sub">Allowed policy decisions</div>
-    </div>
+      <div class="card">
+        <h3>Policy Allowed</h3>
+        <div id="policy_allowed" class="card-value">--</div>
+        <div class="card-sub">Allowed policy decisions</div>
+      </div>
 
-    <div class="card">
-      <h3>Policy Denied</h3>
-      <div id="policy_denied" class="card-value">--</div>
-      <div class="card-sub">Denied policy decisions</div>
-    </div>
+      <div class="card">
+        <h3>Policy Denied</h3>
+        <div id="policy_denied" class="card-value">--</div>
+        <div class="card-sub">Denied policy decisions</div>
+      </div>
 
-    <div class="card">
-      <h3>Active Sessions</h3>
-      <div id="active_sessions" class="card-value">--</div>
-      <div class="card-sub">Current access sessions</div>
-    </div>
+      <div class="card">
+        <h3>Active Sessions</h3>
+        <div id="active_sessions" class="card-value">--</div>
+        <div class="card-sub">Current access sessions</div>
+      </div>
 
-    <div class="card">
-      <h3>Last Checked</h3>
-      <div id="last_checked" class="card-value" style="font-size:16px;">--</div>
-      <div class="card-sub">Most recent observability refresh</div>
-    </div>
+      <div class="card">
+        <h3>Last Checked</h3>
+        <div id="last_checked" class="card-value observability-time">--</div>
+        <div class="card-sub">Most recent observability refresh</div>
+      </div>
 
-  </section>
+    </section>
 
-  <h2>Latency Metrics</h2>
+    <section class="card">
+      <h2>Latency Metrics</h2>
 
-  <section class="card-grid">
+      <section class="card-grid">
 
-    <div class="card">
-      <h3>Decision Latency (ms)</h3>
-      <div id="decision_latency" class="card-value">--</div>
-      <div class="card-sub">Authorization decision path</div>
-    </div>
+        <div class="card">
+          <h3>Decision Latency (ms)</h3>
+          <div id="decision_latency" class="card-value">--</div>
+          <div class="card-sub">Authorization decision path</div>
+        </div>
 
-    <div class="card">
-      <h3>OPA Latency (ms)</h3>
-      <div id="opa_latency" class="card-value">--</div>
-      <div class="card-sub">Policy engine response time</div>
-    </div>
+        <div class="card">
+          <h3>OPA Latency (ms)</h3>
+          <div id="opa_latency" class="card-value">--</div>
+          <div class="card-sub">Policy engine response time</div>
+        </div>
 
-    <div class="card">
-      <h3>Redis Latency (ms)</h3>
-      <div id="redis_latency" class="card-value">--</div>
-      <div class="card-sub">Datastore response time</div>
-    </div>
+        <div class="card">
+          <h3>Redis Latency (ms)</h3>
+          <div id="redis_latency" class="card-value">--</div>
+          <div class="card-sub">Datastore response time</div>
+        </div>
 
-  </section>
+      </section>
+    </section>
 
-  <section class="card">
-    <h3>Recent Runtime Activity</h3>
+    <section class="card">
+      <h2>Recent Runtime Activity</h2>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Time</th>
-          <th>Type</th>
-          <th>Tenant</th>
-          <th>Principal</th>
-          <th>Detail</th>
-        </tr>
-      </thead>
-      <tbody id="activity_table">
-        <tr>
-          <td colspan="5" class="empty">Awaiting runtime activity…</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
+      <div class="table-shell">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Type</th>
+              <th>Tenant</th>
+              <th>Principal</th>
+              <th>Detail</th>
+            </tr>
+          </thead>
+          <tbody id="activity_table">
+            <tr>
+              <td colspan="5" class="empty">Awaiting runtime activity...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-  <section class="card">
-    <h3>Observability Notes</h3>
-    <div id="observability_notes" class="card-sub">
-      Awaiting observability telemetry...
-    </div>
-  </section>
+    <section class="card">
+      <h2>Observability Notes</h2>
+      <div id="observability_notes" class="card-sub">
+        Awaiting observability telemetry...
+      </div>
+    </section>
 
-</main>
+  </main>
 
-<script src="/assets/js/layout.js"></script>
-<script src="/assets/js/api.js"></script>
-<script src="/assets/js/observability.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/observability.js"></script>
 
 </body>
 </html>

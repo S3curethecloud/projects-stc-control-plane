@@ -1,42 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>SecureTheCloud Blast Radius</title>
-<link rel="icon" href="data:,">
-<link rel="stylesheet" href="assets/css/stc-control.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureTheCloud Blast Radius</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/assets/css/stc-control.css">
 </head>
 
 <body>
 
-<div id="nav-container"></div>
+  <div id="nav-container"></div>
 
-<main class="container">
+  <main class="container">
 
-  <h1>Authorization Blast Radius</h1>
+    <h1>Authorization Blast Radius</h1>
+    <p class="card-sub">
+      Deterministic mapping of authorization impact across system resources.
+    </p>
 
-  <p class="subtitle">
-    Deterministic mapping of authorization impact across system resources.
-  </p>
+    <section class="card">
+      <div id="blast_radius_map" class="blast-radius-map">
+        <div class="empty">Awaiting impact data...</div>
+      </div>
+    </section>
 
-  <section class="card">
-    <div id="blast_radius_map"></div>
-  </section>
+    <section class="card">
+      <h2>Blast Radius Interpretation</h2>
+      <div class="card-sub">
+        Impact reflects current authorization paths only. This view summarizes the services
+        affected by active authorization decisions and session activity.
+      </div>
+    </section>
 
-  <div class="note warning">
-Impact reflects current authorization paths only.
-</div>
+    <section class="card">
+      <h2>Blast Radius Notes</h2>
+      <div id="blast_radius_notes" class="card-sub">
+        Awaiting impact data...
+      </div>
+    </section>
 
-  <section class="card">
-    <h2>Blast Radius Notes</h2>
-    <div id="blast_radius_notes" class="card-sub">Awaiting impact data...</div>
-  </section>
+  </main>
 
-</main>
-
-<script src="assets/js/layout.js"></script>
-<script src="assets/js/api.js"></script>
-<script src="assets/js/blast-radius.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/blast-radius.js"></script>
 
 </body>
 </html>

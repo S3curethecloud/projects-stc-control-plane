@@ -1,57 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Runtime Activity Stream</title>
-<link rel="icon" href="data:,">
-<link rel="stylesheet" href="/assets/css/stc-control.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Runtime Activity Stream</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/assets/css/stc-control.css">
 </head>
 
 <body>
 
-<div id="nav-container"></div>
+  <div id="nav-container"></div>
 
-<main class="container">
+  <main class="container">
 
-  <h1>Live Decision Stream</h1>
-  <p class="card-sub">
-    Real-time authorization decisions flowing from the runtime decision stream.
-  </p>
+    <h1>Live Decision Stream</h1>
+    <p class="card-sub">
+      Real-time authorization decisions flowing from the runtime decision stream.
+    </p>
 
-  <section class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;">
-      <div id="stream_status" class="card-sub">Connecting...</div>
-      <div class="toolbar">
-        <button id="clear_stream_button" type="button">Clear</button>
+    <section class="card">
+      <div class="card-header-row">
+        <div id="stream_status" class="card-sub">Connecting...</div>
+
+        <div class="toolbar">
+          <button id="clear_stream_button" type="button">Clear</button>
+        </div>
       </div>
-    </div>
 
-    <table class="data-table" style="margin-top:16px;">
-      <thead>
-        <tr>
-          <th>Time</th>
-          <th>Tenant</th>
-          <th>Principal</th>
-          <th>Intent</th>
-          <th>Decision</th>
-          <th>Risk</th>
-          <th>Policy</th>
-        </tr>
-      </thead>
-      <tbody id="activity_table">
-        <tr id="activity_empty">
-          <td colspan="7" class="empty">Awaiting runtime decision events...</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
+      <div class="table-shell">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Tenant</th>
+              <th>Principal</th>
+              <th>Intent</th>
+              <th>Decision</th>
+              <th>Risk</th>
+              <th>Policy</th>
+            </tr>
+          </thead>
+          <tbody id="activity_table">
+            <tr id="activity_empty">
+              <td colspan="7" class="empty">Awaiting runtime decision events...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-</main>
+    <section class="card">
+      <h2>Activity Notes</h2>
+      <div id="activity_notes" class="card-sub">
+        Runtime stream will append decisions here as events arrive.
+      </div>
+    </section>
 
-<script src="/assets/js/layout.js"></script>
-<script src="/assets/js/api.js"></script>
-<script src="/assets/js/activity.js"></script>
+  </main>
+
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/activity.js"></script>
 
 </body>
 </html>

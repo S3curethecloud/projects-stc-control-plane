@@ -1,38 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>SecureTheCloud Operator Login</title>
-<link rel="icon" href="data:,">
-<link rel="stylesheet" href="assets/css/stc-control.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureTheCloud Operator Login</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/assets/css/stc-control.css">
 </head>
 
-<body>
+<body class="login-page">
 
-<main class="container">
+  <main class="container login-shell">
 
-<section class="card login-container">
+    <section class="card login-container">
 
-<h1>SecureTheCloud</h1>
-<p class="muted">Operator Access</p>
+      <h1>SecureTheCloud</h1>
+      <p class="card-sub">Operator Access</p>
 
-<label for="token_input">Operator JWT Token</label>
-<textarea 
-  id="token_input"
-  placeholder="Paste operator JWT token"
-></textarea>
+      <label for="token_input">Operator JWT Token</label>
+      <textarea
+        id="token_input"
+        placeholder="Paste operator JWT token"
+        rows="10"
+      ></textarea>
 
-<div class="toolbar">
-  <button id="login_btn">Access Control Plane</button>
-</div>
+      <div class="toolbar">
+        <button id="login_btn" type="button">Access Control Plane</button>
+      </div>
 
-<p id="login_status" class="muted"></p>
+      <p id="login_status" class="card-sub"></p>
 
-</section>
+    </section>
 
-</main>
+  </main>
 
-<script src="assets/js/login.js"></script>
+  <script src="/assets/js/login.js"></script>
 
 </body>
 </html>

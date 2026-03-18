@@ -1,33 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Shield | SecureTheCloud</title>
-<link rel="icon" href="data:,">
-<link rel="stylesheet" href="assets/css/stc-control.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shield | SecureTheCloud</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/assets/css/stc-control.css">
 </head>
 
 <body>
 
-<div id="nav-container"></div>
+  <div id="nav-container"></div>
 
-<main class="container">
+  <main class="container">
 
-<h1>Shield — Live Zero-Trust Surface</h1>
+    <h1>Shield — Live Zero-Trust Surface</h1>
 
-<p class="subtitle">
-Live enforcement of zero-trust decisions across active sessions.
-</p>
+    <p class="card-sub">
+      Live enforcement of zero-trust decisions across active sessions.
+    </p>
 
-<section class="card">
-<div id="shield-panel"></div>
-</section>
+    <section class="card">
+      <div id="shield-panel" class="shield-panel-shell">
+        <div class="empty">Awaiting shield telemetry...</div>
+      </div>
+    </section>
 
-</main>
+    <section class="card">
+      <h2>Shield Interpretation</h2>
+      <div class="card-sub">
+        This surface reflects live runtime enforcement signals including token issuance,
+        introspection validity, CAE trigger state, and audit-chain updates.
+      </div>
+    </section>
 
-<script src="assets/js/layout.js"></script>
-<script src="assets/js/api.js"></script>
-<script src="assets/js/shield.js"></script>
+  </main>
+
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/shield.js"></script>
 
 </body>
 </html>

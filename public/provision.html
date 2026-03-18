@@ -1,55 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>SecureTheCloud Provision Tenant</title>
-<link rel="icon" href="data:,">
-<link rel="stylesheet" href="assets/css/stc-control.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureTheCloud Provision Tenant</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/assets/css/stc-control.css">
 </head>
 
 <body>
 
-<div id="nav-container"></div>
+  <div id="nav-container"></div>
 
-<main class="container">
+  <main class="container">
 
-  <h1>Provision Tenant</h1>
+    <h1>Provision Tenant</h1>
+    <p class="card-sub">
+      Create a tenant record and initialize its first control-plane identity boundary.
+    </p>
 
-  <section class="card">
-    <div class="form-stack">
+    <section class="card">
+      <div class="form-stack">
 
-      <label for="tenant_id">Tenant ID</label>
-      <input id="tenant_id" type="text" placeholder="tenant-123" />
+        <label for="tenant_id">Tenant ID</label>
+        <input id="tenant_id" type="text" placeholder="tenant-123">
 
-      <label for="label">Label</label>
-      <input id="label" type="text" placeholder="Example tenant" />
+        <label for="label">Label</label>
+        <input id="label" type="text" placeholder="Example tenant">
 
-      <label for="key_label">Key Label</label>
-      <input id="key_label" type="text" placeholder="initial key" />
+        <label for="key_label">Key Label</label>
+        <input id="key_label" type="text" placeholder="initial key">
 
-      <div class="toolbar">
-        <button id="provision_btn" type="button">Provision Tenant</button>
-        <a class="button" href="tenants.html">Back to Tenants</a>
+        <div class="toolbar">
+          <button id="provision_btn" class="button" type="button">Provision Tenant</button>
+          <a class="button" href="tenants.html">Back to Tenants</a>
+        </div>
+
       </div>
+    </section>
 
-    </div>
-  </section>
+    <section class="card">
+      <h2>Provision Notes</h2>
+      <div id="provision_notes" class="card-sub">Ready to provision a tenant.</div>
+    </section>
 
-  <section class="card">
-    <h2>Provision Notes</h2>
-    <div id="provision_notes" class="card-sub">Ready to provision a tenant.</div>
-  </section>
+    <section class="card">
+      <h2>Provision Result</h2>
+      <div class="table-shell">
+        <pre id="provision_result" class="provision-result"></pre>
+      </div>
+    </section>
 
-  <section class="card">
-    <h2>Provision Result</h2>
-    <pre id="provision_result"></pre>
-  </section>
+  </main>
 
-</main>
-
-<script src="assets/js/layout.js"></script>
-<script src="assets/js/api.js"></script>
-<script src="assets/js/provision.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/provision.js"></script>
 
 </body>
 </html>

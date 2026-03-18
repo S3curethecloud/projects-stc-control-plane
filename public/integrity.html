@@ -1,90 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Runtime Integrity</title>
-<link rel="icon" href="data:,">
-<link rel="stylesheet" href="/assets/css/stc-control.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Runtime Integrity</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/assets/css/stc-control.css">
 </head>
 
 <body>
 
-<div id="nav-container"></div>
+  <div id="nav-container"></div>
 
-<main class="container">
+  <main class="container">
 
-  <h1>Runtime Integrity</h1>
-  <p class="card-sub">Verification state for runtime health, policy contract, datastore health, and audit-chain integrity.</p>
+    <h1>Runtime Integrity</h1>
+    <p class="card-sub">
+      Verification state for runtime health, policy contract, datastore health, and audit-chain integrity.
+    </p>
 
-  <section class="card-grid">
+    <section class="card-grid">
 
-    <div class="card">
-      <h3>Overall Integrity</h3>
-      <div id="overall_status" class="card-value">--</div>
-      <div id="overall_detail" class="card-sub">Awaiting verification</div>
-    </div>
+      <div class="card">
+        <h3>Overall Integrity</h3>
+        <div id="overall_status" class="card-value">--</div>
+        <div id="overall_detail" class="card-sub">Awaiting verification</div>
+      </div>
 
-    <div class="card">
-      <h3>Runtime Revision</h3>
-      <div id="runtime_rev" class="card-value">--</div>
-      <div class="card-sub">Runtime contract version</div>
-    </div>
+      <div class="card">
+        <h3>Runtime Revision</h3>
+        <div id="runtime_rev" class="card-value">--</div>
+        <div class="card-sub">Runtime contract version</div>
+      </div>
 
-    <div class="card">
-      <h3>Policy Revision</h3>
-      <div id="policy_rev" class="card-value">--</div>
-      <div class="card-sub">Enforced policy revision</div>
-    </div>
+      <div class="card">
+        <h3>Policy Revision</h3>
+        <div id="policy_rev" class="card-value">--</div>
+        <div class="card-sub">Enforced policy revision</div>
+      </div>
 
-    <div class="card">
-      <h3>Redis Health</h3>
-      <div id="redis_status" class="card-value">--</div>
-      <div class="card-sub">Runtime datastore state</div>
-    </div>
+      <div class="card">
+        <h3>Redis Health</h3>
+        <div id="redis_status" class="card-value">--</div>
+        <div class="card-sub">Runtime datastore state</div>
+      </div>
 
-  </section>
+    </section>
 
-  <section class="card-grid">
+    <section class="card-grid">
 
-    <div class="card">
-      <h3>Audit Verify Status</h3>
-      <div id="audit_status" class="card-value">--</div>
-      <div class="card-sub">Chain verification result</div>
-    </div>
+      <div class="card">
+        <h3>Audit Verify Status</h3>
+        <div id="audit_status" class="card-value">--</div>
+        <div class="card-sub">Chain verification result</div>
+      </div>
 
-    <div class="card">
-      <h3>Events Verified</h3>
-      <div id="events_verified" class="card-value">--</div>
-      <div class="card-sub">Ledger entries validated</div>
-    </div>
+      <div class="card">
+        <h3>Events Verified</h3>
+        <div id="events_verified" class="card-value">--</div>
+        <div class="card-sub">Ledger entries validated</div>
+      </div>
 
-    <div class="card">
-      <h3>Chain Head</h3>
-      <div id="chain_head" class="card-value" style="font-size:14px; word-break:break-all;">--</div>
-      <div class="card-sub">Latest verified hash anchor</div>
-    </div>
+      <div class="card">
+        <h3>Chain Head</h3>
+        <div id="chain_head" class="card-value integrity-hash">--</div>
+        <div class="card-sub">Latest verified hash anchor</div>
+      </div>
 
-    <div class="card">
-      <h3>Last Checked</h3>
-      <div id="last_check" class="card-value" style="font-size:16px;">--</div>
-      <div class="card-sub">Most recent integrity refresh</div>
-    </div>
+      <div class="card">
+        <h3>Last Checked</h3>
+        <div id="last_check" class="card-value integrity-time">--</div>
+        <div class="card-sub">Most recent integrity refresh</div>
+      </div>
 
-  </section>
+    </section>
 
-  <section class="card">
-    <h3>Integrity Notes</h3>
-    <div id="integrity_notes" class="card-sub">
-      Awaiting integrity telemetry...
-    </div>
-  </section>
+    <section class="card">
+      <h2>Integrity Notes</h2>
+      <div id="integrity_notes" class="card-sub">
+        Awaiting integrity telemetry...
+      </div>
+    </section>
 
-</main>
+  </main>
 
-<script src="/assets/js/layout.js"></script>
-<script src="/assets/js/api.js"></script>
-<script src="/assets/js/integrity.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/integrity.js"></script>
 
 </body>
 </html>
