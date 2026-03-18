@@ -19,6 +19,8 @@ function loadNav() {
   container.innerHTML = `
 <nav class="stc-nav" role="navigation" aria-label="SecureTheCloud Navigation">
 
+  <div class="nav-toggle" id="navToggle">☰</div>
+
   <div class="nav-left">
 
     <div class="logo">
@@ -99,6 +101,61 @@ function highlightActiveNav() {
     }
   });
 }
+
+
+// ------------------------------------------------------
+// Live Status Indicator
+// ------------------------------------------------------
+
+async function updateNavStatus() {
+  try {
+    const res = await fetch("/v1/runtime/integrity");
+
+    if (!res.ok) throw new Error();
+
+    const data = await res.json();
+
+    const dot = document.querySelector(".status-dot");
+    const label = document.querySelector(".nav-status");
+
+    if (!dot || !label) return;
+
+    if (data.redis_ok) {
+      dot.style.background = "#2ecc71";
+      label.childNodes[1].nodeValue = " Connected";
+    } else {
+      dot.style.background = "#ff6b6b";
+      label.childNodes[1].nodeValue = " Degraded";
+    }
+
+  } catch {
+    const dot = document.querySelector(".status-dot");
+    const label = document.querySelector(".nav-status");
+
+    if (dot) dot.style.background = "#ff6b6b";
+    if (label) label.childNodes[1].nodeValue = " Offline";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", updateNavStatus);
+
+
+// ------------------------------------------------------
+// Mobile Toggle
+// ------------------------------------------------------
+
+function enableMobileNav() {
+  const toggle = document.getElementById("navToggle");
+  const nav = document.querySelector(".stc-nav");
+
+  if (!toggle || !nav) return;
+
+  toggle.addEventListener("click", () => {
+    nav.classList.toggle("open");
+  });
+}
+
+document.addEventListener("DOMContentLoaded", enableMobileNav);
 
 
 // ------------------------------------------------------
