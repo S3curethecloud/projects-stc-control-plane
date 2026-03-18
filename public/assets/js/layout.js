@@ -8,34 +8,62 @@ window.STC_API_KEY = "FCn017yGzG5Y7zv3HcZUg03vcNYfHNCXpnEWBOMPXr0";
 
 
 // ------------------------------------------------------
-// Navigation Loader
+// Navigation Injection (REPLACED - NO PARTIAL FETCH)
 // ------------------------------------------------------
 
-async function loadNav() {
+function loadNav() {
   const container = document.getElementById("nav-container");
 
   if (!container) return;
 
-  try {
-    const res = await fetch("/partials/nav.html");
+  container.innerHTML = `
+<nav class="stc-nav" role="navigation">
 
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
-    }
+  <div class="nav-left">
 
-    const html = await res.text();
-    container.innerHTML = html;
+    <div class="logo">
+      <a href="/">SecureTheCloud</a>
+    </div>
 
-    // Ensure active nav is applied AFTER nav is injected
-    highlightActiveNav();
+    <div class="nav-group">
+      <span class="nav-label">Control</span>
+      <a href="/runtime.html" data-route="/runtime.html">Runtime</a>
+      <a href="/shield.html" data-route="/shield.html">Shield</a>
+      <a href="/sessions.html" data-route="/sessions.html">Sessions</a>
+      <a href="/operator.html" data-route="/operator.html">Operator</a>
+    </div>
 
-    // DEMO HIGHLIGHT (applied after nav injection)
-    document.querySelector('[data-route="/runtime.html"]')
-      ?.classList.add("demo-highlight");
+    <div class="nav-group">
+      <span class="nav-label">Tenancy</span>
+      <a href="/tenants.html" data-route="/tenants.html">Tenants</a>
+      <a href="/usage.html" data-route="/usage.html">Billing</a>
+    </div>
 
-  } catch (err) {
-    console.error("Failed to load navigation", err);
-  }
+    <div class="nav-group">
+      <span class="nav-label">Analysis</span>
+      <a href="/blast-radius.html" data-route="/blast-radius.html">Blast</a>
+      <a href="/heatmap.html" data-route="/heatmap.html">Heatmap</a>
+      <a href="/intelligence.html" data-route="/intelligence.html">Intel</a>
+    </div>
+
+  </div>
+
+  <div class="nav-right">
+    <a href="/observability.html" data-route="/observability.html">Observability</a>
+    <a href="/activity.html" data-route="/activity.html">Activity</a>
+    <a href="/copilot.html" data-route="/copilot.html">Copilot</a>
+    <a href="/docs.html" data-route="/docs.html">Help</a>
+  </div>
+
+</nav>
+`;
+
+  // Apply active highlighting AFTER injection
+  highlightActiveNav();
+
+  // Demo highlight
+  document.querySelector('[data-route="/runtime.html"]')
+    ?.classList.add("demo-highlight");
 }
 
 
