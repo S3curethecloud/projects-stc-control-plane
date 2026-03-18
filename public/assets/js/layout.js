@@ -19,8 +19,6 @@ function loadNav() {
   container.innerHTML = `
 <nav class="stc-nav" role="navigation" aria-label="SecureTheCloud Navigation">
 
-  <div class="nav-toggle" id="navToggle">☰</div>
-
   <div class="nav-left">
 
     <div class="logo">

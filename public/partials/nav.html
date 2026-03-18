@@ -1,31 +1,35 @@
+function loadNav() {
+  const container = document.getElementById("nav-container");
+
+  if (!container) return;
+
+  container.innerHTML = `
 <nav class="stc-nav" role="navigation" aria-label="SecureTheCloud Navigation">
-  <div class="logo">
-    <a href="/">SecureTheCloud</a>
+
+  <div class="nav-toggle" id="navToggle">☰</div>
+
+  <div class="nav-left">
+
+    <div class="logo">
+      <a href="/">🔒 SecureTheCloud</a>
+    </div>
+
+    <div class="nav-links primary-nav">
+
+      <a href="/" data-route="/">Overview</a>
+      <a href="/runtime.html" data-route="/runtime.html">Runtime</a>
+      <a href="/shield.html" data-route="/shield.html">Shield</a>
+      <a href="/tenants.html" data-route="/tenants.html">Tenants</a>
+      <a href="/sessions.html" data-route="/sessions.html">Sessions</a>
+      <a href="/operator.html" data-route="/operator.html">Operator</a>
+      <a href="/blast-radius.html" data-route="/blast-radius.html">Blast Radius</a>
+      <a href="/heatmap.html" data-route="/heatmap.html">Heatmap</a>
+      <a href="/integrity.html" data-route="/integrity.html">Integrity</a>
+
+    </div>
   </div>
 
-  <div class="nav-links primary-nav">
-
-    <a href="/" data-route="/">Overview</a>
-
-    <a href="/runtime.html" data-route="/runtime.html">Runtime</a>
-
-    <a href="/shield.html" data-route="/shield.html">Shield</a>
-
-    <a href="/tenants.html" data-route="/tenants.html">Tenants</a>
-
-    <a href="/sessions.html" data-route="/sessions.html">Sessions</a>
-
-    <a href="/operator.html" data-route="/operator.html">Operator</a>
-
-    <a href="/blast-radius.html" data-route="/blast-radius.html">Blast Radius</a>
-
-    <a href="/heatmap.html" data-route="/heatmap.html">Heatmap</a>
-
-    <a href="/integrity.html" data-route="/integrity.html">Integrity</a>
-
-  </div>
-
-  <div class="nav-links secondary-nav">
+  <div class="nav-right nav-links secondary-nav">
     <a href="/provision.html" data-route="/provision.html">Provision</a>
     <a href="/observability.html" data-route="/observability.html">Observability</a>
     <a href="/usage.html" data-route="/usage.html">Usage & Billing</a>
@@ -33,5 +37,30 @@
     <a href="/intelligence.html" data-route="/intelligence.html">Intelligence</a>
     <a href="/copilot.html" data-route="/copilot.html">Copilot</a>
     <a href="/docs.html" data-route="/docs.html">Help</a>
+
+    <span class="nav-status">
+      <span class="status-dot"></span>
+      Connected
+    </span>
   </div>
+
 </nav>
+`;
+
+  // Apply active highlighting AFTER injection
+  highlightActiveNav();
+
+  // Demo highlight
+  document.querySelector('[data-route="/runtime.html"]')
+    ?.classList.add("demo-highlight");
+
+  // Mobile toggle MUST be bound after nav injection
+  const toggle = document.getElementById("navToggle");
+  const nav = container.querySelector(".stc-nav");
+
+  if (toggle && nav) {
+    toggle.addEventListener("click", () => {
+      nav.classList.toggle("open");
+    });
+  }
+}

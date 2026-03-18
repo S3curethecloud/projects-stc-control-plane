@@ -326,3 +326,57 @@ button {
     align-items: flex-start;
   }
 }
+
+.nav-toggle {
+  display: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #e5e9f0;
+}
+
+@media (max-width: 900px) {
+  .nav-toggle {
+    display: block;
+  }
+
+  .nav-left,
+  .nav-right {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    padding-top: 12px;
+  }
+
+  .stc-nav.open .nav-left,
+  .stc-nav.open .nav-right {
+    display: flex;
+  }
+
+  .stc-nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.stc-nav.open {
+  height: auto;
+}
+
+.stc-nav {
+  overflow: visible;
+}
+
+.stc-nav,
+.nav-left,
+.nav-right {
+  width: 100%;
+}
+
+.stc-nav.open {
+  background: #0f1c33;
+}
+
+body {
+  overflow-x: hidden;
+}
