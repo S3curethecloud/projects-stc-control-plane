@@ -29,6 +29,10 @@ async function loadNav() {
     // Ensure active nav is applied AFTER nav is injected
     highlightActiveNav();
 
+    // DEMO HIGHLIGHT (applied after nav injection)
+    document.querySelector('[data-route="/runtime.html"]')
+      ?.classList.add("demo-highlight");
+
   } catch (err) {
     console.error("Failed to load navigation", err);
   }

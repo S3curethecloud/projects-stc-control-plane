@@ -107,7 +107,7 @@ async function issueToken() {
 
     if (notes) {
       notes.className = "note success";
-      notes.textContent = "Operator token issued successfully.";
+      notes.textContent = "Operator token issued. Control-plane access granted.";
     }
 
   } catch (err) {
