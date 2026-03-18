@@ -71,6 +71,7 @@ async function issueToken() {
   }
 
   issueBtn.disabled = true;
+  issueBtn.classList.add("loading");
   setNotes("Issuing operator token...");
 
   try {
@@ -115,6 +116,7 @@ async function issueToken() {
     setNotes("Token issuance failed due to network or runtime error.");
   } finally {
     issueBtn.disabled = false;
+    issueBtn.classList.remove("loading");
   }
 }
 

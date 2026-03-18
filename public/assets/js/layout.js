@@ -53,6 +53,32 @@ function highlightActiveNav() {
 
 
 // ------------------------------------------------------
+// Demo Mode Banner
+// ------------------------------------------------------
+
+function injectDemoBanner() {
+
+  const banner = document.createElement("div");
+
+  banner.innerHTML = `
+    <div style="
+      background:#0f223d;
+      border-bottom:1px solid rgba(85,183,255,0.2);
+      padding:8px 16px;
+      font-size:13px;
+      color:#8aa4d4;
+    ">
+      Demo Mode — Follow: Runtime → Shield → Tenants → Sessions → Blast Radius → Operator
+    </div>
+  `;
+
+  document.body.prepend(banner);
+}
+
+document.addEventListener("DOMContentLoaded", injectDemoBanner);
+
+
+// ------------------------------------------------------
 // Initialization
 // ------------------------------------------------------
 
