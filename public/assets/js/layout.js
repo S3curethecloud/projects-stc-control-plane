@@ -8,7 +8,7 @@ window.STC_API_KEY = "FCn017yGzG5Y7zv3HcZUg03vcNYfHNCXpnEWBOMPXr0";
 
 
 // ------------------------------------------------------
-// Navigation Injection (REPLACED - NO PARTIAL FETCH)
+// Navigation Injection (MERGED + UPGRADED)
 // ------------------------------------------------------
 
 function loadNav() {
@@ -17,42 +17,59 @@ function loadNav() {
   if (!container) return;
 
   container.innerHTML = `
-<nav class="stc-nav" role="navigation">
+<nav class="stc-nav" role="navigation" aria-label="SecureTheCloud Navigation">
 
   <div class="nav-left">
 
     <div class="logo">
-      <a href="/">SecureTheCloud</a>
+      <a href="/">🔒 SecureTheCloud</a>
     </div>
 
-    <div class="nav-group">
-      <span class="nav-label">Control</span>
+    <div class="nav-links primary-nav">
+
+      <a href="/" data-route="/">Overview</a>
+
       <a href="/runtime.html" data-route="/runtime.html">Runtime</a>
+
       <a href="/shield.html" data-route="/shield.html">Shield</a>
-      <a href="/sessions.html" data-route="/sessions.html">Sessions</a>
-      <a href="/operator.html" data-route="/operator.html">Operator</a>
-    </div>
 
-    <div class="nav-group">
-      <span class="nav-label">Tenancy</span>
       <a href="/tenants.html" data-route="/tenants.html">Tenants</a>
-      <a href="/usage.html" data-route="/usage.html">Billing</a>
-    </div>
 
-    <div class="nav-group">
-      <span class="nav-label">Analysis</span>
-      <a href="/blast-radius.html" data-route="/blast-radius.html">Blast</a>
+      <a href="/sessions.html" data-route="/sessions.html">Sessions</a>
+
+      <a href="/operator.html" data-route="/operator.html">Operator</a>
+
+      <a href="/blast-radius.html" data-route="/blast-radius.html">Blast Radius</a>
+
       <a href="/heatmap.html" data-route="/heatmap.html">Heatmap</a>
-      <a href="/intelligence.html" data-route="/intelligence.html">Intel</a>
+
+      <a href="/integrity.html" data-route="/integrity.html">Integrity</a>
+
     </div>
 
   </div>
 
-  <div class="nav-right">
+  <div class="nav-right nav-links secondary-nav">
+
+    <a href="/provision.html" data-route="/provision.html">Provision</a>
+
     <a href="/observability.html" data-route="/observability.html">Observability</a>
+
+    <a href="/usage.html" data-route="/usage.html">Usage & Billing</a>
+
     <a href="/activity.html" data-route="/activity.html">Activity</a>
+
+    <a href="/intelligence.html" data-route="/intelligence.html">Intelligence</a>
+
     <a href="/copilot.html" data-route="/copilot.html">Copilot</a>
+
     <a href="/docs.html" data-route="/docs.html">Help</a>
+
+    <span class="nav-status">
+      <span class="status-dot"></span>
+      Connected
+    </span>
+
   </div>
 
 </nav>
@@ -61,7 +78,7 @@ function loadNav() {
   // Apply active highlighting AFTER injection
   highlightActiveNav();
 
-  // Demo highlight
+  // Demo highlight (Runtime = entry point)
   document.querySelector('[data-route="/runtime.html"]')
     ?.classList.add("demo-highlight");
 }
