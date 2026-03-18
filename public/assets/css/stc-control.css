@@ -45,6 +45,19 @@ html, body {
   padding: 40px 0;
 }
 
+
+/* ------------------------------------------------------ */
+/* Core Layout Container (FIX FOR BLOWOUT) */
+/* ------------------------------------------------------ */
+
+.stc-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  width: 100%;
+}
+
+
 /* =========================================================
    NAV SYSTEM — PREMIUM UPGRADE (REPLACED)
    ========================================================= */
@@ -413,4 +426,10 @@ input[type="range"] {
 .card {
   width: 100%;
   max-width: 100%;
+}
+
+.stc-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
 }
