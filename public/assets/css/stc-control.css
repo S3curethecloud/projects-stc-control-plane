@@ -380,3 +380,37 @@ button {
 body {
   overflow-x: hidden;
 }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.main,
+.container,
+.page {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+table {
+  width: 100%;
+  display: block;
+  overflow-x: auto;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.stc-card,
+.card {
+  width: 100%;
+  max-width: 100%;
+}
