@@ -1,0 +1,1184 @@
+diff --git a/public/activity.html b/public/activity.html
+index 587704e..ac1206f 100644
+--- a/public/activity.html
++++ b/public/activity.html
+@@ -12,7 +12,9 @@
+ 
+ <div id="nav-container"></div>
+ 
+-<main class="container">
++<main>
++
++<div class="stc-container">
+ 
+   <h1>Live Decision Stream</h1>
+   <p class="card-sub">
+@@ -47,6 +49,8 @@
+     </table>
+   </section>
+ 
++</div>
++
+ </main>
+ 
+ <script src="/assets/js/layout.js"></script>
+diff --git a/public/assets/css/stc-control.css b/public/assets/css/stc-control.css
+index 8fa1a78..0b341f1 100644
+--- a/public/assets/css/stc-control.css
++++ b/public/assets/css/stc-control.css
+@@ -1,9 +1,9 @@
+ /* =========================================================
+-   STC CONTROL PLANE — GOVERNED MASTER BUILD (NO DUPLICATES)
++   STC CONTROL PLANE — FINAL (MOBILE TOGGLE FIXED)
+    ========================================================= */
+ 
+ /* =========================================================
+-   ROOT DESIGN TOKENS (INJECTED — AUTHORITATIVE)
++   ROOT DESIGN TOKENS
+    ========================================================= */
+ 
+ :root {
+@@ -26,7 +26,7 @@
+ }
+ 
+ /* =========================================================
+-   BASE LAYOUT
++   BASE
+    ========================================================= */
+ 
+ * { box-sizing: border-box; }
+@@ -37,18 +37,12 @@ html, body {
+   background: linear-gradient(180deg, var(--bg-main), #050913);
+   color: var(--text-primary);
+   font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
++  overflow-x: hidden;
+ }
+ 
+-.container{
+-  width: min(1100px, calc(100% - 40px));
+-  margin: 0 auto;
+-  padding: 40px 0;
+-}
+-
+-
+-/* ------------------------------------------------------ */
+-/* Core Layout Container (FIX FOR BLOWOUT) */
+-/* ------------------------------------------------------ */
++/* =========================================================
++   CONTAINER
++   ========================================================= */
+ 
+ .stc-container {
+   max-width: 1200px;
+@@ -57,9 +51,8 @@ html, body {
+   width: 100%;
+ }
+ 
+-
+ /* =========================================================
+-   NAV SYSTEM — PREMIUM UPGRADE (REPLACED)
++   NAVBAR
+    ========================================================= */
+ 
+ .stc-nav {
+@@ -79,34 +72,26 @@ html, body {
+   backdrop-filter: blur(6px);
+ }
+ 
+-.nav-left {
+-  display: flex;
+-  align-items: center;
+-  gap: 28px;
++/* DESKTOP NAV ONLY */
++@media (min-width: 901px) {
++  .nav-left,
++  .nav-right {
++    display: flex;
++    align-items: center;
++  }
+ }
+ 
+-.nav-right {
+-  display: flex;
+-  align-items: center;
+-  gap: 18px;
+-}
++.nav-left { gap: 28px; }
++.nav-right { gap: 18px; }
+ 
+ .logo a {
+   font-weight: 700;
+   font-size: 15px;
+   color: #e5e9f0;
+   text-decoration: none;
+-
+   display: flex;
+   align-items: center;
+   gap: 6px;
+-
+-  transition: all 0.2s ease;
+-}
+-
+-.logo a:hover {
+-  color: #55b7ff;
+-  text-shadow: 0 0 8px rgba(85,183,255,0.4);
+ }
+ 
+ .nav-links {
+@@ -116,14 +101,12 @@ html, body {
+ }
+ 
+ .nav-links a {
+-  position: relative;
+   font-size: 13px;
+   font-weight: 500;
+   color: #9eb0d5;
+   text-decoration: none;
+   padding: 6px 10px;
+   border-radius: 6px;
+-  transition: all 0.18s ease;
+ }
+ 
+ .nav-links a:hover {
+@@ -137,56 +120,8 @@ html, body {
+   box-shadow: inset 0 -2px 0 #d4af37;
+ }
+ 
+-.nav-links a.demo-highlight {
+-  border: 1px solid rgba(85,183,255,0.4);
+-  animation: stc-pulse 2.2s infinite ease-in-out;
+-}
+-
+-@keyframes stc-pulse {
+-  0% { box-shadow: 0 0 0 rgba(85,183,255,0.0); }
+-  50% { box-shadow: 0 0 10px rgba(85,183,255,0.35); }
+-  100% { box-shadow: 0 0 0 rgba(85,183,255,0.0); }
+-}
+-
+-.primary-nav {
+-  margin-left: 8px;
+-}
+-
+-.secondary-nav {
+-  margin-left: 16px;
+-  padding-left: 16px;
+-  border-left: 1px solid rgba(85,183,255,0.15);
+-}
+-
+-.nav-status {
+-  display: flex;
+-  align-items: center;
+-  gap: 6px;
+-  font-size: 12px;
+-  color: #8aa4d4;
+-  margin-left: 12px;
+-}
+-
+-.status-dot {
+-  width: 8px;
+-  height: 8px;
+-  border-radius: 50%;
+-  background: #2ecc71;
+-  box-shadow: 0 0 6px rgba(46,204,113,0.6);
+-}
+-
+-@media (max-width: 1100px) {
+-  .nav-links a {
+-    font-size: 12px;
+-    padding: 5px 8px;
+-  }
+-
+-  .nav-left { gap: 18px; }
+-  .nav-right { gap: 12px; }
+-}
+-
+ /* =========================================================
+-   CARD SYSTEM
++   CARD
+    ========================================================= */
+ 
+ .card {
+@@ -195,33 +130,10 @@ html, body {
+   border-radius: 14px;
+   padding: 22px;
+   margin-bottom: 20px;
+-  transition: all 0.2s ease;
+-}
+-
+-.card:hover {
+-  border-color: rgba(85,183,255,0.25);
+-  transform: translateY(-2px);
+-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+-}
+-
+-.card h3 {
+-  color: var(--accent);
+ }
+ 
+ /* =========================================================
+-   PANEL SYSTEM
+-   ========================================================= */
+-
+-.panel{
+-  background: #0F1A2B;
+-  border:1px solid #1C2B40;
+-  border-radius: 14px;
+-  padding: 24px;
+-  box-shadow: 0 18px 60px rgba(0,0,0,.6);
+-}
+-
+-/* =========================================================
+-   INPUT + TEXTAREA
++   INPUT
+    ========================================================= */
+ 
+ input, textarea {
+@@ -233,13 +145,8 @@ input, textarea {
+   width: 100%;
+ }
+ 
+-input:focus, textarea:focus {
+-  outline: none;
+-  border-color: var(--border-focus);
+-}
+-
+ /* =========================================================
+-   BUTTON SYSTEM
++   BUTTON
+    ========================================================= */
+ 
+ button {
+@@ -250,35 +157,6 @@ button {
+   cursor: pointer;
+ }
+ 
+-/* =========================================================
+-   LOADING + EMPTY STATES
+-   ========================================================= */
+-
+-.loading {
+-  opacity: 0.6;
+-  pointer-events: none;
+-}
+-
+-.empty {
+-  color: var(--text-secondary);
+-  font-style: italic;
+-}
+-
+-/* =========================================================
+-   NOTES
+-   ========================================================= */
+-
+-.note {
+-  padding: 12px 14px;
+-  border-radius: 8px;
+-  margin-top: 10px;
+-}
+-
+-.note.success { color: var(--success); }
+-.note.warning { color: var(--warning); }
+-.note.error { color: var(--danger); }
+-.note.info { color: var(--accent); }
+-
+ /* =========================================================
+    TABLE
+    ========================================================= */
+@@ -294,26 +172,32 @@ button {
+   border-bottom: 1px solid #16243f;
+ }
+ 
+-/* Scroll state */
++table {
++  width: 100%;
++  display: block;
++  overflow-x: auto;
++}
++
++/* =========================================================
++   STATES
++   ========================================================= */
+ 
+-.stc-nav.nav-scrolled {
+-  padding: 8px 24px;
+-  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
++.empty {
++  color: var(--text-secondary);
++  font-style: italic;
+ }
+ 
+-/* ---------------------------------- */
+-/* Mobile Nav */
+-/* ---------------------------------- */
++/* =========================================================
++   MOBILE NAV (WORKING VERSION)
++   ========================================================= */
+ 
+ .nav-toggle {
+   display: none;
+-  font-size: 18px;
++  font-size: 20px;
+   cursor: pointer;
+   color: #e5e9f0;
+ }
+ 
+-/* Mobile layout */
+-
+ @media (max-width: 900px) {
+ 
+   .nav-toggle {
+@@ -325,7 +209,7 @@ button {
+     display: none;
+     flex-direction: column;
+     width: 100%;
+-    gap: 10px;
++    gap: 12px;
+     padding-top: 12px;
+   }
+ 
+@@ -340,96 +224,19 @@ button {
+   }
+ }
+ 
+-.nav-toggle {
+-  display: none;
+-  font-size: 18px;
+-  cursor: pointer;
+-  color: #e5e9f0;
+-}
+-
++/* FORCE MOBILE TOGGLE VISIBILITY */
+ @media (max-width: 900px) {
+-  .nav-toggle {
+-    display: block;
+-  }
+ 
+-  .nav-left,
+-  .nav-right {
+-    display: none;
+-    flex-direction: column;
+-    width: 100%;
+-    gap: 10px;
+-    padding-top: 12px;
+-  }
+-
+-  .stc-nav.open .nav-left,
+-  .stc-nav.open .nav-right {
+-    display: flex;
++  .nav-toggle {
++    display: block !important;
++    position: absolute;
++    right: 16px;
++    top: 14px;
++    z-index: 2000;
+   }
+ 
+   .stc-nav {
+-    flex-direction: column;
+-    align-items: flex-start;
++    position: relative;
+   }
+-}
+-
+-.stc-nav.open {
+-  height: auto;
+-}
+-
+-.stc-nav {
+-  overflow: visible;
+-}
+-
+-.stc-nav,
+-.nav-left,
+-.nav-right {
+-  width: 100%;
+-}
+-
+-.stc-nav.open {
+-  background: #0f1c33;
+-}
+-
+-body {
+-  overflow-x: hidden;
+-}
+ 
+-html, body {
+-  margin: 0;
+-  padding: 0;
+-  overflow-x: hidden;
+-}
+-
+-* {
+-  box-sizing: border-box;
+-}
+-
+-.main,
+-.container,
+-.page {
+-  width: 100%;
+-  max-width: 100%;
+-  overflow-x: hidden;
+-}
+-
+-table {
+-  width: 100%;
+-  display: block;
+-  overflow-x: auto;
+-}
+-
+-input[type="range"] {
+-  width: 100%;
+-}
+-
+-.stc-card,
+-.card {
+-  width: 100%;
+-  max-width: 100%;
+-}
+-
+-.stc-container {
+-  max-width: 1200px;
+-  margin: 0 auto;
+-  padding: 24px;
+ }
+diff --git a/public/blast-radius.html b/public/blast-radius.html
+index 1febf95..63da152 100644
+--- a/public/blast-radius.html
++++ b/public/blast-radius.html
+@@ -11,7 +11,9 @@
+ 
+ <div id="nav-container"></div>
+ 
+-<main class="container">
++<main>
++
++<div class="stc-container">
+ 
+   <h1>Authorization Blast Radius</h1>
+ 
+@@ -24,14 +26,16 @@
+   </section>
+ 
+   <div class="note warning">
+-Impact reflects current authorization paths only.
+-</div>
++    Impact reflects current authorization paths only.
++  </div>
+ 
+   <section class="card">
+     <h2>Blast Radius Notes</h2>
+     <div id="blast_radius_notes" class="card-sub">Awaiting impact data...</div>
+   </section>
+ 
++</div>
++
+ </main>
+ 
+ <script src="assets/js/layout.js"></script>
+diff --git a/public/copilot.html b/public/copilot.html
+index dc83370..ccbc5b0 100644
+--- a/public/copilot.html
++++ b/public/copilot.html
+@@ -12,7 +12,9 @@
+ 
+ <div id="nav-container"></div>
+ 
+-<main class="container">
++<main>
++
++<div class="stc-container">
+ 
+   <h1>Deterministic Copilot</h1>
+   <p class="card-sub">
+@@ -71,6 +73,8 @@
+     </table>
+   </section>
+ 
++</div>
++
+ </main>
+ 
+ <script src="/assets/js/layout.js"></script>
+diff --git a/public/docs.html b/public/docs.html
+index ca907ac..74ed3b0 100644
+--- a/public/docs.html
++++ b/public/docs.html
+@@ -11,7 +11,9 @@
+ 
+ <div id="nav-container"></div>
+ 
+-<main class="container">
++<main>
++
++<div class="stc-container">
+ 
+ <h1>Operator Help</h1>
+ 
+@@ -137,6 +139,8 @@ POST /v1/sessions/revoke
+ 
+ </section>
+ 
++</div>
++
+ </main>
+ 
+ <script src="assets/js/layout.js"></script>
+diff --git a/public/heatmap.html b/public/heatmap.html
+index cbdda90..2183e4f 100644
+--- a/public/heatmap.html
++++ b/public/heatmap.html
+@@ -11,7 +11,9 @@
+ 
+ <div id="nav-container"></div>
+ 
+-<main class="container">
++<main>
++
++<div class="stc-container">
+ 
+ <h1>Tenant Activity Heatmap</h1>
+ 
+@@ -52,6 +54,8 @@
+ 
+ </table>
+ 
++</div>
++
+ </main>
+ 
+ <script src="assets/js/layout.js"></script>
+diff --git a/public/index.html b/public/index.html
+index 36e8bcf..a7e53df 100644
+--- a/public/index.html
++++ b/public/index.html
+@@ -17,12 +17,6 @@ body{
+   margin:0;
+ }
+ 
+-.container{
+-  width:min(1400px,92%);
+-  margin:auto;
+-  padding:34px 0 48px;
+-}
+-
+ h1{
+   font-size:28px;
+   margin:0 0 26px;
+@@ -214,10 +208,6 @@ tr:last-child td{
+     flex-direction:column;
+     align-items:flex-start;
+   }
+-
+-  .container{
+-    width:95%;
+-  }
+ }
+ </style>
+ </head>
+@@ -225,7 +215,10 @@ tr:last-child td{
+ <body>
+ <div id="nav-container"></div>
+ 
+-<main class="container">
++<main>
++
++<div class="stc-container">
++
+   <h1>SecureTheCloud Runtime Command Center</h1>
+ 
+   <section class="grid">
+@@ -330,6 +323,9 @@ tr:last-child td{
+       </tbody>
+     </table>
+   </section>
++
++</div>
++
+ </main>
+ 
+ <script src="/assets/js/layout.js"></script>
+diff --git a/public/integrity.html b/public/integrity.html
+index 754127f..e0f9066 100644
+--- a/public/integrity.html
++++ b/public/integrity.html
+@@ -12,7 +12,9 @@
+ 
+ <div id="nav-container"></div>
+ 
+-<main class="container">
++<main>
++
++<div class="stc-container">
+ 
+   <h1>Runtime Integrity</h1>
+   <p class="card-sub">Verification state for runtime health, policy contract, datastore health, and audit-chain integrity.</p>
+@@ -80,6 +82,8 @@
+     </div>
+   </section>
+ 
++</div>
++
+ </main>
+ 
+ <script src="/assets/js/layout.js"></script>
+diff --git a/public/intelligence.html b/public/intelligence.html
+index ee00e14..ad2a509 100644
+--- a/public/intelligence.html
++++ b/public/intelligence.html
+@@ -12,7 +12,9 @@
+ 
+ <div id="nav-container"></div>
+ 
+-<main class="container">
++<main>
++
++<div class="stc-container">
+ 
+   <h1>Decision Intelligence</h1>
+   <p class="card-sub">
+@@ -91,6 +93,8 @@
+     <div id="intelligence_notes" class="card-sub">Awaiting intelligence notes...</div>
+   </section>
+ 
++</div>
++
+ </main>
+ 
+ <script src="/assets/js/layout.js"></script>
+diff --git a/public/login.html b/public/login.html
+index 385de89..ec54bb7 100644
+--- a/public/login.html
++++ b/public/login.html
+@@ -9,7 +9,9 @@
+ 
+ <body>
+ 
+-<main class="container">
++<main>
++
++<div class="stc-container">
+ 
+ <section class="card login-container">
+ 
+@@ -30,6 +32,8 @@
+ 
+ </section>
+ 
++</div>
++
+ </main>
+ 
+ <script src="assets/js/login.js"></script>
+diff --git a/public/observability.html b/public/observability.html
+index 39338b2..84f5d6b 100644
+--- a/public/observability.html
++++ b/public/observability.html
+@@ -12,7 +12,9 @@
+ 
+ <div id="nav-container"></div>
+ 
+-<main class="container">
++<main>
++
++<div class="stc-container">
+ 
+   <h1>Runtime Observability</h1>
+   <p class="card-sub">Operational visibility for runtime health, latency, event flow, and control-plane telemetry.</p>
+@@ -125,6 +127,8 @@
+     </div>
+   </section>
+ 
++</div>
++
+ </main>
+ 
+ <script src="/assets/js/layout.js"></script>
+diff --git a/public/operator.html b/public/operator.html
+index 27822e7..7f5090a 100644
+--- a/public/operator.html
++++ b/public/operator.html
+@@ -11,7 +11,9 @@
+ 
+ <div id="nav-container"></div>
+ 
+-<main class="container">
++<main>
++
++<div class="stc-container">
+ 
+   <h1>Operator Token Issuer</h1>
+ 
+@@ -50,6 +52,8 @@
+     <textarea id="token_output" rows="14" style="width:100%"></textarea>
+   </section>
+ 
++</div>
++
+ </main>
+ 
+ <script src="assets/js/layout.js"></script>
+diff --git a/public/partials/nav.html b/public/partials/nav.html
+index 3dd9462..c7dec06 100644
+--- a/public/partials/nav.html
++++ b/public/partials/nav.html
+@@ -1,3 +1,17 @@
++function highlightActiveNav() {
++  const currentPath = window.location.pathname || "/";
++  const navLinks = document.querySelectorAll(".stc-nav a[data-route]");
++
++  navLinks.forEach((link) => {
++    const route = link.getAttribute("data-route");
++    if (route === currentPath) {
++      link.classList.add("active");
++    } else {
++      link.classList.remove("active");
++    }
++  });
++}
++
+ function loadNav() {
+   const container = document.getElementById("nav-container");
+ 
+@@ -6,7 +20,7 @@ function loadNav() {
+   container.innerHTML = `
+ <nav class="stc-nav" role="navigation" aria-label="SecureTheCloud Navigation">
+ 
+-  <div class="nav-toggle" id="navToggle">☰</div>
++  <div class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" role="button" tabindex="0">☰</div>
+ 
+   <div class="nav-left">
+ 
+@@ -15,17 +29,15 @@ function loadNav() {
+     </div>
+ 
+     <div class="nav-links primary-nav">
+-
+       <a href="/" data-route="/">Overview</a>
+       <a href="/runtime.html" data-route="/runtime.html">Runtime</a>
+       <a href="/shield.html" data-route="/shield.html">Shield</a>
+       <a href="/tenants.html" data-route="/tenants.html">Tenants</a>
+       <a href="/sessions.html" data-route="/sessions.html">Sessions</a>
+-      <a href="/operator.html" data-route="/operator.html">Operator</a>
++      <a href="/operator-token.html" data-route="/operator-token.html">Operator</a>
+       <a href="/blast-radius.html" data-route="/blast-radius.html">Blast Radius</a>
+       <a href="/heatmap.html" data-route="/heatmap.html">Heatmap</a>
+       <a href="/integrity.html" data-route="/integrity.html">Integrity</a>
+-
+     </div>
+   </div>
+ 
+@@ -36,7 +48,7 @@ function loadNav() {
+     <a href="/activity.html" data-route="/activity.html">Activity</a>
+     <a href="/intelligence.html" data-route="/intelligence.html">Intelligence</a>
+     <a href="/copilot.html" data-route="/copilot.html">Copilot</a>
+-    <a href="/docs.html" data-route="/docs.html">Help</a>
++    <a href="/operator-help.html" data-route="/operator-help.html">Help</a>
+ 
+     <span class="nav-status">
+       <span class="status-dot"></span>
+@@ -47,20 +59,31 @@ function loadNav() {
+ </nav>
+ `;
+ 
+-  // Apply active highlighting AFTER injection
+   highlightActiveNav();
+ 
+-  // Demo highlight
+-  document.querySelector('[data-route="/runtime.html"]')
+-    ?.classList.add("demo-highlight");
++  const demoLink = container.querySelector('[data-route="/runtime.html"]');
++  if (demoLink) {
++    demoLink.classList.add("demo-highlight");
++  }
+ 
+-  // Mobile toggle MUST be bound after nav injection
+   const toggle = document.getElementById("navToggle");
+   const nav = container.querySelector(".stc-nav");
+ 
+-  if (toggle && nav) {
+-    toggle.addEventListener("click", () => {
+-      nav.classList.toggle("open");
+-    });
++  if (!toggle || !nav) return;
++
++  function toggleNav() {
++    const isOpen = nav.classList.toggle("open");
++    toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+   }
++
++  toggle.onclick = toggleNav;
++
++  toggle.onkeydown = function (event) {
++    if (event.key === "Enter" || event.key === " ") {
++      event.preventDefault();
++      toggleNav();
++    }
++  };
+ }
++
++document.addEventListener("DOMContentLoaded", loadNav);
+diff --git a/public/provision.html b/public/provision.html
+index 2b3a6bd..59d3fd9 100644
+--- a/public/provision.html
++++ b/public/provision.html
+@@ -11,7 +11,9 @@
+ 
+ <div id="nav-container"></div>
+ 
+-<main class="container">
++<main>
++
++<div class="stc-container">
+ 
+   <h1>Provision Tenant</h1>
+ 
+@@ -45,6 +47,8 @@
+     <pre id="provision_result"></pre>
+   </section>
+ 
++</div>
++
+ </main>
+ 
+ <script src="assets/js/layout.js"></script>
+diff --git a/public/runtime.html b/public/runtime.html
+index b3b4ee9..fa4cce0 100644
+--- a/public/runtime.html
++++ b/public/runtime.html
+@@ -10,6 +10,8 @@
+ 
+ <div id="nav-container"></div>
+ 
++<main>
++
+ <div class="stc-container">
+ 
+ <h1>Runtime Diagnostics</h1>
+@@ -93,6 +95,8 @@ Reserved for Phase 9 observability endpoints. No telemetry is fabricated here.
+ 
+ </div>
+ 
++</main>
++
+ <script src="assets/js/layout.js"></script>
+ <script src="assets/js/api.js"></script>
+ <script src="assets/js/runtime.js"></script>
+diff --git a/public/sessions.html b/public/sessions.html
+index ea47009..d23a7af 100644
+--- a/public/sessions.html
++++ b/public/sessions.html
+@@ -11,7 +11,9 @@
+ 
+ <div id="nav-container"></div>
+ 
+-<main class="container">
++<main>
++
++<div class="stc-container">
+ 
+ <h1>Active Sessions</h1>
+ 
+@@ -55,6 +57,8 @@ Active sessions are policy-evaluated and time-bound.
+   <div id="sessions_notes" class="card-sub">Awaiting session telemetry...</div>
+ </section>
+ 
++</div>
++
+ </main>
+ 
+ <script src="/assets/js/api.js"></script>
+diff --git a/public/shield.html b/public/shield.html
+index 7638a79..d427ca9 100644
+--- a/public/shield.html
++++ b/public/shield.html
+@@ -11,7 +11,9 @@
+ 
+ <div id="nav-container"></div>
+ 
+-<main class="container">
++<main>
++
++<div class="stc-container">
+ 
+ <h1>Shield — Live Zero-Trust Surface</h1>
+ 
+@@ -23,6 +25,8 @@ Live enforcement of zero-trust decisions across active sessions.
+ <div id="shield-panel"></div>
+ </section>
+ 
++</div>
++
+ </main>
+ 
+ <script src="assets/js/layout.js"></script>
+diff --git a/public/tenant-detail.html b/public/tenant-detail.html
+index ef91a1d..ae429d8 100644
+--- a/public/tenant-detail.html
++++ b/public/tenant-detail.html
+@@ -11,7 +11,9 @@
+ 
+ <div id="nav-container"></div>
+ 
+-<main class="container">
++<main>
++
++<div class="stc-container">
+ 
+   <h1 id="tenant_header">Tenant Detail</h1>
+ 
+@@ -130,6 +132,8 @@
+     <div id="tenant_detail_notes" class="card-sub">Awaiting tenant detail telemetry...</div>
+   </section>
+ 
++</div>
++
+ </main>
+ 
+ <script src="assets/js/layout.js"></script>
+diff --git a/public/tenants.html b/public/tenants.html
+index 323d2a3..5bf7672 100644
+--- a/public/tenants.html
++++ b/public/tenants.html
+@@ -11,7 +11,9 @@
+ 
+ <div id="nav-container"></div>
+ 
+-<main class="container">
++<main>
++
++<div class="stc-container">
+ 
+   <h1>Tenant Inventory</h1>
+ 
+@@ -47,6 +49,8 @@
+     <div id="tenant_notes" class="card-sub">Awaiting tenant inventory...</div>
+   </section>
+ 
++</div>
++
+ </main>
+ 
+ <script src="assets/js/layout.js"></script>
+diff --git a/public/usage.html b/public/usage.html
+index cc08e44..5bd1e26 100644
+--- a/public/usage.html
++++ b/public/usage.html
+@@ -12,7 +12,9 @@
+ 
+ <div id="nav-container"></div>
+ 
+-<main class="container">
++<main>
++
++<div class="stc-container">
+ 
+   <h1>Usage & Billing</h1>
+   <p class="card-sub">
+@@ -141,6 +143,8 @@
+     <div id="usage_notes" class="card-sub">Awaiting usage refresh...</div>
+   </section>
+ 
++</div>
++
+ </main>
+ 
+ <script src="/assets/js/layout.js"></script>
+diff --git a/worker/auth-gate.js b/worker/auth-gate.js
+index e7b6345..a1b97ef 100644
+--- a/worker/auth-gate.js
++++ b/worker/auth-gate.js
+@@ -1,13 +1,16 @@
+ // FILE: worker/auth-gate.js
+ 
++// Optional: operator IP allowlist (SOC / admin access)
++// Enable later when needed
++
+ const ALLOWED_IPS = [
+-  "203.0.113.10",
+-  "198.51.100.25",
+-  "192.0.2.44"
++  "203.0.113.10",   // office
++  "198.51.100.25",  // VPN gateway
++  "192.0.2.44"      // admin workstation
+ ];
+ 
+-const RATE_LIMIT = 60;
+-const RATE_WINDOW = 60_000;
++const RATE_LIMIT = 60;        // requests
++const RATE_WINDOW = 60_000;   // 1 minute
+ 
+ const rateMap = new Map();
+ 
+@@ -55,10 +58,17 @@ function applySecurityHeaders(response) {
+ 
+ export default {
+   async fetch(request, env) {
+-
+     const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+     const url = new URL(request.url);
+ 
++    // Optional SOC IP restriction
++    // Uncomment when needed
++    /*
++    if (!isAllowedOperatorIP(ip)) {
++      return new Response("Operator access restricted", { status: 403 });
++    }
++    */
++
+     if (isRateLimited(ip)) {
+       return new Response("Rate limit exceeded", { status: 429 });
+     }
+@@ -67,6 +77,8 @@ export default {
+       return Response.redirect(url.origin + "/index.html", 302);
+     }
+ 
++    // observability endpoints
++
+     if (url.pathname === "/v1/admin/metrics") {
+       return new Response(JSON.stringify({
+         tokens_issued: 104,
+@@ -83,7 +95,9 @@ export default {
+     }
+ 
+     if (url.pathname === "/v1/runtime/activity") {
+-      return new Response(JSON.stringify({ events: [] }), {
++      return new Response(JSON.stringify({
++        events: []
++      }), {
+         headers: { "Content-Type": "application/json" }
+       });
+     }
+@@ -99,18 +113,7 @@ export default {
+       });
+     }
+ 
+-    if (url.pathname === "/v1/admin/provision" && request.method === "POST") {
+-      const payload = await request.json();
+-      const tenantId = payload?.tenant_id || "tenant-new";
+-
+-      return new Response(JSON.stringify({
+-        provisioned: true,
+-        tenant_id: tenantId,
+-        created_at: Math.floor(Date.now() / 1000)
+-      }), {
+-        headers: { "Content-Type": "application/json" }
+-      });
+-    }
++    // tenant administration endpoints
+ 
+     if (url.pathname === "/v1/admin/tenants") {
+       return new Response(JSON.stringify({
+@@ -126,47 +129,82 @@ export default {
+       });
+     }
+ 
+-    if (url.pathname === "/v1/admin/sessions") {
+-      return new Response(JSON.stringify({
+-        sessions: [
+-          {
+-            tenant_id: "tenant-launch",
+-            session_id: "sess-launch-1",
+-            principal: "agent_refund",
+-            intent: "refund:create",
+-            scopes: ["refund:create"],
+-            issued_at: Math.floor(Date.now() / 1000) - 180,
+-            ttl: 300
+-          },
+-          {
+-            tenant_id: "tenant-abc",
+-            session_id: "sess-abc-1",
+-            principal: "agent-demo",
+-            intent: "refund:create",
+-            scopes: ["refund:create"],
+-            issued_at: Math.floor(Date.now() / 1000) - 300,
+-            ttl: 300
+-          }
+-        ]
+-      }), {
++    const usageMatch = url.pathname.match(/^\/v1\/admin\/tenants\/([^/]+)\/usage$/);
++
++    if (usageMatch) {
++      const tenantId = decodeURIComponent(usageMatch[1]);
++
++      const usageByTenant = {
++        "tenant-abc": {
++          tokens_issued: 12,
++          policy_denied: 1,
++          sessions_revoked: 0,
++          risk_score: 5
++        },
++        "tenant-75": {
++          tokens_issued: 18,
++          policy_denied: 2,
++          sessions_revoked: 1,
++          risk_score: 9
++        },
++        "tenant-75a": {
++          tokens_issued: 20,
++          policy_denied: 3,
++          sessions_revoked: 0,
++          risk_score: 12
++        },
++        "tenant-xyz": {
++          tokens_issued: 24,
++          policy_denied: 4,
++          sessions_revoked: 0,
++          risk_score: 15
++        },
++        "tenant-launch": {
++          tokens_issued: 30,
++          policy_denied: 10,
++          sessions_revoked: 2,
++          risk_score: 20
++        }
++      };
++
++      return new Response(JSON.stringify(
++        usageByTenant[tenantId] || {
++          tokens_issued: 0,
++          policy_denied: 0,
++          sessions_revoked: 0,
++          risk_score: 0
++        }
++      ), {
+         headers: { "Content-Type": "application/json" }
+       });
+     }
+ 
+-    if (url.pathname === "/v1/admin/sessions/revoke" && request.method === "POST") {
+-      const body = await request.json();
+-      const sessionId = body?.session_id || "unknown";
+-
++    if (url.pathname === "/v1/intelligence/risk") {
+       return new Response(JSON.stringify({
+-        status: "revoked",
+-        session_id: sessionId
++        top_risky_tenants: [
++          { tenant: "tenant-launch", risk: 20 },
++          { tenant: "tenant-xyz", risk: 15 },
++          { tenant: "tenant-75a", risk: 12 },
++          { tenant: "tenant-75", risk: 9 },
++          { tenant: "tenant-abc", risk: 5 }
++        ],
++        suspicious_principals: [
++          { principal: "agent-demo", events: 14 },
++          { principal: "agent_refund", events: 9 },
++          { principal: "agent-ops", events: 4 }
++        ],
++        deny_spike: {
++          detected: true,
++          current: 20
++        },
++        policy_drift: false,
++        timestamp: Math.floor(Date.now() / 1000)
+       }), {
+         headers: { "Content-Type": "application/json" }
+       });
+     }
+ 
+-    const assetRequest = new Request(url.origin + url.pathname, request);
+-    const response = await env.ASSETS.fetch(assetRequest);
++    const response = await env.ASSETS.fetch(request);
+ 
+     if (!response) {
+       return new Response("Not Found", { status: 404 });
