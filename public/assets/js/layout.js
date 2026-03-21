@@ -1,5 +1,3 @@
-// SecureTheCloud layout loader
-
 (function () {
   const DEMO_BANNER_ID = "stc-demo-banner";
 
@@ -11,7 +9,7 @@
     }
   }
 
-  // Keep backward compatibility for any page still reading window.STC_API_KEY
+  // Backward compatibility for pages still reading window.STC_API_KEY
   window.STC_API_KEY = window.STC_API_KEY || getStoredApiKey();
 
   function normalizePath(path) {
@@ -29,27 +27,43 @@
 <nav class="stc-nav" role="navigation" aria-label="SecureTheCloud Navigation">
 
   <div class="nav-brand-row">
-    <div class="logo">
-      <a href="/">SecureTheCloud</a>
-    </div>
+    
+<div class="logo">
+  <a href="/" class="brand-link" aria-label="SecureTheCloud home">
+
+    <span class="brand-shield" aria-hidden="true">
+      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 4L10 12V28C10 43 21 56 32 60C43 56 54 43 54 28V12L32 4Z" fill="#0d1b2a"/>
+        <path d="M32 10L16 16V28C16 40 24 50 32 53C40 50 48 40 48 28V16L32 10Z" fill="#f5b301"/>
+      </svg>
+    </span>
+
+    <span class="brand-text" aria-hidden="true">
+      <span class="brand-secure">Secure</span>
+      <span class="brand-cloud">TheCloud</span>
+    </span>
+
+  </a>
+</div>
 
     <button
-      id="stc-nav-toggle"
+      id="navToggle"
       class="nav-toggle"
       type="button"
       aria-expanded="false"
-      aria-controls="stc-nav-groups"
+      aria-controls="stcNavGroups"
       aria-label="Toggle navigation"
     >
       ☰
     </button>
   </div>
 
-  <div id="stc-nav-groups" class="stc-nav-groups">
+  <div id="stcNavGroups" class="stc-nav-groups">
 
     <div class="nav-group">
       <span class="nav-label">Control</span>
-      <a href="/runtime.html" data-route="/runtime.html">Runtime</a>
+      <a href="/" data-route="/">Overview</a>
+       <a href="/runtime.html" data-route="/runtime.html">Runtime</a>
       <a href="/shield.html" data-route="/shield.html">Shield</a>
       <a href="/sessions.html" data-route="/sessions.html">Sessions</a>
       <a href="/operator.html" data-route="/operator.html">Operator</a>
@@ -76,13 +90,18 @@
       <a href="/observability.html" data-route="/observability.html">Observability</a>
       <a href="/activity.html" data-route="/activity.html">Activity</a>
       <a href="/docs.html" data-route="/docs.html">Help</a>
+
+      <span class="nav-status">
+        <span class="status-dot"></span>
+        Connected
+      </span>
     </div>
 
   </div>
 
 </nav>
 `;
-  }
+   }
 
   function highlightActiveNav() {
     const path = currentPath();
@@ -91,6 +110,7 @@
       const route = normalizePath(link.getAttribute("data-route"));
       const active = route === path;
       link.classList.toggle("active", active);
+
       if (active) {
         link.setAttribute("aria-current", "page");
       } else {
@@ -100,8 +120,8 @@
   }
 
   function bindNavToggle() {
-    const toggle = document.getElementById("stc-nav-toggle");
-    const groups = document.getElementById("stc-nav-groups");
+    const toggle = document.getElementById("navToggle");
+    const groups = document.getElementById("stcNavGroups");
 
     if (!toggle || !groups) return;
 
@@ -119,7 +139,6 @@
   }
 
   function injectDemoBanner() {
-    if (!document.getElementById("nav-container")) return;
     if (document.getElementById(DEMO_BANNER_ID)) return;
 
     const banner = document.createElement("div");
@@ -138,6 +157,10 @@
     container.innerHTML = buildNav();
     highlightActiveNav();
     bindNavToggle();
+
+    document
+      .querySelector('[data-route="/runtime.html"]')
+      ?.classList.add("demo-highlight");
   }
 
   function initLayout() {
