@@ -753,4 +753,13 @@ body {
   word-wrap: break-word;
 }
 
+.table-shell {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-shell table {
+  min-width: 700px;
+}
 
