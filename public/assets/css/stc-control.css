@@ -700,3 +700,57 @@ button:disabled {
     gap: 6px;
   }
 }
+
+/* Mobile fix */
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-wrap table {
+  min-width: 700px;
+}
+
+@media (max-width: 900px) {
+
+  .stc-nav-groups {
+    display: none;
+    flex-direction: column;
+    background: #0f1c33;
+    padding: 12px;
+  }
+
+  .stc-nav-groups.open {
+    display: flex;
+  }
+
+  .nav-toggle {
+    display: block;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+}
+
+#riskdna_graph,
+#riskdna_universe {
+  width: 100%;
+  height: auto;
+  min-height: 250px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.card {
+  word-wrap: break-word;
+}
+
+
