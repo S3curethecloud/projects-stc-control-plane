@@ -89,6 +89,26 @@ function addDecisionRow(event) {
   }
 }
 
+async function loadRecentDecisions() {
+  try {
+    const res = await fetch(`${RUNTIME_BASE}/v1/decisions/recent`, {
+      headers: {
+        "X-Stc-Api-Key": API_KEY
+      }
+    });
+
+    const data = await res.json();
+
+    const events = Array.isArray(data.events) ? data.events : [];
+
+    // oldest first
+    events.reverse().forEach(addDecisionRow);
+
+  } catch (err) {
+    console.error("recent decisions load error", err);
+  }
+}
+
 function renderSessions(data) {
   const table = el("sessions_table");
   if (!table) return;
@@ -98,6 +118,7 @@ function renderSessions(data) {
   const sessions = Array.isArray(data.sessions) ? data.sessions : [];
 
   if (sessions.length === 0) {
+
     table.innerHTML = `
       <tr id="sessions_empty">
         <td colspan="5" class="empty">No active sessions.</td>
@@ -196,7 +217,6 @@ async function loadSessions() {
 async function revokeSession(sessionId, button) {
   try {
     if (button) button.disabled = true;
-
     const res = await fetch(`${RUNTIME_BASE}/v1/sessions/revoke`, {
       method: "POST",
       cache: "no-store",
@@ -241,6 +261,24 @@ function parseSSEBlock(block) {
   return null;
 }
 
+// --------------------------------------------------
+// 🔧 THROTTLE ADDITION (Surgical Fix)
+// --------------------------------------------------
+
+let lastRefreshTime = 0;
+const REFRESH_INTERVAL = 5000; // 5 seconds
+
+function maybeRefreshState() {
+  const now = Date.now();
+
+  if (now - lastRefreshTime > REFRESH_INTERVAL) {
+    lastRefreshTime = now;
+
+    loadSessions();
+    loadIntegrity();
+  }
+}
+
 async function startDecisionStream() {
   const status = el("stream_status");
 
@@ -258,7 +296,7 @@ async function startDecisionStream() {
   try {
     if (status) status.textContent = "Connecting...";
 
-    const res = await fetch(`${RUNTIME_BASE}/v1/decisions/stream`, {
+    const res = await fetch(`${RUNTIME_BASE}/v1/decisions/stream?api_key=${API_KEY}`, {
       method: "GET",
       cache: "no-store",
       signal: streamAbortController.signal,
@@ -297,8 +335,7 @@ async function startDecisionStream() {
         try {
           const event = JSON.parse(payload);
           addDecisionRow(event);
-          loadSessions();
-          loadIntegrity();
+          maybeRefreshState();
         } catch (err) {
           console.error("stream parse error", err, payload);
         }
@@ -312,7 +349,7 @@ async function startDecisionStream() {
   }
 }
 
-function initCommandCenter() {
+async function initCommandCenter() {
   if (!API_KEY) {
     setText("stream_status", "Missing API key");
     setText("audit_status", "ERROR");
@@ -325,6 +362,8 @@ function initCommandCenter() {
   loadHealth();
   loadIntegrity();
   loadSessions();
+
+  await loadRecentDecisions();   // 🔒 hydrate BEFORE stream
   startDecisionStream();
 
   setInterval(loadSessions, 5000);
